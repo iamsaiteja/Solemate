@@ -1,192 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import API from '../utils/api';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-function Login() {
-  const [form, setForm] = useState({
-    username: '',
-    password: '',
-  });
+import Navbar from './components/Navbar';
 
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+import Home from './pages/Home';
+import Products from './pages/Products';
+import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
+import Orders from './pages/Orders';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import SellerDashboard from './pages/SellerDashboard';
 
-  const navigate = useNavigate();
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("access");
 
-  // 🔥 GOOGLE LOGIN HANDLE
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
 
-    const access = params.get("access");
-    const refresh = params.get("refresh");
+  return children;
+};
 
-    if (access && refresh) {
-      localStorage.setItem("access", access);
-      localStorage.setItem("refresh", refresh);
-      localStorage.setItem("username", "Google User");
-
-      // clean URL
-      window.history.replaceState({}, document.title, "/");
-
-      navigate("/");
-    }
-  }, [navigate]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await API.post('/auth/login/', form);
-
-      // 🔥 SAVE TOKENS
-      localStorage.setItem("access", res.data.access);
-      localStorage.setItem("refresh", res.data.refresh);
-      localStorage.setItem("username", form.username);
-
-      navigate('/');
-
-    } catch (err) {
-      setError(
-        err.response?.data?.error || 'Login failed'
-      );
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
+function App() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#0a0a0a',
-      }}
-    >
-      <div
-        style={{
-          background: '#111',
-          padding: '40px',
-          borderRadius: '12px',
-          width: '350px',
-          boxShadow: '0 0 20px rgba(255,255,255,0.05)',
-        }}
-      >
-        <h2
-          style={{
-            color: 'white',
-            marginBottom: '20px',
-          }}
-        >
-          Login
-        </h2>
+    <Router>
 
-        {error && (
-          <p style={{ color: 'red' }}>
-            {error}
-          </p>
-        )}
+      <Navbar />
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={form.username}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                username: e.target.value,
-              })
-            }
-            required
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '6px',
-              border: 'none',
-            }}
-          />
+      <Routes>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                password: e.target.value,
-              })
-            }
-            required
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '6px',
-              border: 'none',
-            }}
-          />
+        <Route path="/" element={<Home />} />
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '10px',
-              background: '#e8ff3b',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              borderRadius: '6px',
-            }}
-          >
-            {loading ? "Loading..." : "Login"}
-          </button>
-        </form>
+        <Route path="/products" element={<Products />} />
 
-        {/* 🔥 GOOGLE LOGIN */}
-        <a
-          href="https://solemate.servecounterstrike.com/accounts/google/login/"
-          style={{
-            display: 'block',
-            marginTop: '15px',
-            padding: '10px',
-            background: '#4285f4',
-            color: 'white',
-            textAlign: 'center',
-            borderRadius: '6px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-          }}
-        >
-          Login with Google
-        </a>
+        <Route path="/products/:id" element={<ProductDetails />} />
 
-        <p
-          style={{
-            marginTop: '15px',
-            color: '#aaa',
-          }}
-        >
-          New user?{' '}
-          <Link
-            to="/register"
-            style={{
-              color: '#e8ff3b',
-            }}
-          >
-            Register
-          </Link>
-        </p>
-      </div>
-    </div>
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/seller"
+          element={
+            <ProtectedRoute>
+              <SellerDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+
+    </Router>
   );
 }
 
-export default Login;
+export default App;
