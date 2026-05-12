@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Order, OrderItem
 from apps.cart.models import Cart
+from apps.orders.tasks import send_order_confirmation_email
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -85,6 +86,7 @@ def verify_payment(request):
         order.payment_status = 'paid'
         order.status = 'processing'
         order.save()
+        send_order_confirmation_email.delay(order.id)
         return Response({'message': 'Payment successful!', 'order_id': order.id})
     except Exception:
         return Response({'error': 'Payment verification failed'}, status=400)

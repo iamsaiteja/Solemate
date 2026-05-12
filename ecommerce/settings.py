@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_celery_results',
     # Third party
     'rest_framework',
     
@@ -172,8 +173,12 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
+# Celery Settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
-
-
+GEMINI_API_KEY = 'AIzaSyAqdYr8FauQSWWQkYy8he46ZaxOC-ciGIw'
 
 

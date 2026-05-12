@@ -4,13 +4,13 @@ const BASE_URL = "https://solemate.servecounterstrike.com";
 
 axios.defaults.withCredentials = true;
 
-// ✅ Axios instance
+
 const API = axios.create({
   baseURL: `${BASE_URL}/api`,
   withCredentials: true,
 });
 
-// 🔐 REQUEST INTERCEPTOR
+
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("access");
 
@@ -21,7 +21,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// 🔄 RESPONSE INTERCEPTOR
+
 API.interceptors.response.use(
   (response) => response,
 
@@ -32,7 +32,7 @@ API.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // 🔥 TOKEN EXPIRED
+    
     if (
       error.response?.status === 401 &&
       !originalRequest._retry
@@ -42,14 +42,14 @@ API.interceptors.response.use(
       try {
         const refresh = localStorage.getItem("refresh");
 
-        // ❌ NO REFRESH TOKEN
+        
         if (!refresh) {
           localStorage.clear();
           window.location.replace("/login");
           return;
         }
 
-        // 🔥 GET NEW ACCESS TOKEN
+        
         const res = await axios.post(
           `${BASE_URL}/api/auth/refresh/`,
           {
@@ -57,13 +57,13 @@ API.interceptors.response.use(
           }
         );
 
-        // ✅ SAVE NEW ACCESS TOKEN
+       
         localStorage.setItem(
           "access",
           res.data.access
         );
 
-        // ✅ SAVE NEW REFRESH TOKEN
+       
         if (res.data.refresh) {
           localStorage.setItem(
             "refresh",
@@ -71,16 +71,16 @@ API.interceptors.response.use(
           );
         }
 
-        // 🔥 UPDATE HEADER
+        
         originalRequest.headers.Authorization =
           `Bearer ${res.data.access}`;
 
-        // 🔥 RETRY ORIGINAL REQUEST
+        
         return API(originalRequest);
 
       } catch (err) {
 
-        // ❌ REFRESH FAILED
+        
         localStorage.clear();
 
         window.location.replace("/login");
@@ -91,19 +91,19 @@ API.interceptors.response.use(
   }
 );
 
-// 🖼️ IMAGE FUNCTION
+
 export const getImage = (url) => {
 
   if (!url) {
     return "https://via.placeholder.com/300?text=No+Image";
   }
 
-  // already full URL
+ 
   if (url.startsWith("http")) {
     return url;
   }
 
-  // normalize media path
+  
   const cleanUrl = url.startsWith("/media/")
     ? url
     : `/media/${url}`;
@@ -111,7 +111,7 @@ export const getImage = (url) => {
   return `${BASE_URL}${cleanUrl}`;
 };
 
-// 📦 PRODUCT API
+
 export const getProduct = (id) => {
   return API.get(`/products/${id}/`);
 };

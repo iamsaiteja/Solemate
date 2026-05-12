@@ -1,6 +1,10 @@
-from rest_framework.decorators import api_view
+import google.generativeai as genai
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Product
+
 
 @api_view(['GET'])
 def product_list(request):
@@ -17,6 +21,7 @@ def product_list(request):
             'image': p.image.url if p.image else None,
         })
     return Response(data)
+
 
 @api_view(['GET'])
 def product_detail(request, pk):
@@ -36,3 +41,35 @@ def product_detail(request, pk):
         return Response(data)
     except Product.DoesNotExist:
         return Response({'error': 'Not found'}, status=404)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def ai_product_search(request):
+    query = request.data.get('query', '')
+
+    if not query:
+        return Response({'error': 'Query required'}, status=400)
+
+    products = Product.objects.filter(is_active=True)[:20]
+    product_list = "\n".join([
+        f"- {p.name}: ₹{p.price}" for p in products
+    ])
+
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+
+    prompt = f"""
+You are a shoe shopping assistant for SoleMate.
+Customer query: {query}
+Available products:
+{product_list}
+Suggest the best matching products and explain why.
+Keep response short and helpful.
+"""
+    response = model.generate_content(prompt)
+
+    return Response({
+        'query': query,
+        'suggestion': response.text
+    })
