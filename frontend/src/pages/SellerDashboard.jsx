@@ -13,7 +13,7 @@ function SellerDashboard() {
     })
       .then(res => res.json())
       .then(d => setData(d))
-  }, [])
+  }, [navigate, token])
 
   return (
     <div style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
