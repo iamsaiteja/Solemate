@@ -8,7 +8,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 🔥 GOOGLE LOGIN REDIRECT HANDLE
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const access = params.get("access");

@@ -16,6 +16,6 @@ def google_callback(request):
 
     # Tokens tho frontend ki redirect
     return redirect(
-        f"https://solemate01.vercel.app/oauth/callback"
+        f"https://solemate01.vercel.app/login"
         f"?access={access}&refresh={refresh_token}"
     )
