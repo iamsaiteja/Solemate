@@ -165,8 +165,10 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-LOGIN_REDIRECT_URL = "/accounts/google/jwt-callback/"
+SOCIALACCOUNT_LOGIN_REDIRECT_URL = "/accounts/google/jwt-callback/"
 LOGOUT_REDIRECT_URL = "https://solemate01.vercel.app"
+
+
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
@@ -182,3 +184,4 @@ CELERY_TASK_SERIALIZER = 'json'
 GEMINI_API_KEY = 'AIzaSyAqdYr8FauQSWWQkYy8he46ZaxOC-ciGIw'
 
 
+SOCIALACCOUNT_ADAPTER = "apps.users.adapter.CustomSocialAccountAdapter"
