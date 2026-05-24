@@ -14,6 +14,11 @@ function Login() {
     const access = params.get("access");
     const refresh = params.get("refresh");
 
+    console.log("URL params:", window.location.search);
+    console.log("Access token:", access);
+    console.log("Refresh token:", refresh);
+
+
     if (access && refresh) {
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
