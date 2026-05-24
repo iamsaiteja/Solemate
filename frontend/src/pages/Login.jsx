@@ -8,32 +8,35 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  
- useEffect(() => {
-    // URL lo ? leda # renditlonu tokens unna vethikela code:
+  useEffect(() => {
+    // 1. Modhati ga standard '?' parameters ni check chestham
     let searchParams = new URLSearchParams(window.location.search);
     
-    // Oka vela Django # pampisthe, danni ? ga marchesi chaduvuthundi:
+    // 2. Oka vela URL lo '#' unte, andulo unna parameters ni kooda ikkada chaduvuthundhi
     if (window.location.hash) {
-        const hashText = window.location.hash.substring(1); // # theseyadaniki
+        // '#' symbol ni thesesi kevalam params text ni mathrame thesukuntundhi
+        const hashText = window.location.hash.includes('?') 
+            ? window.location.hash.split('?')[1] 
+            : window.location.hash.substring(1);
         searchParams = new URLSearchParams(hashText);
     }
 
     const access = searchParams.get("access");
     const refresh = searchParams.get("refresh");
 
+    // Tokens perfect ga dhorikithe local storage lo save chestham
     if (access && refresh) {
         localStorage.setItem("access", access);
         localStorage.setItem("refresh", refresh);
         localStorage.setItem("username", "GoogleUser");
 
-        // URL ni clean cheyadanki
+        // URL bar clean ga kanapadadaniki tokens ni clear chestham
         window.history.replaceState({}, document.title, "/login");
         
-        // Refresh thoti direct ga products page ki velladaniki
+        // Direct ga refresh thoti Products Page ki pampistham
         window.location.href = "/products"; 
     }
-}, [navigate]);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +49,8 @@ function Login() {
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
 
-      navigate('/');
+      // Normal login ayyaka kooda direct ga products page ke velladaniki:
+      navigate('/products');
 
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
