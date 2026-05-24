@@ -14,22 +14,18 @@ function Login() {
     const access = params.get("access");
     const refresh = params.get("refresh");
 
-    console.log("URL params:", window.location.search);
-    console.log("Access token:", access);
-    console.log("Refresh token:", refresh);
-
-
     if (access && refresh) {
-      localStorage.setItem("access", access);
-      localStorage.setItem("refresh", refresh);
-      localStorage.setItem("username", "GoogleUser");
+        localStorage.setItem("access", access);
+        localStorage.setItem("refresh", refresh);
+        localStorage.setItem("username", "GoogleUser");
 
-      // clean URL (remove ?access=...)
-      window.history.replaceState({}, document.title, "/");
-
-      navigate("/");
+        // URL nunchi tokens tholaginchadaniki
+        window.history.replaceState({}, document.title, "/");
+        
+        // Direct ga home page leda products page ki velladaniki
+        navigate("/"); 
     }
-  }, [navigate]);
+}, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

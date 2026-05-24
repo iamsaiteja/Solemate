@@ -13,6 +13,6 @@ def google_callback(request):
     refresh_token = str(refresh)
 
     return redirect(
-        f"https://solemate01.vercel.app/auth/callback"
-        f"?access={access}&refresh={refresh_token}"
-    )
+    f"https://solemate01.vercel.app/login"
+    f"?access={access}&refresh={refresh_token}"
+)
