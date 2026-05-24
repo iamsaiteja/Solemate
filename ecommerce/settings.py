@@ -178,8 +178,8 @@ LOGOUT_REDIRECT_URL = "https://solemate01.vercel.app"
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Celery Settings
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
