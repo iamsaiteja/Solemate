@@ -36,3 +36,245 @@ INFO 2026-05-25 00:47:09,075 log "GET /static/rest_framework/js/bootstrap.min.js
 INFO 2026-05-25 00:47:09,121 log "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 200 87533
 INFO 2026-05-25 00:55:19,816 autoreload Watching for file changes with StatReloader
 INFO 2026-05-25 00:56:06,016 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-25 08:40:33,034 autoreload Watching for file changes with StatReloader
+ERROR 2026-05-25 08:40:38,342 log Internal Server Error: /accounts/google/login/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 112, in view
+    return self.dispatch(  # type:ignore[attr-defined]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        request, *args, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\base\views.py", line 19, in dispatch
+    provider = self.get_provider()
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 123, in get_provider
+    return self.adapter.get_provider()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 50, in get_provider
+    return get_adapter(self.request).get_provider(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.request, provider=self.provider_id
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 228, in get_provider
+    app = self.get_app(request, provider=provider, client_id=client_id)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 320, in get_app
+    raise SocialApp.DoesNotExist()
+allauth.socialaccount.models.SocialApp.DoesNotExist
+ERROR 2026-05-25 08:40:38,354 log "GET /accounts/google/login/ HTTP/1.1" 500 101182
+WARNING 2026-05-25 08:40:38,640 log Not Found: /favicon.ico
+WARNING 2026-05-25 08:40:38,643 log "GET /favicon.ico HTTP/1.1" 404 3973
+INFO 2026-05-25 08:41:10,533 log "GET /admin/ HTTP/1.1" 302 0
+INFO 2026-05-25 08:41:10,639 log "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4084
+INFO 2026-05-25 08:41:10,723 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,724 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,733 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,737 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,738 log "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,740 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:10,745 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,734 log "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4255
+INFO 2026-05-25 08:41:33,799 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,802 log "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,802 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,803 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,803 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,803 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:33,812 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,561 log "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2026-05-25 08:41:45,760 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-25 08:41:45,829 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,830 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,832 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,833 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,834 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,835 log "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2026-05-25 08:41:45,843 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:41:45,884 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+INFO 2026-05-25 08:41:45,885 log "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+INFO 2026-05-25 08:42:08,519 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 20503
+INFO 2026-05-25 08:42:08,578 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,579 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,579 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,580 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,585 log "GET /static/admin/css/changelists.css HTTP/1.1" 200 7498
+INFO 2026-05-25 08:42:08,592 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,593 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2026-05-25 08:42:08,594 log "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2026-05-25 08:42:08,607 log "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2026-05-25 08:42:08,609 log "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2026-05-25 08:42:08,610 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2026-05-25 08:42:08,648 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2026-05-25 08:42:08,701 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2026-05-25 08:42:08,721 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-25 08:42:08,735 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-25 08:42:08,746 log "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2026-05-25 08:42:08,784 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2026-05-25 08:42:08,824 log "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 593
+INFO 2026-05-25 08:42:10,643 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-25 22:48:47,288 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 22:49:54,593 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-25 22:49:56,155 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 22:50:07,100 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-25 22:50:24,333 log "GET /admin/ HTTP/1.1" 302 0
+INFO 2026-05-25 22:50:24,527 log "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4084
+INFO 2026-05-25 22:50:24,551 log "GET /static/admin/css/base.css HTTP/1.1" 200 23100
+INFO 2026-05-25 22:50:24,555 log "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2026-05-25 22:50:24,556 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 3538
+INFO 2026-05-25 22:50:24,557 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2026-05-25 22:50:24,557 log "GET /static/admin/css/responsive.css HTTP/1.1" 200 16273
+INFO 2026-05-25 22:50:24,590 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2026-05-25 22:50:24,592 log "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2026-05-25 23:22:24,509 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:24:19,061 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:24:21,281 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:24:28,698 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-25 23:24:50,586 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-25 23:24:56,917 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-25 23:24:56,941 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,953 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,965 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,968 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,980 log "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,987 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:56,988 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:57,009 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-25 23:24:57,009 log "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+WARNING 2026-05-25 23:24:57,937 log Not Found: /favicon.ico
+WARNING 2026-05-25 23:24:58,137 log "GET /favicon.ico HTTP/1.1" 404 3973
+INFO 2026-05-25 23:25:58,540 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:26:00,803 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:26:08,709 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:26:10,847 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:26:11,933 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-25 23:26:11,963 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,966 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,971 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,975 log "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,979 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,986 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-25 23:26:11,986 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+ERROR 2026-05-25 23:26:15,832 log Internal Server Error: /users/auth/google/callback/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\ecommerce\views.py", line 8, in google_callback
+    1 / 0
+    ~~^~~
+ZeroDivisionError: division by zero
+ERROR 2026-05-25 23:26:15,841 log "GET /users/auth/google/callback/ HTTP/1.1" 500 83737
+INFO 2026-05-25 23:30:31,889 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:30:34,342 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:36:32,066 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-25 23:36:33,962 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:37:20,093 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:37:22,094 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:37:41,063 autoreload D:\ecommerce\ecommerce\urls.py changed, reloading.
+INFO 2026-05-25 23:37:43,287 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:37:50,923 autoreload D:\ecommerce\ecommerce\urls.py changed, reloading.
+INFO 2026-05-25 23:37:53,023 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:39:00,295 autoreload D:\ecommerce\ecommerce\views.py changed, reloading.
+INFO 2026-05-25 23:39:02,330 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:40:39,147 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:40:42,692 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-25 23:40:48,482 log "GET / HTTP/1.1" 200 18
+ERROR 2026-05-25 23:41:00,395 log Internal Server Error: /send-email/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\ecommerce\views.py", line 12, in send_test_email
+    send_mail(
+    ~~~~~~~~~^
+        subject='SoleMate Test Email',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        fail_silently=False,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 268, in wrapper
+    return func(*args, **kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\__init__.py", line 108, in send_mail
+    return mail.send()
+           ~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 130, in send_messages
+    new_conn_created = self.open()
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 97, in open
+    self.connection.login(self.username, self.password)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ~~~~~~~~~^
+        authmethod, getattr(self, method_name),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        initial_response_ok=initial_response_ok)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2beb58b2ccbsm103320635ad.48 - gsmtp')
+ERROR 2026-05-25 23:41:00,415 log "GET /send-email/ HTTP/1.1" 500 123520
+ERROR 2026-05-25 23:44:20,824 log Internal Server Error: /send-email/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\ecommerce\views.py", line 12, in send_test_email
+    send_mail(
+    ~~~~~~~~~^
+        subject='SoleMate Test Email',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        fail_silently=False,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 268, in wrapper
+    return func(*args, **kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\__init__.py", line 108, in send_mail
+    return mail.send()
+           ~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 130, in send_messages
+    new_conn_created = self.open()
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 97, in open
+    self.connection.login(self.username, self.password)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 750, in login
+    raise last_exception
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ~~~~~~~~~^
+        authmethod, getattr(self, method_name),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        initial_response_ok=initial_response_ok)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python313\Lib\smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2beb5695f5fsm103392635ad.8 - gsmtp')
+ERROR 2026-05-25 23:44:20,835 log "GET /send-email/ HTTP/1.1" 500 123650
+INFO 2026-05-25 23:45:14,609 autoreload Watching for file changes with StatReloader
+INFO 2026-05-25 23:45:21,863 log "GET /send-email/ HTTP/1.1" 200 23

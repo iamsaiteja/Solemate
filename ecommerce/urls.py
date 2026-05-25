@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .views import google_callback   
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.http import JsonResponse
-
+from .views import send_test_email
 
 def home(request):
     return HttpResponse("Backend is running")
@@ -19,6 +19,7 @@ def health_check(request):
 
 
 urlpatterns = [
+    path('send-email/', send_test_email),
     
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

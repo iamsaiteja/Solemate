@@ -1,8 +1,22 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from pathlib import Path
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 load_dotenv()
+
+sentry_sdk.init(
+    dsn="https://e57ec843bb8d9ab5fcf43f3d971e2f0d@o4511451689320448.ingest.us.sentry.io/4511451787952128",
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +61,9 @@ INSTALLED_APPS = [
     'apps.sellers',
     'apps.coupons',
     'drf_spectacular',
+    
+    'cloudinary',
+    'cloudinary_storage',
     
 ]
 
@@ -265,7 +282,7 @@ CACHES = {
     }
 }
 
-INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
+
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -274,3 +291,12 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
