@@ -1,115 +1,521 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../utils/api';
 
 function Login() {
-  const [form, setForm] = useState({ username: '', password: '' });
+
+  const [form, setForm] = useState({
+    username: '',
+    password: ''
+  });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // ================= GOOGLE LOGIN TOKEN HANDLER =================
+  useEffect(() => {
+
+    const params = new URLSearchParams(location.search);
+
+    const access = params.get('access');
+    const refresh = params.get('refresh');
+
+    if (access && refresh) {
+
+      // save tokens
+      localStorage.setItem('access', access);
+      localStorage.setItem('refresh', refresh);
+
+      // redirect after login
+      navigate('/products');
+    }
+
+  }, [location, navigate]);
+
+  // ================= NORMAL LOGIN =================
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
     setLoading(true);
     setError('');
+
     try {
+
       const res = await API.post('/auth/login/', form);
+
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
+
       navigate('/products');
+
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+
+      setError(
+        err.response?.data?.error || 'Login failed'
+      );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: "'DM Sans', sans-serif" }}>
+  // ================= GOOGLE LOGIN =================
+  const handleGoogleLogin = () => {
 
-      <div style={{
-        flex: '1.2', background: '#0a0a0a',
-        display: 'flex', flexDirection: 'column',
-        justifyContent: 'space-between', padding: '44px',
-        position: 'relative', overflow: 'hidden'
-      }}>
-        <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '260px', height: '260px', borderRadius: '50%', background: '#e8ff3b', opacity: '0.06' }} />
-        <div style={{ position: 'absolute', bottom: '-60px', left: '-40px', width: '200px', height: '200px', borderRadius: '50%', background: '#e8ff3b', opacity: '0.04' }} />
+    window.location.href =
+      'http://127.0.0.1:8000/accounts/google/login/';
+  };
+
+  return (
+
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        fontFamily: "'DM Sans', sans-serif"
+      }}
+    >
+
+      {/* LEFT PANEL */}
+      <div
+        style={{
+          flex: '1.2',
+          background: '#0a0a0a',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '44px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+
+        <div
+          style={{
+            position: 'absolute',
+            top: '-80px',
+            right: '-80px',
+            width: '260px',
+            height: '260px',
+            borderRadius: '50%',
+            background: '#e8ff3b',
+            opacity: '0.06'
+          }}
+        />
+
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-60px',
+            left: '-40px',
+            width: '200px',
+            height: '200px',
+            borderRadius: '50%',
+            background: '#e8ff3b',
+            opacity: '0.04'
+          }}
+        />
 
         <div>
-          <div style={{ fontSize: '32px', fontWeight: '700', color: '#e8ff3b', letterSpacing: '4px' }}>
-            SOLE<span style={{ color: '#fff' }}>MATE</span>
+
+          <div
+            style={{
+              fontSize: '32px',
+              fontWeight: '700',
+              color: '#e8ff3b',
+              letterSpacing: '4px'
+            }}
+          >
+            SOLE
+            <span style={{ color: '#fff' }}>
+              MATE
+            </span>
           </div>
-          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', letterSpacing: '2px', marginTop: '4px' }}>
+
+          <div
+            style={{
+              color: 'rgba(255,255,255,0.35)',
+              fontSize: '11px',
+              letterSpacing: '2px',
+              marginTop: '4px'
+            }}
+          >
             PREMIUM SNEAKERS
           </div>
+
         </div>
 
         <div>
-          <div style={{ fontSize: '48px', fontWeight: '700', color: '#fff', lineHeight: '1.1', marginBottom: '16px' }}>
-            STEP<br /><span style={{ color: '#e8ff3b' }}>INTO</span><br />YOUR<br />STYLE.
+
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: '700',
+              color: '#fff',
+              lineHeight: '1.1',
+              marginBottom: '16px'
+            }}
+          >
+            STEP
+            <br />
+
+            <span style={{ color: '#e8ff3b' }}>
+              INTO
+            </span>
+
+            <br />
+
+            YOUR
+            <br />
+            STYLE.
           </div>
-          <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>
+
+          <div
+            style={{
+              color: 'rgba(255,255,255,0.4)',
+              fontSize: '13px'
+            }}
+          >
             10K+ customers. 500+ drops. Zero fakes.
           </div>
+
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
-          {[['10K+', 'Customers'], ['500+', 'Products'], ['24/7', 'Support']].map(([num, label]) => (
-            <div key={label} style={{ border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '12px 18px', textAlign: 'center' }}>
-              <div style={{ color: '#e8ff3b', fontSize: '18px', fontWeight: '700' }}>{num}</div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', marginTop: '2px' }}>{label}</div>
+
+          {[
+            ['10K+', 'Customers'],
+            ['500+', 'Products'],
+            ['24/7', 'Support']
+          ].map(([num, label]) => (
+
+            <div
+              key={label}
+              style={{
+                border:
+                  '0.5px solid rgba(255,255,255,0.15)',
+                borderRadius: '10px',
+                padding: '12px 18px',
+                textAlign: 'center'
+              }}
+            >
+
+              <div
+                style={{
+                  color: '#e8ff3b',
+                  fontSize: '18px',
+                  fontWeight: '700'
+                }}
+              >
+                {num}
+              </div>
+
+              <div
+                style={{
+                  color: 'rgba(255,255,255,0.4)',
+                  fontSize: '11px',
+                  marginTop: '2px'
+                }}
+              >
+                {label}
+              </div>
+
             </div>
+
           ))}
+
         </div>
+
       </div>
 
-      <div style={{
-        flex: '1', background: '#fff',
-        display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', padding: '48px 40px'
-      }}>
-        <div style={{ width: '40px', height: '4px', background: '#e8ff3b', borderRadius: '2px', marginBottom: '24px' }} />
-        <div style={{ fontSize: '26px', fontWeight: '700', color: '#0a0a0a', marginBottom: '4px' }}>Welcome back</div>
-        <div style={{ fontSize: '13px', color: '#888', marginBottom: '32px' }}>Login to continue shopping</div>
+      {/* RIGHT PANEL */}
+      <div
+        style={{
+          flex: '1',
+          background: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '48px 40px'
+        }}
+      >
 
-        {error && <p style={{ color: 'red', marginBottom: '12px', fontSize: '13px' }}>{error}</p>}
+        <div
+          style={{
+            width: '40px',
+            height: '4px',
+            background: '#e8ff3b',
+            borderRadius: '2px',
+            marginBottom: '24px'
+          }}
+        />
 
+        <div
+          style={{
+            fontSize: '26px',
+            fontWeight: '700',
+            color: '#0a0a0a',
+            marginBottom: '4px'
+          }}
+        >
+          Welcome back
+        </div>
+
+        <div
+          style={{
+            fontSize: '13px',
+            color: '#888',
+            marginBottom: '32px'
+          }}
+        >
+          Login to continue shopping
+        </div>
+
+        {error && (
+
+          <p
+            style={{
+              color: 'red',
+              marginBottom: '12px',
+              fontSize: '13px'
+            }}
+          >
+            {error}
+          </p>
+
+        )}
+
+        {/* GOOGLE LOGIN BUTTON */}
+        <button
+
+          onClick={handleGoogleLogin}
+
+          style={{
+            width: '100%',
+            padding: '13px',
+            background: '#fff',
+            border: '1.5px solid #e0e0e0',
+            borderRadius: '8px',
+            fontWeight: '600',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            marginBottom: '16px',
+            color: '#333',
+            transition: 'border-color 0.2s'
+          }}
+
+          onMouseEnter={(e) =>
+            e.currentTarget.style.borderColor = '#0a0a0a'
+          }
+
+          onMouseLeave={(e) =>
+            e.currentTarget.style.borderColor = '#e0e0e0'
+          }
+        >
+
+          <svg width="18" height="18" viewBox="0 0 48 48">
+
+            <path
+              fill="#FFC107"
+              d="M43.6 20H24v8h11.3C33.7 33.3 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.7 6.5 29.1 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z"
+            />
+
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.5 16 19 13 24 13c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.7 6.5 29.1 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
+            />
+
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.2 0 9.9-1.8 13.5-4.8l-6.2-5.2C29.4 35.6 26.8 36.5 24 36.5c-5.3 0-9.8-3.6-11.4-8.5l-6.6 5.1C9.5 39.5 16.3 44 24 44z"
+            />
+
+            <path
+              fill="#1976D2"
+              d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.5-4.6 5.9l6.2 5.2C40.8 35.4 44 30.1 44 24c0-1.3-.1-2.7-.4-4z"
+            />
+
+          </svg>
+
+          Continue with Google
+
+        </button>
+
+        {/* DIVIDER */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            marginBottom: '16px'
+          }}
+        >
+
+          <div
+            style={{
+              flex: 1,
+              height: '1px',
+              background: '#eee'
+            }}
+          />
+
+          <span
+            style={{
+              fontSize: '12px',
+              color: '#aaa'
+            }}
+          >
+            or login with username
+          </span>
+
+          <div
+            style={{
+              flex: 1,
+              height: '1px',
+              background: '#eee'
+            }}
+          />
+
+        </div>
+
+        {/* USERNAME */}
         <div style={{ marginBottom: '16px' }}>
-          <div style={{ fontSize: '11px', fontWeight: '600', color: '#0a0a0a', letterSpacing: '1px', marginBottom: '8px' }}>USERNAME</div>
+
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#0a0a0a',
+              letterSpacing: '1px',
+              marginBottom: '8px'
+            }}
+          >
+            USERNAME
+          </div>
+
           <input
             type="text"
             placeholder="Enter your username"
             value={form.username}
-            onChange={e => setForm({ ...form, username: e.target.value })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                username: e.target.value
+              })
+            }
             required
-            style={{ width: '100%', background: '#f8f8f8', border: '1.5px solid #eee', borderRadius: '8px', padding: '12px 16px', fontSize: '14px', color: '#0a0a0a', outline: 'none' }}
+            style={{
+              width: '100%',
+              background: '#f8f8f8',
+              border: '1.5px solid #eee',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              fontSize: '14px',
+              color: '#0a0a0a',
+              outline: 'none',
+              boxSizing: 'border-box'
+            }}
           />
+
         </div>
 
+        {/* PASSWORD */}
         <div style={{ marginBottom: '28px' }}>
-          <div style={{ fontSize: '11px', fontWeight: '600', color: '#0a0a0a', letterSpacing: '1px', marginBottom: '8px' }}>PASSWORD</div>
+
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#0a0a0a',
+              letterSpacing: '1px',
+              marginBottom: '8px'
+            }}
+          >
+            PASSWORD
+          </div>
+
           <input
             type="password"
             placeholder="Enter your password"
             value={form.password}
-            onChange={e => setForm({ ...form, password: e.target.value })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                password: e.target.value
+              })
+            }
             required
-            style={{ width: '100%', background: '#f8f8f8', border: '1.5px solid #eee', borderRadius: '8px', padding: '12px 16px', fontSize: '14px', color: '#0a0a0a', outline: 'none' }}
+            style={{
+              width: '100%',
+              background: '#f8f8f8',
+              border: '1.5px solid #eee',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              fontSize: '14px',
+              color: '#0a0a0a',
+              outline: 'none',
+              boxSizing: 'border-box'
+            }}
           />
+
         </div>
 
+        {/* LOGIN BUTTON */}
         <button
           onClick={handleSubmit}
           disabled={loading}
-          style={{ width: '100%', padding: '14px', background: '#0a0a0a', color: '#e8ff3b', border: 'none', borderRadius: '8px', fontWeight: '700', fontSize: '14px', letterSpacing: '1px', cursor: 'pointer' }}
+          style={{
+            width: '100%',
+            padding: '14px',
+            background: '#0a0a0a',
+            color: '#e8ff3b',
+            border: 'none',
+            borderRadius: '8px',
+            fontWeight: '700',
+            fontSize: '14px',
+            letterSpacing: '1px',
+            cursor: 'pointer'
+          }}
         >
+
           {loading ? 'LOADING...' : 'LOGIN'}
+
         </button>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: '#888' }}>
-          New here? <Link to="/register" style={{ color: '#0a0a0a', fontWeight: '700', textDecoration: 'underline' }}>Create account</Link>
+        <p
+          style={{
+            textAlign: 'center',
+            marginTop: '20px',
+            fontSize: '13px',
+            color: '#888'
+          }}
+        >
+
+          New here?
+
+          <Link
+            to="/register"
+            style={{
+              color: '#0a0a0a',
+              fontWeight: '700',
+              textDecoration: 'underline'
+            }}
+          >
+            Create account
+          </Link>
+
         </p>
+
       </div>
 
     </div>

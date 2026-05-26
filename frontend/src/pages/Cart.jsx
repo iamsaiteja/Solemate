@@ -7,6 +7,7 @@ function Cart() {
   const [form, setForm] = useState({ shipping_address: '', phone: '' });
   const [placing, setPlacing] = useState(false);
   const [step, setStep] = useState('cart');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
   const fetchCart = async () => {
     try {
@@ -40,22 +41,31 @@ function Cart() {
     if (!form.shipping_address.trim()) { alert('Enter shipping address'); return; }
     setPlacing(true);
     try {
-      const res = await API.post('/orders/create/', form);
-      const { razorpay_order_id, amount, key, name, email } = res.data;
-      const options = {
-        key, amount, currency: 'INR', name: 'SoleMate',
-        order_id: razorpay_order_id,
-        handler: async (response) => {
-          await API.post('/orders/verify-payment/', response);
-          alert('Payment successful!');
-          fetchCart();
-          setStep('cart');
-        },
-        prefill: { name: name || "", email: email || "", contact: form.phone || "" },
-        theme: { color: '#1a1a1a' },
-      };
-      if (window.Razorpay) { new window.Razorpay(options).open(); }
-      else { alert("Payment SDK not loaded"); }
+      if (paymentMethod === 'cod') {
+        // COD — directly place order
+        await API.post('/orders/create-cod/', form);
+        alert('Order placed! Pay on delivery 🎉');
+        fetchCart();
+        setStep('cart');
+      } else {
+        // Razorpay existing flow
+        const res = await API.post('/orders/create/', form);
+        const { razorpay_order_id, amount, key, name, email } = res.data;
+        const options = {
+          key, amount, currency: 'INR', name: 'SoleMate',
+          order_id: razorpay_order_id,
+          handler: async (response) => {
+            await API.post('/orders/verify-payment/', response);
+            alert('Payment successful!');
+            fetchCart();
+            setStep('cart');
+          },
+          prefill: { name: name || "", email: email || "", contact: form.phone || "" },
+          theme: { color: '#1a1a1a' },
+        };
+        if (window.Razorpay) { new window.Razorpay(options).open(); }
+        else { alert("Payment SDK not loaded"); }
+      }
     } catch (err) {
       alert(err.response?.data?.error || 'Checkout failed');
     } finally { setPlacing(false); }
@@ -172,6 +182,8 @@ function Cart() {
               </button>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px' }}>
+
+                {/* Shipping Address */}
                 <input
                   placeholder="Shipping Address"
                   value={form.shipping_address}
@@ -182,6 +194,8 @@ function Cart() {
                     color: '#1a1a1a', fontSize: '14px', outline: 'none'
                   }}
                 />
+
+                {/* Phone Number */}
                 <input
                   placeholder="Phone Number"
                   value={form.phone}
@@ -192,14 +206,65 @@ function Cart() {
                     color: '#1a1a1a', fontSize: '14px', outline: 'none'
                   }}
                 />
+
+                {/* Payment Method Selection */}
+                <p style={{ margin: '4px 0 0', fontWeight: '700', fontSize: '14px', color: '#555' }}>
+                  Select Payment Method:
+                </p>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={() => setPaymentMethod('razorpay')}
+                    style={{
+                      flex: 1, padding: '12px',
+                      background: paymentMethod === 'razorpay' ? '#1a1a1a' : '#f5f5f5',
+                      color: paymentMethod === 'razorpay' ? '#e8ff3b' : '#888',
+                      border: paymentMethod === 'razorpay' ? '2px solid #1a1a1a' : '1px solid #e0e0e0',
+                      borderRadius: '8px', fontWeight: '700',
+                      cursor: 'pointer', fontSize: '14px'
+                    }}>
+                    💳 Pay Online
+                  </button>
+                  <button
+                    onClick={() => setPaymentMethod('cod')}
+                    style={{
+                      flex: 1, padding: '12px',
+                      background: paymentMethod === 'cod' ? '#1a1a1a' : '#f5f5f5',
+                      color: paymentMethod === 'cod' ? '#e8ff3b' : '#888',
+                      border: paymentMethod === 'cod' ? '2px solid #1a1a1a' : '1px solid #e0e0e0',
+                      borderRadius: '8px', fontWeight: '700',
+                      cursor: 'pointer', fontSize: '14px'
+                    }}>
+                    🚚 Cash on Delivery
+                  </button>
+                </div>
+
+                {/* COD info message */}
+                {paymentMethod === 'cod' && (
+                  <div style={{
+                    padding: '10px 14px', background: '#fffde7',
+                    border: '1px solid #fff176', borderRadius: '8px',
+                    fontSize: '13px', color: '#795548'
+                  }}>
+                    💡 Pay in cash when your order is delivered.
+                  </div>
+                )}
+
+                {/* Place Order / Pay Now Button */}
                 <button onClick={handleCheckout} disabled={placing} style={{
                   padding: '13px', background: placing ? '#ccc' : '#1a1a1a',
                   border: 'none', borderRadius: '8px',
                   fontWeight: '700', fontSize: '15px',
-                  cursor: 'pointer', color: '#e8ff3b'
+                  cursor: placing ? 'not-allowed' : 'pointer',
+                  color: '#e8ff3b'
                 }}>
-                  {placing ? "Processing..." : "Pay Now"}
+                  {placing
+                    ? "Processing..."
+                    : paymentMethod === 'cod'
+                      ? "🚚 Place Order (Cash on Delivery)"
+                      : "💳 Pay Now"}
                 </button>
+
+                {/* Back button */}
                 <button onClick={() => setStep('cart')} style={{
                   padding: '11px', background: 'transparent',
                   border: '1px solid #e0e0e0', borderRadius: '8px',
@@ -207,6 +272,7 @@ function Cart() {
                 }}>
                   ← Back to Cart
                 </button>
+
               </div>
             )}
           </div>

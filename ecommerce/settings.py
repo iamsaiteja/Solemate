@@ -5,11 +5,14 @@ from pathlib import Path
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+import logging
 
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 load_dotenv()
+
+logging.basicConfig(level=logging.DEBUG)
 
 sentry_sdk.init(
     dsn="https://e57ec843bb8d9ab5fcf43f3d971e2f0d@o4511451689320448.ingest.us.sentry.io/4511451787952128",
@@ -188,9 +191,14 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
+    'google': {
+        'APP': {
+            'client_id': '746873785598-pihaf619h7icclsb01vrvv093ik5momp.apps.googleusercontent.com',   # from Google Console
+            'secret': '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',  # from Google Console
+            'key': ''
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
     }
 }
 
@@ -207,7 +215,7 @@ LOGOUT_REDIRECT_URL = "https://solemate01.vercel.app"
 
 
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

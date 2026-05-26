@@ -278,3 +278,590 @@ smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepte
 ERROR 2026-05-25 23:44:20,835 log "GET /send-email/ HTTP/1.1" 500 123650
 INFO 2026-05-25 23:45:14,609 autoreload Watching for file changes with StatReloader
 INFO 2026-05-25 23:45:21,863 log "GET /send-email/ HTTP/1.1" 200 23
+INFO 2026-05-26 16:34:02,455 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 16:34:06,215 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 16:34:13,338 log "GET /admin/ HTTP/1.1" 302 0
+INFO 2026-05-26 16:34:13,429 log "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4084
+INFO 2026-05-26 16:34:13,444 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,449 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,454 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,455 log "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,460 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,463 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:13,468 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,609 log "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4255
+INFO 2026-05-26 16:34:25,642 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,643 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,643 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,644 log "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,644 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,645 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:25,649 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,648 log "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2026-05-26 16:34:35,734 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-26 16:34:35,756 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,760 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,764 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,764 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,764 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,765 log "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2026-05-26 16:34:35,775 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:34:35,792 log "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+INFO 2026-05-26 16:34:35,792 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+ERROR 2026-05-26 16:35:02,534 log Internal Server Error: /accounts/google/login/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 112, in view
+    return self.dispatch(  # type:ignore[attr-defined]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        request, *args, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\base\views.py", line 19, in dispatch
+    provider = self.get_provider()
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 123, in get_provider
+    return self.adapter.get_provider()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 50, in get_provider
+    return get_adapter(self.request).get_provider(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.request, provider=self.provider_id
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 228, in get_provider
+    app = self.get_app(request, provider=provider, client_id=client_id)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 320, in get_app
+    raise SocialApp.DoesNotExist()
+allauth.socialaccount.models.SocialApp.DoesNotExist
+ERROR 2026-05-26 16:35:02,550 log "GET /accounts/google/login/ HTTP/1.1" 500 107212
+WARNING 2026-05-26 16:35:02,666 log Not Found: /favicon.ico
+WARNING 2026-05-26 16:35:02,760 log "GET /favicon.ico HTTP/1.1" 404 4127
+INFO 2026-05-26 16:35:39,312 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 16:35:56,165 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 16:36:01,054 log "GET /admin HTTP/1.1" 301 0
+INFO 2026-05-26 16:36:01,199 log "GET /admin/ HTTP/1.1" 200 22213
+INFO 2026-05-26 16:36:01,236 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 3538
+INFO 2026-05-26 16:36:01,249 log "GET /static/admin/css/base.css HTTP/1.1" 200 23100
+INFO 2026-05-26 16:36:01,249 log "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2026-05-26 16:36:01,251 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2026-05-26 16:36:01,280 log "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2026-05-26 16:36:01,281 log "GET /static/admin/css/responsive.css HTTP/1.1" 200 16273
+INFO 2026-05-26 16:36:01,287 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2026-05-26 16:36:01,307 log "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+INFO 2026-05-26 16:36:01,307 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+INFO 2026-05-26 16:37:38,171 log "GET /admin/sites/site/ HTTP/1.1" 200 22513
+INFO 2026-05-26 16:37:38,218 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,235 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,242 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,243 log "GET /static/admin/css/changelists.css HTTP/1.1" 200 7498
+INFO 2026-05-26 16:37:38,254 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,269 log "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2026-05-26 16:37:38,287 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2026-05-26 16:37:38,303 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2026-05-26 16:37:38,313 log "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2026-05-26 16:37:38,314 log "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2026-05-26 16:37:38,330 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,331 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2026-05-26 16:37:38,340 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:37:38,360 log "GET /static/admin/img/search.svg HTTP/1.1" 200 607
+INFO 2026-05-26 16:37:38,374 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2026-05-26 16:37:38,387 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:38,412 log "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2026-05-26 16:37:38,567 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2026-05-26 16:37:38,620 log "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 593
+INFO 2026-05-26 16:37:38,627 log "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1761
+INFO 2026-05-26 16:37:43,360 log "GET /admin/sites/site/add/ HTTP/1.1" 200 21593
+INFO 2026-05-26 16:37:43,419 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,420 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,420 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,426 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,454 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,455 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,468 log "GET /static/admin/css/forms.css HTTP/1.1" 200 8817
+INFO 2026-05-26 16:37:43,468 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,473 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,481 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,502 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,504 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,517 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,523 log "GET /static/admin/css/widgets.css HTTP/1.1" 200 11811
+INFO 2026-05-26 16:37:43,524 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,527 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:37:43,539 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:43,562 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2026-05-26 16:37:43,569 log "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2026-05-26 16:37:54,399 log "POST /admin/sites/site/add/ HTTP/1.1" 302 0
+INFO 2026-05-26 16:37:54,537 log "GET /admin/sites/site/ HTTP/1.1" 200 23024
+INFO 2026-05-26 16:37:54,614 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,615 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,615 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,617 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,618 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,629 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,652 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,653 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,654 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,679 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,680 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,697 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,702 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,703 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,705 log "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,718 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:37:54,718 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,730 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:54,763 log "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 558
+INFO 2026-05-26 16:37:57,100 log "GET /admin/sites/site/2/change/ HTTP/1.1" 200 21874
+INFO 2026-05-26 16:37:57,161 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,172 log "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,173 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,177 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,182 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,184 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,201 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,204 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,214 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,232 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,250 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,253 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,257 log "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,268 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,280 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:37:57,281 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,283 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,297 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:57,301 log "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:37:58,602 log "GET /admin/sites/site/ HTTP/1.1" 200 22823
+INFO 2026-05-26 16:38:08,405 log "GET /admin/sites/site/add/ HTTP/1.1" 200 21593
+INFO 2026-05-26 16:38:09,464 log "GET /admin/sites/site/ HTTP/1.1" 200 22823
+INFO 2026-05-26 16:38:10,255 log "GET /admin/ HTTP/1.1" 200 22593
+INFO 2026-05-26 16:38:13,986 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 20503
+INFO 2026-05-26 16:38:14,051 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,051 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,052 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,053 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,054 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,085 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,092 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,113 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,121 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,124 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,126 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,130 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,147 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,149 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,150 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:38:14,173 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:14,179 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,294 log "GET /admin/socialaccount/socialapp/add/ HTTP/1.1" 200 27217
+INFO 2026-05-26 16:38:16,356 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,361 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,361 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,362 log "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,383 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,399 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,401 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,403 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,408 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,430 log "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,440 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,454 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,465 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,470 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,475 log "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2026-05-26 16:38:16,489 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,495 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:38:16,496 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,503 log "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 16428
+INFO 2026-05-26 16:38:16,527 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,528 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,528 log "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,546 log "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:38:16,564 log "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 2387
+INFO 2026-05-26 16:40:33,121 log "POST /admin/socialaccount/socialapp/add/ HTTP/1.1" 200 27573
+INFO 2026-05-26 16:40:33,177 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,195 log "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,195 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,195 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,200 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,201 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,223 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,225 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,238 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,250 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,261 log "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,263 log "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,263 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,286 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,291 log "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,302 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,306 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,308 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,319 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:40:33,333 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,335 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,347 log "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,380 log "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:33,380 log "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,632 log "POST /admin/socialaccount/socialapp/add/ HTTP/1.1" 302 0
+INFO 2026-05-26 16:40:40,776 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 22209
+INFO 2026-05-26 16:40:40,846 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,847 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,847 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,848 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,848 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,875 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,891 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,893 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,907 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,911 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,914 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,921 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,939 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,940 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,941 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 16:40:40,955 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,960 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 16:40:40,973 log "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+ERROR 2026-05-26 16:41:17,116 log Internal Server Error: /accounts/google/login/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 112, in view
+    return self.dispatch(  # type:ignore[attr-defined]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        request, *args, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\base\views.py", line 19, in dispatch
+    provider = self.get_provider()
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 123, in get_provider
+    return self.adapter.get_provider()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 50, in get_provider
+    return get_adapter(self.request).get_provider(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.request, provider=self.provider_id
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 228, in get_provider
+    app = self.get_app(request, provider=provider, client_id=client_id)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 320, in get_app
+    raise SocialApp.DoesNotExist()
+allauth.socialaccount.models.SocialApp.DoesNotExist
+ERROR 2026-05-26 16:41:17,127 log "GET /accounts/google/login/ HTTP/1.1" 500 107212
+WARNING 2026-05-26 16:41:17,243 log Not Found: /favicon.ico
+WARNING 2026-05-26 16:41:17,326 log "GET /favicon.ico HTTP/1.1" 404 4127
+INFO 2026-05-26 17:20:58,640 log "GET /admin/socialaccount/socialapp/add/ HTTP/1.1" 200 27217
+INFO 2026-05-26 17:21:02,356 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 21983
+INFO 2026-05-26 17:21:03,520 log "GET /admin/ HTTP/1.1" 200 22965
+INFO 2026-05-26 17:21:06,278 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 21983
+INFO 2026-05-26 17:21:06,340 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,342 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,364 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,373 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,374 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,382 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,386 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,397 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,422 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,422 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,422 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,431 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,444 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,446 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,457 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:06,471 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:21:06,472 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,390 log "GET /admin/socialaccount/socialapp/1/change/ HTTP/1.1" 200 27614
+INFO 2026-05-26 17:21:08,447 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,454 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,459 log "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,459 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,462 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,484 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,484 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,488 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,509 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,516 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,521 log "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,541 log "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,547 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,547 log "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,566 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:21:08,571 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,572 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,573 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,583 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,596 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,597 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,597 log "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,616 log "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:08,617 log "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,144 log "POST /admin/socialaccount/socialapp/1/change/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:21:26,395 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 22211
+INFO 2026-05-26 17:21:26,470 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,470 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,470 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,472 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,486 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,507 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,507 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,518 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,519 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,527 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,531 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,550 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,551 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,552 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,569 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:21:26,572 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,582 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:26,596 log "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:21:34,609 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+WARNING 2026-05-26 17:23:15,383 log Unauthorized: /accounts/google/login/callback/
+WARNING 2026-05-26 17:23:15,389 log "GET /accounts/google/login/callback/ HTTP/1.1" 401 1684
+INFO 2026-05-26 17:24:21,864 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:24:24,228 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:25:36,984 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:25:38,884 autoreload Watching for file changes with StatReloader
+ERROR 2026-05-26 17:25:49,569 log Internal Server Error: /accounts/google/login/
+Traceback (most recent call last):
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\ecommerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\sentry_sdk\integrations\django\views.py", line 87, in sentry_wrapped_callback
+    return callback(request, *args, **kwargs)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 112, in view
+    return self.dispatch(  # type:ignore[attr-defined]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        request, *args, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\base\views.py", line 19, in dispatch
+    provider = self.get_provider()
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 123, in get_provider
+    return self.adapter.get_provider()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\providers\oauth2\views.py", line 50, in get_provider
+    return get_adapter(self.request).get_provider(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.request, provider=self.provider_id
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 228, in get_provider
+    app = self.get_app(request, provider=provider, client_id=client_id)
+  File "D:\ecommerce\.venv\Lib\site-packages\allauth\socialaccount\adapter.py", line 317, in get_app
+    raise MultipleObjectsReturned
+django.core.exceptions.MultipleObjectsReturned
+ERROR 2026-05-26 17:25:49,585 log "GET /accounts/google/login/ HTTP/1.1" 500 107847
+WARNING 2026-05-26 17:25:49,756 log Not Found: /favicon.ico
+WARNING 2026-05-26 17:25:49,850 log "GET /favicon.ico HTTP/1.1" 404 4127
+INFO 2026-05-26 17:27:30,074 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 21983
+INFO 2026-05-26 17:27:30,131 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,137 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,144 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,164 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,171 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,183 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,187 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,188 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,202 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,205 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,224 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,227 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,232 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,239 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,258 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,268 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:27:30,274 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,324 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:30,329 log "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,472 log "GET /admin/socialaccount/socialapp/1/change/ HTTP/1.1" 200 27632
+INFO 2026-05-26 17:27:32,531 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,537 log "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,539 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,542 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,549 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,565 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,579 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,580 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,582 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,598 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,604 log "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,605 log "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,622 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,638 log "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,657 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,658 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,660 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:27:32,664 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,666 log "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,684 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,696 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,701 log "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,733 log "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:32,733 log "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,648 log "GET /admin/socialaccount/socialapp/1/delete/ HTTP/1.1" 200 20406
+INFO 2026-05-26 17:27:35,710 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,713 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,714 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,717 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,722 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,726 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,741 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,744 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,770 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,771 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,772 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,773 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,773 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,792 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:35,826 log "GET /static/admin/js/cancel.js HTTP/1.1" 200 884
+INFO 2026-05-26 17:27:38,958 log "POST /admin/socialaccount/socialapp/1/delete/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:27:39,189 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 20676
+INFO 2026-05-26 17:27:39,242 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,251 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,262 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,265 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,267 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,287 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,287 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,301 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,314 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,316 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,320 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,334 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,336 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,340 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,355 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:27:39,357 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,365 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:39,376 log "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,540 log "GET /admin/socialaccount/socialapp/ HTTP/1.1" 200 20503
+INFO 2026-05-26 17:27:41,611 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,611 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,612 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,612 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,612 log "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,635 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,640 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,660 log "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,672 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,678 log "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,680 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,693 log "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,695 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,703 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,714 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-05-26 17:27:41,724 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:41,731 log "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:27:46,912 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:28:17,674 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:28:21,318 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 17:28:39,830 log "GET / HTTP/1.1" 200 18
+WARNING 2026-05-26 17:28:39,932 log Not Found: /favicon.ico
+WARNING 2026-05-26 17:28:40,013 log "GET /favicon.ico HTTP/1.1" 404 4127
+INFO 2026-05-26 17:28:44,855 log "GET /admin HTTP/1.1" 301 0
+INFO 2026-05-26 17:28:45,101 log "GET /admin/ HTTP/1.1" 200 23664
+INFO 2026-05-26 17:28:45,140 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,140 log "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,142 log "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,164 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,168 log "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,169 log "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,177 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,201 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,202 log "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2026-05-26 17:28:45,221 log "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 689
+INFO 2026-05-26 17:29:09,986 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+WARNING 2026-05-26 17:30:40,788 log Unauthorized: /accounts/google/login/callback/
+WARNING 2026-05-26 17:30:40,795 log "GET /accounts/google/login/callback/ HTTP/1.1" 401 1684
+WARNING 2026-05-26 17:36:46,528 log Unauthorized: /accounts/google/login/callback/
+WARNING 2026-05-26 17:36:46,534 log "GET /accounts/google/login/callback/ HTTP/1.1" 401 1684
+WARNING 2026-05-26 17:36:46,882 log Unauthorized: /accounts/google/login/callback/
+WARNING 2026-05-26 17:36:46,888 log "GET /accounts/google/login/callback/ HTTP/1.1" 401 1684
+INFO 2026-05-26 17:38:34,548 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:38:50,164 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:39:50,549 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:40:40,809 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:40:42,855 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:40:52,192 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:43:44,252 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:44:02,492 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:47:02,413 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:47:04,703 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:47:43,999 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:47:45,843 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:47:48,813 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 17:47:59,819 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:50:11,058 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:50:13,086 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:50:45,517 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:53:51,632 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:54:20,653 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:54:23,496 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:54:41,169 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 17:54:44,086 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:55:34,772 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 17:56:01,580 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:56:02,575 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 17:57:20,323 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:01:02,182 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 18:01:05,305 log "GET / HTTP/1.1" 200 18
+INFO 2026-05-26 18:01:32,018 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:01:33,158 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:03:03,611 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 18:03:06,793 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 18:03:25,382 autoreload D:\ecommerce\ecommerce\settings.py changed, reloading.
+INFO 2026-05-26 18:03:28,225 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 18:03:54,017 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:04:00,952 log "GET /users/auth/google/callback/?state=5Ndl6O0zU0JgSZY1&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM9vLItRve3u49TjXgVshgpLny6WDz1oPVY-NBRm0a9vROg3K695cWFYEYst-bytVA&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent HTTP/1.1" 302 0
+INFO 2026-05-26 18:04:19,297 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:04:23,530 log "GET /users/auth/google/callback/?state=DGv32Ftxe9JYJYPN&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM_u5WHc6LT3nhevgRlq9psvdEoz7qUQV9srtfCBJRfXznpcD92uGbB6glq01K49Fw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:05:26,757 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:05:30,410 log "GET /users/auth/google/callback/?state=TKUDz6qjfBdDCRWY&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM_UF2XV1sDnr5P1Lv19oQLNJ3XLCLAepa3ch3JniFr1WD6oxvGBHwgjtfGFRNhu3w&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:05:44,510 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:05:48,271 log "GET /users/auth/google/callback/?state=fdQfalHOjwFAiaow&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM9YqDOqcLFDtlK5lMjRkOdgo1iLl1SDb-7hwaYAUjozZyL-20HGcwtmnrLbns6_Kg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:11,102 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:15,191 log "GET /users/auth/google/callback/?state=pQBF70exFyY48INa&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM9DyKe5h-de0m0uNlHA-4jGEiyurSKNXAJBd1bFR-849oYUt-jPrqE3xQTHDAZ2tg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:20,246 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:24,092 log "GET /users/auth/google/callback/?state=ObwOWLOylW3u2x6k&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM-aXwiu8L7L0rRqCGBon4yXAsxuM6pOAZ3Pu94B5M2LjcTUa6n39_0crQ7Yn0YbCg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:49,455 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:10:53,111 log "GET /users/auth/google/callback/?state=feWRNQkC4oH6TpVj&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM-EYMsdlnfiVxjH2QiPH9rl8PRlvy-0LuErI9k2OS7vJ6HD6q0ftfTE37XU_3q7Vg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:11:04,650 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:12:03,840 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:12:15,040 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:12:18,501 log "GET /users/auth/google/callback/?state=LSmnf27FXs5TEht5&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM_dCqxqMZvnsT6EwwlulgZ3OcghCmZW3UPMBI1O818f4NhdrKyLGE00uWMt8g6O5w&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 18:13:04,019 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 18:13:11,162 log "GET /users/auth/google/callback/?state=fAsUkDUFqmoSrOnv&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM-h276hmT64sbhXJgNJw0CYAhdPzTsVGum3l17WzKmkTaX3btnCdt5kq5PHw_J3rA&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=1&prompt=consent HTTP/1.1" 302 0
+INFO 2026-05-26 18:13:42,717 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 21:26:54,233 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 21:28:32,055 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 21:28:35,857 log "GET /users/auth/google/callback/?state=BPVVL0cIFt0q4ja4&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM8YayBY8Zta-lfMBoBfTQA3gLiLpmE-iO6h0sGkIQL4tvYAfWww0e1-Y7j1GujQBg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 21:29:37,333 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 21:29:41,076 log "GET /users/auth/google/callback/?state=DFtDtA9LpkVBhW5Y&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM-czUUcJvboNiMtOOYqEtwjzgsbSeiHj9WDCSuezJ4VgvW8S16zBaHkbbrSNdkx-A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=1&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 23:28:35,252 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 23:28:53,372 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-05-26 23:28:56,580 log "GET /users/auth/google/callback/?state=h97cixcJUAyKp5At&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM-VG-gJghuuURYzUBqnu33PoKbey6rqMbgGQgy2rW1q5_4Yo_8mZEiXnV3uKOrGGg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-05-26 23:39:32,679 autoreload D:\ecommerce\apps\orders\views.py changed, reloading.
+INFO 2026-05-26 23:39:36,557 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 23:39:55,981 autoreload D:\ecommerce\apps\orders\views.py changed, reloading.
+INFO 2026-05-26 23:39:57,887 autoreload Watching for file changes with StatReloader
+INFO 2026-05-26 23:40:45,993 autoreload Watching for file changes with StatReloader

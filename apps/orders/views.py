@@ -86,7 +86,7 @@ def verify_payment(request):
         order.payment_status = 'paid'
         order.status = 'processing'
         order.save()
-        send_order_confirmation_email.delay(order.id)
+        #send_order_confirmation_email.delay(order.id)
         return Response({'message': 'Payment successful!', 'order_id': order.id})
     except Exception:
         return Response({'error': 'Payment verification failed'}, status=400)
@@ -116,3 +116,53 @@ def get_orders(request):
             ],
         })
     return Response(data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_cod_order(request):
+    shipping_address = request.data.get('shipping_address', '')
+    phone = request.data.get('phone', '')
+
+    try:
+        cart = Cart.objects.get(user=request.user)
+        cart_items = list(cart.items.select_related('product').all())
+
+        if not cart_items:
+            return Response({'error': 'Cart is empty'}, status=400)
+
+        total = sum(item.get_subtotal() for item in cart_items)
+
+        
+        order = Order.objects.create(
+            user=request.user,
+            total_amount=total,
+            shipping_address=shipping_address,
+            phone=phone,
+            payment_status='cod',
+            status='pending'
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                product_name=item.product.name,
+                quantity=item.quantity,
+                price=item.product.price,
+            )
+
+        
+        cart.items.all().delete()
+
+       
+        #send_order_confirmation_email.delay(order.id)
+
+        return Response({
+            'message': 'Order placed successfully!',
+            'order_id': order.id
+        })
+
+    except Cart.DoesNotExist:
+        return Response({'error': 'Cart not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
