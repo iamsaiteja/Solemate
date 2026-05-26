@@ -193,8 +193,8 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '746873785598-pihaf619h7icclsb01vrvv093ik5momp.apps.googleusercontent.com',   # from Google Console
-            'secret': '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',  # from Google Console
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
             'key': ''
         },
         'SCOPE': ['profile', 'email'],
