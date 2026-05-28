@@ -149,7 +149,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "https://solemate01.vercel.app",
     "https://ecommerce-django-umber.vercel.app",
-    "https://solemate-33tpuetc1-iamsaitejas-projects.vercel.app"
+    "https://solemate-33tpuetc1-iamsaitejas-projects.vercel.app",
+    'https://solemate.servecounterstrike.com',
+    'http://solemate.servecounterstrike.com',
 ]
 
 MEDIA_URL = '/media/'
