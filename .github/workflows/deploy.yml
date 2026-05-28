@@ -20,6 +20,7 @@ jobs:
 
           script: |
             sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Sai@1234Db';"
+            sudo -u postgres psql -c "CREATE DATABASE ecommerce_db;" || true
             cd /home/ubuntu/ecommerce-django
             git fetch origin main
             git reset --hard origin/main
