@@ -69,7 +69,7 @@ function Login() {
   const handleGoogleLogin = () => {
 
     window.location.href =
-      'http://127.0.0.1:8000/accounts/google/login/';
+      "https://solemate.servecounterstrike.com/accounts/google/login/";
   };
 
   return (
