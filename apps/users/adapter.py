@@ -1,6 +1,5 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from rest_framework_simplejwt.tokens import RefreshToken
-import os
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
@@ -14,12 +13,11 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         refresh = RefreshToken.for_user(user)
         access = str(refresh.access_token)
 
-        IS_PRODUCTION = os.environ.get('DJANGO_ENV') == 'production'
+        host = request.get_host()
 
-        base_url = (
-            "https://solemate01.vercel.app"
-            if IS_PRODUCTION
-            else "http://localhost:3000"
-        )
+        if "localhost" in host or "127.0.0.1" in host:
+            base_url = "http://localhost:3000"
+        else:
+            base_url = "https://solemate01.vercel.app"
 
         return f"{base_url}/login?access={access}&refresh={str(refresh)}"
