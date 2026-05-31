@@ -81,6 +81,6 @@ def google_login_callback(request):
     user = request.user
     if user.is_authenticated:
         tokens = get_tokens_for_user(user)
-        frontend_url = "https://solemate01.vercel.app/login"
+        frontend_url = "https://ecommerce-django-two.vercel.app/login"
         return redirect(f"{frontend_url}?access={tokens['access']}&refresh={tokens['refresh']}")
-    return redirect("https://solemate01.vercel.app/login")
+    return redirect("https://ecommerce-django-two.vercel.app/login")
