@@ -888,3 +888,28 @@ INFO 2026-05-31 11:50:59,123 log "GET /accounts/google/login/ HTTP/1.1" 302 0
 INFO 2026-05-31 11:51:02,767 log "GET /users/auth/google/callback/?state=BaDI5iYijqtczRfI&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM_YsOugLMgt9T5yzVn97QI3vjl_vcZZuXEJs8bAzcz0IJKNTHNNqKsrAqCUZzX2bw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none HTTP/1.1" 302 0
 INFO 2026-05-31 13:07:28,698 log "GET /accounts/google/login/ HTTP/1.1" 302 0
 INFO 2026-05-31 13:07:32,806 log "GET /users/auth/google/callback/?state=Fux1hHI92onUAeLk&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM_NKdGvu6aGmx5oN9ZMLU4mNtHLGXre4jSKIrHdxlacBnwRZtGAF4Kt2Icoq9MNjg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none HTTP/1.1" 302 0
+INFO 2026-06-01 02:45:39,698 autoreload Watching for file changes with StatReloader
+INFO 2026-06-01 02:45:52,795 log "GET /admin/products/product/ HTTP/1.1" 200 52199
+INFO 2026-06-01 02:45:52,834 log "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 3538
+INFO 2026-06-01 02:45:52,834 log "GET /static/admin/css/base.css HTTP/1.1" 200 23100
+INFO 2026-06-01 02:45:52,839 log "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2026-06-01 02:45:52,874 log "GET /static/admin/css/changelists.css HTTP/1.1" 200 7498
+INFO 2026-06-01 02:45:52,875 log "GET /static/admin/css/responsive.css HTTP/1.1" 200 16273
+INFO 2026-06-01 02:45:52,900 log "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2026-06-01 02:45:52,912 log "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2026-06-01 02:45:52,921 log "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2026-06-01 02:45:52,933 log "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2026-06-01 02:45:52,945 log "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2026-06-01 02:45:52,956 log "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2026-06-01 02:45:52,964 log "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2026-06-01 02:45:53,001 log "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2026-06-01 02:45:53,070 log "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2026-06-01 02:45:53,103 log "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2026-06-01 02:45:53,132 log "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2026-06-01 02:45:53,250 log "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2026-06-01 02:45:53,315 log "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+INFO 2026-06-01 02:45:53,319 log "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 593
+WARNING 2026-06-01 02:45:53,429 log Not Found: /favicon.ico
+WARNING 2026-06-01 02:45:53,517 log "GET /favicon.ico HTTP/1.1" 404 4127
+INFO 2026-06-01 02:47:20,149 log "GET /accounts/google/login/ HTTP/1.1" 302 0
+INFO 2026-06-01 02:47:24,115 log "GET /users/auth/google/callback/?state=gDpXsb06wPkDqNn2&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AeoWuM85UJK5VMks3tZw2dq7JwI8wnq1y0sI5MzlPDqyYBvzAAtT1JYYHWEIlHfwcSOL7g&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none HTTP/1.1" 302 0
