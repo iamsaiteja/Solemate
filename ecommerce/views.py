@@ -32,6 +32,6 @@ def google_callback(request):
     refresh_token = str(refresh)
 
     return redirect(
-        f"http://192.168.29.131:3000/login"
+        f"https://ecommerce-django-two.vercel.app/login"
         f"?access={access}&refresh={refresh_token}"
     )
