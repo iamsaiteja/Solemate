@@ -15,7 +15,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         host = request.get_host()
 
-        if "localhost" in host or "127.0.0.1" in host:
+        if "localhost" in host or "127.0.0.1" in host or "192.168" in host:
             base_url = "http://localhost:3000"
         else:
             base_url = "https://ecommerce-django-two.vercel.app"
