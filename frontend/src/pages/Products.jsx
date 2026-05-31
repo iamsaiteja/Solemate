@@ -394,16 +394,28 @@ function Products() {
   }, []);
 
   const handleSearch = async () => {
+    console.log("SEARCH CLICKED");
+
     if (!query.trim()) return;
+
     setAiLoading(true);
     setAiResult("");
+
     try {
-      const res = await API.post("/ai-search/", { query });
-      setAiResult(res.data.result);
-    } catch {
-      setAiResult("Something went wrong. Please try again.");
+        console.log("API CALL START");
+
+        const res = await API.post("/ai-search/", { query });
+
+        console.log("API RESPONSE", res);
+
+        setAiResult(res.data.result);
+    } catch (err) {
+        console.log("FULL ERROR", err);
+        console.log("ERROR RESPONSE", err.response);
+
+        setAiResult("Something went wrong. Please try again.");
     } finally {
-      setAiLoading(false);
+        setAiLoading(false);
     }
   };
 
