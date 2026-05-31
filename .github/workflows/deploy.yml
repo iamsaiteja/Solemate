@@ -26,7 +26,7 @@ jobs:
             git reset --hard origin/main
             source venv/bin/activate
             pip install -r requirements.txt
-            printf 'DB_NAME=ecommerce_db\nDB_USER=postgres\nDB_PASSWORD=Sai@1234Db\nDB_HOST=localhost\nDB_PORT=5432\nAWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}\nAWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}\nGOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}\nGOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}\n' > /home/ubuntu/ecommerce-django/.env
+            printf 'DB_NAME=ecommerce_db\nDB_USER=postgres\nDB_PASSWORD=Sai@1234Db\nDB_HOST=localhost\nDB_PORT=5432\nAWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}\nAWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}\nGOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}\nGOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}\nFRONTEND_URL=${{ secrets.FRONTEND_URL }}\n' > /home/ubuntu/ecommerce-django/.env
             python manage.py migrate
             printf '[Unit]\nDescription=gunicorn daemon\nAfter=network.target\n\n[Service]\nUser=ubuntu\nWorkingDirectory=/home/ubuntu/ecommerce-django\nEnvironmentFile=/home/ubuntu/ecommerce-django/.env\nExecStart=/home/ubuntu/ecommerce-django/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 ecommerce.wsgi:application\n\n[Install]\nWantedBy=multi-user.target\n' | sudo tee /etc/systemd/system/gunicorn.service
             sudo systemctl daemon-reload
