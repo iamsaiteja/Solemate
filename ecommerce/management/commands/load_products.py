@@ -44,7 +44,8 @@ class Command(BaseCommand):
                     price=row['price'],
                     stock=row['stock_quantity'],
                     category=category,
-                    is_active=row['is_active'] == 'True',
+                    image=row['image_url'],
+                    
                     is_featured=row['is_featured'] == 'True',
                 )
                 created_count += 1

@@ -25,7 +25,7 @@ def google_callback(request):
     user = request.user
 
     if not user.is_authenticated:
-        return redirect("https://solemate01.vercel.app/login")
+        return redirect("https://ecommerce-django-two.vercel.app/login")
 
     refresh = RefreshToken.for_user(user)
     access = str(refresh.access_token)
