@@ -1,114 +1,34 @@
-# 🛍️ SoleMate - Django E-Commerce Website
+# SoleMate 👟
 
-## Features
-- ✅ Multi-seller marketplace
-- ✅ Product listings with categories, search & filters
-- ✅ Shopping cart with coupon support
-- ✅ Razorpay payment integration
-- ✅ Order tracking with status updates
-- ✅ REST API (Django REST Framework)
-- ✅ Seller dashboard with sales analytics
-- ✅ Admin panel (Django built-in)
-- ✅ Modern Tailwind CSS UI
+> A full-stack multi-seller e-commerce marketplace built with Django + React. Razorpay payments, JWT authentication, Google OAuth, seller dashboards, and production deployment on AWS EC2.
+
+**🔗 Live Demo:** [solemate.servecounterstrike.com](https://solemate.servecounterstrike.com)
 
 ---
 
-## 🚀 Setup Instructions
+## ✨ Features
 
-### 1. Create Virtual Environment
-```bash
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-venv\Scripts\activate           # Windows
-```
+### 🛒 For Customers
+- Browse multi-seller catalog with categories, search, and filters
+- Shopping cart with coupon support
+- Secure Razorpay payment integration
+- Order tracking with real-time status updates
+- Product reviews and ratings
+- Google OAuth one-click login + email/password
+- Profile management with multiple addresses
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+### 🏪 For Sellers
+- Dedicated seller dashboard with sales analytics
+- Product management (create, update, archive)
+- Order fulfillment workflow
+- Approval-based onboarding (admin verification)
 
-### 3. Create `.env` File
-Create a `.env` file in project root:
-```
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=your_razorpay_secret
-```
-
-### 4. Run Migrations
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### 5. Create Superuser
-```bash
-python manage.py createsuperuser
-```
-
-### 6. Run Server
-```bash
-python manage.py runserver
-```
+### 🔐 For Admins
+- Django admin panel for full control
+- Seller approval workflow
+- Coupon and discount management
+- User and order moderation
 
 ---
 
-## 📱 API Endpoints
-
-| Method | URL | Description |
-|--------|-----|-------------|
-| POST | `/api/auth/login/` | Get auth token |
-| GET | `/api/products/` | List all products |
-| GET | `/api/products/?search=phone` | Search products |
-| GET | `/api/products/{slug}/` | Product detail |
-| GET | `/api/products/{slug}/reviews/` | Product reviews |
-| GET | `/api/categories/` | All categories |
-| GET | `/api/orders/` | My orders (auth required) |
-
-### API Authentication
-```bash
-# Get token
-curl -X POST /api/auth/login/ -d '{"email":"...", "password":"..."}'
-
-# Use token
-curl -H "Authorization: Token your_token" /api/orders/
-```
-
----
-
-## 🏗️ Project Structure
-```
-ecommerce/
-├── apps/
-│   ├── users/          # Auth, profiles, addresses
-│   ├── products/       # Products, categories, reviews
-│   ├── cart/           # Shopping cart
-│   ├── orders/         # Orders + Razorpay payment
-│   ├── sellers/        # Seller dashboard
-│   ├── coupons/        # Discount coupons
-│   └── api/            # REST API
-├── templates/          # HTML templates (Tailwind CSS)
-├── ecommerce/          # Django settings & URLs
-├── requirements.txt
-└── manage.py
-```
-
----
-
-## 💳 Razorpay Test Cards
-- Card: 4111 1111 1111 1111
-- CVV: Any 3 digits
-- Expiry: Any future date
-- OTP: 1234
-
----
-
-## 📝 Notes
-- Go to `/admin/` to manage products, users, coupons
-- Sellers need admin approval (`is_approved=True`) to sell
-- Set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `.env`
- 
- 
- deploye test
-
+## 🏗️ Architecture
