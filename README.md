@@ -41,7 +41,7 @@ Multi-vendor E-commerce Platform built using Django REST Framework and React.
 - Order fulfillment workflow
 - Approval-based onboarding (admin verification)
 
-### 🔐 For Admins
+// 🔐 For Admins //
 - Django admin panel for full control
 - Seller approval workflow
 - Coupon and discount management
@@ -49,7 +49,7 @@ Multi-vendor E-commerce Platform built using Django REST Framework and React.
 
 ---
 
-## 🏗️ Architecture
+// 🏗️ Architecture //
 ┌──────────────────┐        ┌──────────────────┐        ┌─────────────────┐
 
 │   React Frontend │ ─────► │  Django Backend  │ ─────► │   PostgreSQL    │
