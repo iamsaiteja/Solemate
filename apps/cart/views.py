@@ -16,7 +16,7 @@ def get_cart(request):
                 'id': item.product.id,
                 'name': item.product.name,
                 'price': str(item.product.price),
-                'image': request.build_absolute_uri(item.product.image.url) if item.product.image else None,
+                'image': None,
             },
             'quantity': item.quantity,
             'subtotal': str(item.get_subtotal()),
