@@ -3,29 +3,109 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const megaMenuData = {
   men: {
-    Featured: ["New Arrivals", "Bestsellers", "Shop All Sale", "All Conditions Gear"],
-    Shoes: ["All Shoes", "Lifestyle", "Jordan", "Running", "Basketball", "Gym & Training", "Tennis", "Skateboarding", "Sandals & Slides"],
-    Clothing: ["All Clothing", "Tops & T-Shirts", "Shorts", "Pants & Leggings", "Hoodies & Sweatshirts", "Jackets & Gilets", "Jerseys & Kits", "Jordan"],
-    "Shop By Sport": ["Running", "Basketball", "Football", "Golf", "Tennis & Pickleball", "Gym & Training", "Yoga", "Skateboarding"],
+    "NEW DROPS": [
+      "Latest Arrivals",
+      "Limited Editions",
+      "Trending"
+    ],
+
+    "SNEAKERS": [
+      "Lifestyle",
+      "Running",
+      "Basketball",
+      "Football",
+      "Tennis",
+      "Training",
+      "Skateboarding"
+    ],
+
+    "PREMIUM": [
+      "Jordan",
+      "Nike Air",
+      "Adidas Originals",
+      "Puma Select",
+      "New Balance"
+    ],
+
+    "SHOP BY PRICE": [
+      "Under ₹3000",
+      "₹3000 - ₹7000",
+      "₹7000+"
+    ]
   },
+
   women: {
-    Featured: ["New Arrivals", "Bestsellers", "Shop All Sale", "All Conditions Gear"],
-    Shoes: ["All Shoes", "Lifestyle", "Running", "Training & Gym", "Tennis", "Basketball", "Jordan", "Sandals & Slides"],
-    Clothing: ["All Clothing", "Tops & T-Shirts", "Shorts", "Pants & Leggings", "Hoodies & Sweatshirts", "Sports Bras", "Skirts & Dresses", "Jordan"],
-    "Shop By Sport": ["Running", "Yoga", "Training", "Basketball", "Tennis & Pickleball", "Golf", "Gym & Training", "Skateboarding"],
+    "NEW DROPS": [
+      "Latest Arrivals",
+      "Trending"
+    ],
+
+    "SNEAKERS": [
+      "Lifestyle",
+      "Running",
+      "Training",
+      "Tennis",
+      "Walking"
+    ],
+
+    "PREMIUM": [
+      "Nike Women",
+      "Adidas Women",
+      "Puma Women"
+    ],
+
+    "SHOP BY PRICE": [
+      "Under ₹3000",
+      "₹3000 - ₹7000",
+      "₹7000+"
+    ]
   },
+
   kids: {
-    Featured: ["New Arrivals", "Bestsellers", "Back to School", "Gift Ideas"],
-    Boys: ["All Shoes", "Lifestyle", "Running", "Basketball", "Jordan", "Sandals & Slides"],
-    Girls: ["All Shoes", "Lifestyle", "Running", "Training", "Jordan", "Sandals & Slides"],
-    "Shop By Sport": ["Running", "Basketball", "Football", "Tennis", "Gym & Training", "Skateboarding"],
+    "BOYS": [
+      "Running",
+      "Basketball",
+      "Lifestyle",
+      "School"
+    ],
+
+    "GIRLS": [
+      "Running",
+      "Lifestyle",
+      "Training",
+      "School"
+    ],
+
+    "FEATURED": [
+      "New Arrivals",
+      "Best Sellers",
+      "School Collection"
+    ]
   },
+
   sale: {
-    "Men's Sale": ["Shoes Sale", "Clothing Sale", "Accessories Sale", "Clearance"],
-    "Women's Sale": ["Shoes Sale", "Clothing Sale", "Accessories Sale", "Clearance"],
-    "Kids' Sale": ["Shoes Sale", "Clothing Sale", "Accessories Sale", "Clearance"],
-    "Last Chance": ["Under ₹1000", "Under ₹2000", "Under ₹3000", "All Sale Items"],
-  },
+    "MEN SALE": [
+      "Running",
+      "Lifestyle",
+      "Basketball"
+    ],
+
+    "WOMEN SALE": [
+      "Running",
+      "Lifestyle"
+    ],
+
+    "KIDS SALE": [
+      "School",
+      "Lifestyle"
+    ],
+
+    "LAST CHANCE": [
+      "Under ₹1999",
+      "Under ₹2999",
+      "Clearance"
+    ]
+  }
 };
 
 function MegaMenu({ data, visible }) {
@@ -36,14 +116,14 @@ function MegaMenu({ data, visible }) {
         top: "100%",
         left: "50%",
         transform: "translateX(-50%)",
-        width: "820px",
+        width: "1000px",
         background: "#fff",
         borderTop: "1px solid #e5e5e5",
         boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-        padding: "32px 40px",
+        padding: "40px 60px",
         display: "grid",
         gridTemplateColumns: `repeat(${Object.keys(data).length}, 1fr)`,
-        gap: "32px",
+        gap: "50px",
         zIndex: 999,
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "all" : "none",
@@ -68,7 +148,7 @@ function MegaMenu({ data, visible }) {
             {items.map((item) => (
               <li key={item} style={{ marginBottom: "8px" }}>
                 <Link
-                  to="/products"
+                  to={`/products?category=${encodeURIComponent(item.toLowerCase())}`}
                   style={{
                     fontSize: "14px",
                     color: "#555",
