@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key-change-this-in-production'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'solemate.servecounterstrike.com',
