@@ -28,6 +28,13 @@ function Login() {
       // save tokens
       localStorage.setItem('access', access);
       localStorage.setItem('refresh', refresh);
+      API.get('/auth/profile/')
+        .then((res) => {
+          localStorage.setItem('username', res.data.username);
+          localStorage.setItem('email', res.data.email || '');
+        })
+        .catch((err) => console.error(err))
+        .finally(() => navigate('/products'));
 
       // redirect after login
       navigate('/products');
@@ -49,6 +56,10 @@ function Login() {
 
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
+      if (res.data.user) {
+        localStorage.setItem('username', res.data.user.username);
+        localStorage.setItem('email', res.data.user.email || '');
+      }
 
       navigate('/products');
 

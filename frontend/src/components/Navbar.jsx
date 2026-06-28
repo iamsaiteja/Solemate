@@ -86,6 +86,7 @@ function MegaMenu({ data, visible }) {
 
 function Navbar() {
   const [user, setUser] = useState(null);
+  const [email, setEmail] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false); // mobile menu open/close
@@ -98,7 +99,9 @@ function Navbar() {
   useEffect(() => {
     const token = localStorage.getItem("access");
     const username = localStorage.getItem("username");
+    const mail = localStorage.getItem("email");
     setUser(token ? username || "User" : null);
+    setEmail(token ? mail : null);
   }, [location]);
 
   useEffect(() => {
@@ -115,6 +118,7 @@ function Navbar() {
   const logout = () => {
     localStorage.clear();
     setUser(null);
+    setEmail(null);
     navigate("/login");
   };
 
@@ -252,7 +256,11 @@ function Navbar() {
                 {role === "seller" && (
                   <Link to="/seller" style={navLinkStyle("/seller")}>Seller</Link>
                 )}
-                <span style={{ fontSize: "13px", fontWeight: "600", color: "#111" }}>{user}</span>
+                {/* USER NAME + EMAIL */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.1 }}>
+                  <span style={{ fontSize: "13px", fontWeight: "700", color: "#111" }}>{user}</span>
+                  {email && <span style={{ fontSize: "11px", color: "#888" }}>{email}</span>}
+                </div>
                 <button
                   onClick={logout}
                   style={{ background: "#111", color: "#fff", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}
@@ -329,8 +337,10 @@ function Navbar() {
               {role === "seller" && (
                 <Link to="/seller" style={mobileLink}>Seller</Link>
               )}
-              <div style={{ padding: "14px 0", fontSize: "14px", color: "#888", borderBottom: "1px solid #eee" }}>
-                Signed in as <strong style={{ color: "#111" }}>{user}</strong>
+              {/* USER NAME + EMAIL */}
+              <div style={{ padding: "14px 0", borderBottom: "1px solid #eee" }}>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: "#111" }}>{user}</div>
+                {email && <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{email}</div>}
               </div>
               <button
                 onClick={logout}
