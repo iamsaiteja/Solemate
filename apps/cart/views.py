@@ -16,7 +16,7 @@ def get_cart(request):
                 'id': item.product.id,
                 'name': item.product.name,
                 'price': str(item.product.price),
-                'image': str(item.product.image) if item.product.image else None,
+                'image': f"/media/{item.product.image}" if item.product.image else None,
             },
             'quantity': item.quantity,
             'subtotal': str(item.get_subtotal()),
