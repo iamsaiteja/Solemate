@@ -1,12 +1,10 @@
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-
 from pathlib import Path
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
 import logging
-
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -22,9 +20,7 @@ sentry_sdk.init(
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = 'your-secret-key-change-this-in-production'
-
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -34,7 +30,6 @@ ALLOWED_HOSTS = [
     "100.56.17.207",
     "ecommerce-django-umber.vercel.app",
 ]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,17 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_celery_results',
-    # Third party
     'rest_framework',
-    
     'rest_framework_simplejwt.token_blacklist',
-    
     'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    # Local apps
     'apps.api',
     'apps.users',
     'apps.products',
@@ -65,10 +56,8 @@ INSTALLED_APPS = [
     'apps.sellers',
     'apps.coupons',
     'drf_spectacular',
-    
     'cloudinary',
     'cloudinary_storage',
-    
 ]
 
 MIDDLEWARE = [
@@ -131,20 +120,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ================= CORS + CSRF =================
-
 CORS_ALLOW_ALL_ORIGINS = True
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://solemate01.vercel.app",
     "https://ecommerce-django-umber.vercel.app",
 ]
-
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "https://solemate01.vercel.app",
@@ -152,6 +135,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://solemate-33tpuetc1-iamsaitejas-projects.vercel.app",
     'https://solemate.servecounterstrike.com',
     'http://solemate.servecounterstrike.com',
+    'https://ecommerce-django-two.vercel.app',
 ]
 
 MEDIA_URL = '/media/'
@@ -209,23 +193,18 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "https://ecommerce-django-two.vercel.app"
 
-
-
-# Celery Settings
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
 
 ACCOUNT_ADAPTER = "apps.users.adapter.CustomAccountAdapter"
 
@@ -235,75 +214,39 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-import os
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
+        'verbose': {'format': '{levelname} {asctime} {module} {message}', 'style': '{'},
+        'simple': {'format': '{levelname} {message}', 'style': '{'},
     },
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
-            'formatter': 'verbose',
-        },
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
+        'file': {'class': 'logging.FileHandler', 'filename': os.path.join(BASE_DIR, 'logs/django.log'), 'formatter': 'verbose'},
     },
-    'root': {
-        'handlers': ['console', 'file'],
-        'level': 'INFO',
-    },
+    'root': {'handlers': ['console', 'file'], 'level': 'INFO'},
     'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'apps': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+        'django': {'handlers': ['console', 'file'], 'level': 'INFO', 'propagate': False},
+        'apps': {'handlers': ['console', 'file'], 'level': 'DEBUG', 'propagate': False},
     },
 }
 
 RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-}
-
-
+CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
-
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
@@ -315,9 +258,5 @@ else:
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    
-FRONTEND_URL = os.getenv(
-    "FRONTEND_URL",
-    "http://localhost:3000"
-)
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
