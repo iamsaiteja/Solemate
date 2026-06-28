@@ -42,7 +42,7 @@ def add_to_cart(request):
     item.save()
     return Response({'message': 'Added to cart', 'cart_count': cart.items.count()})
 
-@api_view(['PUT'])
+@api_view(['PUT','PATCH'])
 @permission_classes([IsAuthenticated])
 def update_cart_item(request, item_id):
     quantity = int(request.data.get('quantity', 1))
