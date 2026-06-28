@@ -247,6 +247,9 @@ function Navbar() {
             {user ? (
               <>
                 <Link to="/cart" style={navLinkStyle("/cart")}>Cart</Link>
+                <Link to="/cart" style={navLinkStyle("/cart")}>Cart</Link>
+                <Link to="/wishlist" style={navLinkStyle("/wishlist")}>Wishlist</Link>
+                <Link to="/orders" style={navLinkStyle("/orders")}>Orders</Link>
                 <Link to="/orders" style={navLinkStyle("/orders")}>Orders</Link>
                 {role === "seller" && (
                   <Link to="/seller" style={navLinkStyle("/seller")}>Seller</Link>
@@ -323,6 +326,9 @@ function Navbar() {
           {user ? (
             <>
               <Link to="/cart" style={mobileLink}>Cart</Link>
+              <Link to="/cart" style={mobileLink}>Cart</Link>
+              <Link to="/wishlist" style={mobileLink}>Wishlist</Link>
+              <Link to="/orders" style={mobileLink}>Orders</Link>
               <Link to="/orders" style={mobileLink}>Orders</Link>
               {role === "seller" && (
                 <Link to="/seller" style={mobileLink}>Seller</Link>
