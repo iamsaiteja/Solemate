@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'apps.coupons',
     'drf_spectacular',
     'cloudinary',
+    'apps.wishlist',
     'cloudinary_storage',
 ]
 

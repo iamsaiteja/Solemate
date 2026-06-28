@@ -1,111 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import useIsMobile from "../utils/useIsMobile";
 
 const megaMenuData = {
   men: {
-    "NEW DROPS": [
-      "Latest Arrivals",
-      "Limited Editions",
-      "Trending"
-    ],
-
-    "SNEAKERS": [
-      "Lifestyle",
-      "Running",
-      "Basketball",
-      "Football",
-      "Tennis",
-      "Training",
-      "Skateboarding"
-    ],
-
-    "PREMIUM": [
-      "Jordan",
-      "Nike Air",
-      "Adidas Originals",
-      "Puma Select",
-      "New Balance"
-    ],
-
-    "SHOP BY PRICE": [
-      "Under ₹3000",
-      "₹3000 - ₹7000",
-      "₹7000+"
-    ]
+    "NEW DROPS": ["Latest Arrivals", "Limited Editions", "Trending"],
+    "SNEAKERS": ["Lifestyle", "Running", "Basketball", "Football", "Tennis", "Training", "Skateboarding"],
+    "PREMIUM": ["Jordan", "Nike Air", "Adidas Originals", "Puma Select", "New Balance"],
+    "SHOP BY PRICE": ["Under ₹3000", "₹3000 - ₹7000", "₹7000+"],
   },
-
   women: {
-    "NEW DROPS": [
-      "Latest Arrivals",
-      "Trending"
-    ],
-
-    "SNEAKERS": [
-      "Lifestyle",
-      "Running",
-      "Training",
-      "Tennis",
-      "Walking"
-    ],
-
-    "PREMIUM": [
-      "Nike Women",
-      "Adidas Women",
-      "Puma Women"
-    ],
-
-    "SHOP BY PRICE": [
-      "Under ₹3000",
-      "₹3000 - ₹7000",
-      "₹7000+"
-    ]
+    "NEW DROPS": ["Latest Arrivals", "Trending"],
+    "SNEAKERS": ["Lifestyle", "Running", "Training", "Tennis", "Walking"],
+    "PREMIUM": ["Nike Women", "Adidas Women", "Puma Women"],
+    "SHOP BY PRICE": ["Under ₹3000", "₹3000 - ₹7000", "₹7000+"],
   },
-
   kids: {
-    "BOYS": [
-      "Running",
-      "Basketball",
-      "Lifestyle",
-      "School"
-    ],
-
-    "GIRLS": [
-      "Running",
-      "Lifestyle",
-      "Training",
-      "School"
-    ],
-
-    "FEATURED": [
-      "New Arrivals",
-      "Best Sellers",
-      "School Collection"
-    ]
+    "BOYS": ["Running", "Basketball", "Lifestyle", "School"],
+    "GIRLS": ["Running", "Lifestyle", "Training", "School"],
+    "FEATURED": ["New Arrivals", "Best Sellers", "School Collection"],
   },
-
   sale: {
-    "MEN SALE": [
-      "Running",
-      "Lifestyle",
-      "Basketball"
-    ],
-
-    "WOMEN SALE": [
-      "Running",
-      "Lifestyle"
-    ],
-
-    "KIDS SALE": [
-      "School",
-      "Lifestyle"
-    ],
-
-    "LAST CHANCE": [
-      "Under ₹1999",
-      "Under ₹2999",
-      "Clearance"
-    ]
-  }
+    "MEN SALE": ["Running", "Lifestyle", "Basketball"],
+    "WOMEN SALE": ["Running", "Lifestyle"],
+    "KIDS SALE": ["School", "Lifestyle"],
+    "LAST CHANCE": ["Under ₹1999", "Under ₹2999", "Clearance"],
+  },
 };
 
 function MegaMenu({ data, visible }) {
@@ -149,12 +69,7 @@ function MegaMenu({ data, visible }) {
               <li key={item} style={{ marginBottom: "8px" }}>
                 <Link
                   to={`/products?category=${encodeURIComponent(item.toLowerCase())}`}
-                  style={{
-                    fontSize: "14px",
-                    color: "#555",
-                    textDecoration: "none",
-                    transition: "color 0.15s",
-                  }}
+                  style={{ fontSize: "14px", color: "#555", textDecoration: "none", transition: "color 0.15s" }}
                   onMouseEnter={(e) => (e.target.style.color = "#111")}
                   onMouseLeave={(e) => (e.target.style.color = "#555")}
                 >
@@ -173,9 +88,11 @@ function Navbar() {
   const [user, setUser] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false); // mobile menu open/close
 
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const role = localStorage.getItem("role");
 
   useEffect(() => {
@@ -189,6 +106,11 @@ function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // page maaripoyినప్పుడు mobile menu auto close
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
 
   const logout = () => {
     localStorage.clear();
@@ -222,8 +144,20 @@ function Navbar() {
     { key: "sale", label: "Sale", path: "/products?sale=true" },
   ];
 
+  // mobile menu lo chupinche links style
+  const mobileLink = {
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#111",
+    textDecoration: "none",
+    padding: "14px 0",
+    borderBottom: "1px solid #eee",
+    display: "block",
+  };
+
   return (
     <>
+      {/* TOP BANNER */}
       {!isLoginPage && (
         <div
           style={{
@@ -255,13 +189,13 @@ function Navbar() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "0 40px",
+          padding: isMobile ? "0 20px" : "0 40px",
           background: "#fff",
           borderBottom: "1px solid #eee",
           boxShadow: scrolled ? "0 4px 12px rgba(0,0,0,0.08)" : "none",
         }}
       >
-        {/* Logo */}
+        {/* LOGO */}
         <Link
           to="/"
           style={{
@@ -276,33 +210,15 @@ function Navbar() {
           SOLEMATE
         </Link>
 
-        {/* Center Nav Links */}
-        {!isLoginPage && (
-          <div
-            style={{
-              display: "flex",
-              gap: "28px",
-              alignItems: "center",
-              height: "100%",
-              position: "relative",
-            }}
-          >
-            <Link
-              to="/"
-              style={navLinkStyle("/")}
-              onMouseEnter={() => setActiveMenu(null)}
-            >
+        {/* ===================== DESKTOP ===================== */}
+        {!isMobile && !isLoginPage && (
+          <div style={{ display: "flex", gap: "28px", alignItems: "center", height: "100%", position: "relative" }}>
+            <Link to="/" style={navLinkStyle("/")} onMouseEnter={() => setActiveMenu(null)}>
               Home
             </Link>
-
-            <Link
-              to="/products"
-              style={navLinkStyle("/products")}
-              onMouseEnter={() => setActiveMenu(null)}
-            >
+            <Link to="/products" style={navLinkStyle("/products")} onMouseEnter={() => setActiveMenu(null)}>
               Products
             </Link>
-
             {megaItems.map(({ key, label, path }) => (
               <div
                 key={key}
@@ -325,63 +241,30 @@ function Navbar() {
           </div>
         )}
 
-        {/* Right Side */}
-        {!isLoginPage && (
+        {/* DESKTOP RIGHT SIDE */}
+        {!isMobile && !isLoginPage && (
           <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
             {user ? (
               <>
-                <Link to="/cart" style={navLinkStyle("/cart")}>
-                  Cart
-                </Link>
-                <Link to="/orders" style={navLinkStyle("/orders")}>
-                  Orders
-                </Link>
+                <Link to="/cart" style={navLinkStyle("/cart")}>Cart</Link>
+                <Link to="/orders" style={navLinkStyle("/orders")}>Orders</Link>
                 {role === "seller" && (
-                  <Link to="/seller" style={navLinkStyle("/seller")}>
-                    Seller
-                  </Link>
+                  <Link to="/seller" style={navLinkStyle("/seller")}>Seller</Link>
                 )}
-                <span
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    color: "#111",
-                  }}
-                >
-                  {user}
-                </span>
+                <span style={{ fontSize: "13px", fontWeight: "600", color: "#111" }}>{user}</span>
                 <button
                   onClick={logout}
-                  style={{
-                    background: "#111",
-                    color: "#fff",
-                    border: "none",
-                    padding: "9px 18px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}
+                  style={{ background: "#111", color: "#fff", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" style={navLinkStyle("/login")}>
-                  Login
-                </Link>
+                <Link to="/login" style={navLinkStyle("/login")}>Login</Link>
                 <Link
                   to="/register"
-                  style={{
-                    background: "#111",
-                    color: "#e8ff3b",
-                    padding: "9px 18px",
-                    borderRadius: "8px",
-                    textDecoration: "none",
-                    fontWeight: "700",
-                    fontSize: "13px",
-                  }}
+                  style={{ background: "#111", color: "#e8ff3b", padding: "9px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "13px" }}
                 >
                   Register
                 </Link>
@@ -389,7 +272,106 @@ function Navbar() {
             )}
           </div>
         )}
+
+        {/* ===================== MOBILE HAMBURGER ===================== */}
+        {isMobile && !isLoginPage && (
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label="Menu"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "5px",
+            }}
+          >
+            {/* 3 gీతలు — open aయితే X laaga marustundi */}
+            <span style={{ width: "24px", height: "2px", background: "#111", transition: "0.2s", transform: menuOpen ? "rotate(45deg) translate(5px, 5px)" : "none" }} />
+            <span style={{ width: "24px", height: "2px", background: "#111", transition: "0.2s", opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ width: "24px", height: "2px", background: "#111", transition: "0.2s", transform: menuOpen ? "rotate(-45deg) translate(5px, -5px)" : "none" }} />
+          </button>
+        )}
       </nav>
+
+      {/* ===================== MOBILE DROPDOWN PANEL ===================== */}
+      {isMobile && !isLoginPage && menuOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 94, // banner(34) + navbar(60)
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "#fff",
+            zIndex: 999,
+            padding: "20px 24px",
+            overflowY: "auto",
+          }}
+        >
+          <Link to="/" style={mobileLink}>Home</Link>
+          <Link to="/products" style={mobileLink}>Products</Link>
+          {megaItems.map(({ key, label, path }) => (
+            <Link key={key} to={path} style={mobileLink}>{label}</Link>
+          ))}
+
+          {/* divider */}
+          <div style={{ height: "16px" }} />
+
+          {user ? (
+            <>
+              <Link to="/cart" style={mobileLink}>Cart</Link>
+              <Link to="/orders" style={mobileLink}>Orders</Link>
+              {role === "seller" && (
+                <Link to="/seller" style={mobileLink}>Seller</Link>
+              )}
+              <div style={{ padding: "14px 0", fontSize: "14px", color: "#888", borderBottom: "1px solid #eee" }}>
+                Signed in as <strong style={{ color: "#111" }}>{user}</strong>
+              </div>
+              <button
+                onClick={logout}
+                style={{
+                  marginTop: "20px",
+                  width: "100%",
+                  background: "#111",
+                  color: "#fff",
+                  border: "none",
+                  padding: "14px",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "15px",
+                  fontWeight: "700",
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={mobileLink}>Login</Link>
+              <Link
+                to="/register"
+                style={{
+                  marginTop: "20px",
+                  display: "block",
+                  textAlign: "center",
+                  background: "#111",
+                  color: "#e8ff3b",
+                  padding: "14px",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  fontWeight: "700",
+                  fontSize: "15px",
+                }}
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      )}
     </>
   );
 }
