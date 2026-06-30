@@ -79,8 +79,19 @@ function Login() {
   // ================= GOOGLE LOGIN =================
   const handleGoogleLogin = () => {
 
-    const base = process.env.REACT_APP_API_URL || "https://solemate.servecounterstrike.com";
-    window.location.href = `${base}/accounts/google/login/`;
+    const clientId = "746873785598-pihaf619h7icclsb01vrvv093ik5momp.apps.googleusercontent.com";
+    const redirectUri = "https://solemate.servecounterstrike.com/users/auth/google/callback/";
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      scope: "email profile",
+      access_type: "online",
+      prompt: "select_account",
+    });
+
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
   };
 
   return (
