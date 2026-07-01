@@ -3,47 +3,97 @@ import { useEffect, useState } from "react";
 import API, { getImage } from "../utils/api";
 import useIsMobile from "../utils/useIsMobile";
 
+const injectPdStyles = () => {
+  if (document.getElementById("sm-pd-style")) return;
+  const s = document.createElement("style");
+  s.id = "sm-pd-style";
+  s.innerHTML = `
+    .sm-sugg-card { background:#fff; border:1px solid #eee; border-radius:14px; overflow:hidden; cursor:pointer; transition:transform .28s, box-shadow .28s; }
+    .sm-sugg-card:hover { transform:translateY(-5px); box-shadow:0 14px 34px rgba(0,0,0,.1); }
+    .sm-sugg-card:hover img { transform:scale(1.08); }
+    .sm-sugg-img { width:100%; height:170px; object-fit:contain; padding:14px; background:#f8f8f8; transition:transform .5s ease; }
+    .sm-pd-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:14px 24px; border-radius:12px; font-size:14px; font-weight:600; z-index:5000; box-shadow:0 8px 30px rgba(0,0,0,.3); animation:smPdUp .3s ease; max-width:90vw; }
+    .sm-pd-toast b { color:#e8ff3b; }
+    @keyframes smPdUp { from{ opacity:0; transform:translate(-50%,16px); } }
+  `;
+  document.head.appendChild(s);
+};
+
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const [product, setProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [qty, setQty] = useState(1);
+  const [liked, setLiked] = useState(false);
+  const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const SIZES = [6, 7, 8, 9, 10, 11, 12];
 
+  useEffect(() => { injectPdStyles(); }, []);
+
+  // ee product load + top ki scroll
   useEffect(() => {
     setLoading(true);
+    setSelectedSize(null);
+    setQty(1);
+    window.scrollTo(0, 0);
     API.get(`/products/${id}/`)
-      .then((res) => {
-        setProduct(res.data);
-        setError("");
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load product");
-      })
+      .then((res) => { setProduct(res.data); setError(""); })
+      .catch((err) => { console.error(err); setError("Failed to load product"); })
       .finally(() => setLoading(false));
   }, [id]);
 
+  // suggestions kosam anni products (okasari)
+  useEffect(() => {
+    API.get("/products/")
+      .then((res) => setAllProducts(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  // ee product wishlist lo unda
+  useEffect(() => {
+    if (!localStorage.getItem("access")) return;
+    API.get("/wishlist/ids/")
+      .then((res) => setLiked(res.data.product_ids.includes(parseInt(id))))
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2200); };
+
   function addToCart() {
-    if (!selectedSize) {
-      alert("Please select a size!");
-      return;
-    }
-    API.post("/cart/add/", {
-      product_id: product.id,
-      size: selectedSize,
-    })
-      .then(() => alert("Added to cart!"))
-      .catch((error) => {
-        console.log(error.response);
-        alert("Something went wrong");
-      });
+    if (!localStorage.getItem("access")) { navigate("/login"); return; }
+    if (!selectedSize) { showToast("__size__"); return; }
+    API.post("/cart/add/", { product_id: product.id, quantity: qty, size: selectedSize })
+      .then(() => showToast(product.name))
+      .catch((error) => { console.log(error.response); showToast("__error__"); });
   }
+
+  const toggleWishlist = async () => {
+    if (!localStorage.getItem("access")) { navigate("/login"); return; }
+    setLiked((prev) => !prev);
+    try {
+      await API.post("/wishlist/toggle/", { product_id: product.id });
+    } catch (err) { console.error(err); setLiked((prev) => !prev); }
+  };
+
+  // suggestions — same category mundu, taruvata migata (random 4)
+  const suggestions = (() => {
+    if (!product || allProducts.length === 0) return [];
+    const others = allProducts.filter((p) => p.id !== product.id);
+    const sameCat = others.filter((p) => p.category && product.category && p.category === product.category);
+    let pool = sameCat.length >= 4 ? sameCat : [...sameCat, ...others.filter((p) => !sameCat.some((s) => s.id === p.id))];
+    pool = [...pool].sort(() => Math.random() - 0.5); // shuffle
+    return pool.slice(0, 4);
+  })();
+
+  const deliveryDate = new Date(Date.now() + 4 * 86400000)
+    .toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
 
   if (loading) {
     return (
@@ -60,6 +110,8 @@ function ProductDetails() {
       </div>
     );
   }
+
+  const lowStock = product?.stock != null && product.stock <= 10;
 
   return (
     <div style={{ background: "#f5f5f5", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
@@ -84,8 +136,15 @@ function ProductDetails() {
           boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
         }}
       >
-        {/* IMAGE */}
-        <div style={{ background: "#f8f8f8", borderRadius: "16px", padding: isMobile ? "20px" : "40px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #eee" }}>
+        {/* IMAGE + heart */}
+        <div style={{ position: "relative", background: "#f8f8f8", borderRadius: "16px", padding: isMobile ? "20px" : "40px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #eee" }}>
+          <button
+            onClick={toggleWishlist}
+            aria-label="Wishlist"
+            style={{ position: "absolute", top: "14px", right: "14px", width: "42px", height: "42px", borderRadius: "50%", background: "rgba(255,255,255,0.95)", border: "1px solid #eee", color: liked ? "#e63946" : "#ccc", fontSize: "21px", lineHeight: 1, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}
+          >
+            {liked ? "♥" : "♡"}
+          </button>
           <img
             src={product?.image ? getImage(product.image) : "https://placehold.co/300x300?text=No+Image"}
             alt={product?.name || "Product"}
@@ -102,24 +161,21 @@ function ProductDetails() {
           <h1 style={{ color: "#1a1a1a", fontSize: isMobile ? "24px" : "28px", fontWeight: "800", marginBottom: "12px" }}>
             {product?.name}
           </h1>
-          <p style={{ color: "#1a1a1a", fontSize: isMobile ? "24px" : "28px", fontWeight: "700", marginBottom: "16px" }}>
+          <p style={{ color: "#1a1a1a", fontSize: isMobile ? "24px" : "28px", fontWeight: "700", marginBottom: "10px" }}>
             ₹{parseFloat(product?.price || 0).toLocaleString("en-IN")}
           </p>
-          <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.7", marginBottom: "28px" }}>
+
+          {/* stock indicator */}
+          <p style={{ fontSize: "13px", fontWeight: "600", color: lowStock ? "#dc2626" : "#15803d", marginBottom: "16px" }}>
+            {lowStock ? `🔥 Only ${product.stock} left in stock!` : "✓ In Stock"}
+          </p>
+
+          <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.7", marginBottom: "24px" }}>
             {product?.description || "No description available"}
           </p>
 
-          <div style={{ marginTop: "20px" }}>
-            <ul style={{ color: "#666", lineHeight: "2", paddingLeft: "20px" }}>
-              <li>Premium Comfort</li>
-              <li>Lightweight Design</li>
-              <li>Breathable Material</li>
-              <li>Durable Sole</li>
-            </ul>
-          </div>
-
           {/* SIZE */}
-          <div style={{ marginBottom: "28px", marginTop: "20px" }}>
+          <div style={{ marginBottom: "20px" }}>
             <p style={{ color: "#1a1a1a", fontWeight: "600", fontSize: "14px", marginBottom: "12px" }}>
               Select Size {selectedSize && `— ${selectedSize}`}
             </p>
@@ -129,16 +185,11 @@ function ProductDetails() {
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   style={{
-                    width: "48px",
-                    height: "48px",
+                    width: "48px", height: "48px",
                     border: selectedSize === size ? "2px solid #1a1a1a" : "1px solid #e0e0e0",
                     background: selectedSize === size ? "#1a1a1a" : "#fff",
                     color: selectedSize === size ? "#e8ff3b" : "#1a1a1a",
-                    cursor: "pointer",
-                    borderRadius: "8px",
-                    fontWeight: "600",
-                    fontSize: "14px",
-                    transition: "all 0.2s",
+                    cursor: "pointer", borderRadius: "8px", fontWeight: "600", fontSize: "14px", transition: "all 0.2s",
                   }}
                 >
                   {size}
@@ -147,44 +198,74 @@ function ProductDetails() {
             </div>
           </div>
 
+          {/* QUANTITY */}
+          <div style={{ marginBottom: "24px" }}>
+            <p style={{ color: "#1a1a1a", fontWeight: "600", fontSize: "14px", marginBottom: "12px" }}>Quantity</p>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={{ width: "40px", height: "40px", borderRadius: "8px", border: "1px solid #e0e0e0", background: "#fff", fontSize: "20px", cursor: "pointer" }}>−</button>
+              <span style={{ fontSize: "17px", fontWeight: "700", minWidth: "24px", textAlign: "center" }}>{qty}</span>
+              <button onClick={() => setQty((q) => q + 1)} style={{ width: "40px", height: "40px", borderRadius: "8px", border: "1px solid #e0e0e0", background: "#fff", fontSize: "20px", cursor: "pointer" }}>+</button>
+            </div>
+          </div>
+
           {/* ADD TO CART */}
           <button
             onClick={addToCart}
             style={{
-              padding: "16px",
-              width: "100%",
+              padding: "16px", width: "100%",
               background: selectedSize ? "#1a1a1a" : "#e0e0e0",
               color: selectedSize ? "#e8ff3b" : "#999",
-              border: "none",
-              borderRadius: "10px",
-              fontWeight: "700",
-              fontSize: "15px",
-              letterSpacing: "0.5px",
-              cursor: selectedSize ? "pointer" : "not-allowed",
-              transition: "all 0.2s",
+              border: "none", borderRadius: "10px", fontWeight: "700", fontSize: "15px", letterSpacing: "0.5px",
+              cursor: selectedSize ? "pointer" : "not-allowed", transition: "all 0.2s",
             }}
           >
             {selectedSize ? "Add to Cart" : "Select Size First"}
           </button>
 
-          <div style={{ marginTop: "24px", background: "#f8f8f8", padding: "18px", borderRadius: "12px" }}>
-            <p>🚚 Free Delivery</p>
-            <p>🔄 Easy Returns</p>
-            <p>🔒 Secure Checkout</p>
+          {/* delivery date */}
+          <div style={{ marginTop: "16px", background: "#f8f8f8", padding: "12px 16px", borderRadius: "10px", fontSize: "13px", color: "#555" }}>
+            📦 Delivery by <strong style={{ color: "#1a1a1a" }}>{deliveryDate}</strong>
+          </div>
+
+          <div style={{ marginTop: "16px", background: "#f8f8f8", padding: "18px", borderRadius: "12px" }}>
+            <p style={{ margin: "4px 0" }}>🚚 Free Delivery</p>
+            <p style={{ margin: "4px 0" }}>🔄 Easy Returns</p>
+            <p style={{ margin: "4px 0" }}>🔒 Secure Checkout</p>
           </div>
         </div>
       </div>
 
-      <div style={{ marginTop: "80px" }}>
-        <h2 style={{ marginBottom: "30px", textAlign: "center" }}>You May Also Like</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))", gap: "20px" }}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} style={{ background: "#fff", padding: "20px", borderRadius: "12px", border: "1px solid #eee" }}>
-              Similar Product {i + 1}
-            </div>
-          ))}
+      {/* ===== REAL SUGGESTIONS ===== */}
+      {suggestions.length > 0 && (
+        <div style={{ marginTop: "70px", maxWidth: "1100px", margin: "70px auto 0" }}>
+          <h2 style={{ marginBottom: "26px", textAlign: "center", fontSize: isMobile ? "24px" : "30px", fontWeight: "800", color: "#1a1a1a" }}>
+            You May Also Like
+          </h2>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: isMobile ? "12px" : "20px" }}>
+            {suggestions.map((s) => (
+              <div key={s.id} className="sm-sugg-card" onClick={() => navigate(`/products/${s.id}`)}>
+                <img className="sm-sugg-img" src={getImage(s.image)} alt={s.name}
+                  onError={(e) => { e.target.src = "https://placehold.co/300x300?text=No+Image"; }} />
+                <div style={{ padding: "12px 14px 14px", borderTop: "1px solid #f0f0f0" }}>
+                  <p style={{ margin: 0, fontWeight: "700", fontSize: "14px", color: "#1a1a1a", lineHeight: 1.2, minHeight: "34px" }}>{s.name}</p>
+                  <p style={{ margin: "6px 0 0", fontWeight: "700", fontSize: "14px", color: "#1a1a1a" }}>
+                    ₹{parseFloat(s.price || 0).toLocaleString("en-IN")}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* TOAST */}
+      {toast && (
+        <div className="sm-pd-toast">
+          {toast === "__size__" ? "👟 Please select a size first"
+            : toast === "__error__" ? "⚠ Something went wrong"
+            : <>✓ <b>{toast}</b> added to cart</>}
+        </div>
+      )}
     </div>
   );
 }
