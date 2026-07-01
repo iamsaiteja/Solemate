@@ -32,6 +32,12 @@ const injectStyles = () => {
     .sm-search-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .sm-ai-result { margin-top:12px; background:#f8f8f8; border:1px solid #e0e0e0; border-left:3px solid #1a1a1a; padding:16px 20px; font-size:14px; line-height:1.7; color:#444; white-space:pre-wrap; border-radius:0 8px 8px 0; }
 
+    .sm-marquee { border-top:1px solid rgba(0,0,0,0.08); border-bottom:1px solid rgba(0,0,0,0.08); padding:13px 0; overflow:hidden; background:rgba(0,0,0,0.02); margin-bottom:22px; }
+    .sm-marquee-track { display:flex; white-space:nowrap; animation:smMarquee 22s linear infinite; }
+    .sm-marquee-item { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:4px; color:rgba(0,0,0,0.3); text-transform:uppercase; padding-right:40px; }
+    .sm-marquee-item em { color:#1a1a1a; font-style:normal; margin-right:40px; }
+    @keyframes smMarquee { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
+
     /* ===== FILTER BAR ===== */
     .sm-filterbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:#fff; border:1px solid #e8e8e8; border-radius:12px; padding:14px 16px; margin-bottom:22px; }
     .sm-filter-group { display:flex; flex-direction:column; gap:4px; }
@@ -262,6 +268,15 @@ function Products() {
             {headerTitle} <span>KICKS</span>
           </div>
           <div className="sm-header-sub">Premium footwear, zero compromises.</div>
+        </div>
+
+        {/* MARQUEE */}
+        <div className="sm-marquee">
+          <div className="sm-marquee-track">
+            {MARQUEE_DOUBLED.map((item, i) => (
+              <span className="sm-marquee-item" key={i}><em>✦</em>{item}</span>
+            ))}
+          </div>
         </div>
 
         {/* AI SEARCH */}

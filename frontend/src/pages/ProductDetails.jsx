@@ -66,6 +66,7 @@ function ProductDetails() {
     setQty(1);
     window.scrollTo(0, 0);
     loadProduct().finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
