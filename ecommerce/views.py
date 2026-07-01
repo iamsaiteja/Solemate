@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 import requests
 from django.shortcuts import redirect
 from django.conf import settings
@@ -8,6 +9,9 @@ from django.http import HttpResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
+
+# frontend lo hardcode chesina client_id tho EXACT same undali
+GOOGLE_CLIENT_ID = "746873785598-pihaf619h7icclsb01vrvv093ik5momp.apps.googleusercontent.com"
 
 
 def send_test_email(request):
@@ -21,7 +25,7 @@ def send_test_email(request):
     return HttpResponse("Email sent successfully")
 
 
-# ====== GOOGLE LOGIN (session avasaram ledu — mobile, incognito, laptop anni devices lo work avtundi) ======
+# ====== GOOGLE LOGIN (session avasaram ledu — anni devices lo work avtundi) ======
 def google_callback(request):
     frontend = "https://ecommerce-django-two.vercel.app"
     redirect_uri = "https://solemate.servecounterstrike.com/users/auth/google/callback/"
@@ -30,21 +34,23 @@ def google_callback(request):
     if not code:
         return redirect(f"{frontend}/login?error=no_code")
 
-    # 1) Google nundi vachina code ni token ki exchange chey
+    # 1) code ni token ki exchange chey
     token_resp = requests.post('https://oauth2.googleapis.com/token', data={
         'code': code,
-        'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+        'client_id': GOOGLE_CLIENT_ID,
         'client_secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
         'redirect_uri': redirect_uri,
         'grant_type': 'authorization_code',
     }, timeout=10)
 
     if token_resp.status_code != 200:
-        return redirect(f"{frontend}/login?error=token")
+        # asalu google error em ichindo URL lo chupinchu (debug kosam)
+        detail = urllib.parse.quote(token_resp.text[:180])
+        return redirect(f"{frontend}/login?error=token&detail={detail}")
 
     google_access = token_resp.json().get('access_token')
 
-    # 2) aa token tho user email + peru techuko
+    # 2) user email + peru techuko
     info_resp = requests.get(
         'https://www.googleapis.com/oauth2/v2/userinfo',
         headers={'Authorization': f'Bearer {google_access}'},
@@ -58,7 +64,7 @@ def google_callback(request):
     if not email:
         return redirect(f"{frontend}/login?error=email")
 
-    # 3) user already unda? lekapothe kotha ga create chey
+    # 3) user get or create
     user = User.objects.filter(email=email).first()
     if not user:
         base = email.split('@')[0]
@@ -74,16 +80,12 @@ def google_callback(request):
             last_name=info.get('family_name', ''),
         )
 
-    # profile (role kosam) safe ga create — emaina fail aithe ignore
     try:
         from apps.users.models import UserProfile
         UserProfile.objects.get_or_create(user=user)
     except Exception:
         pass
 
-    # 4) JWT tokens mint chesi, frontend ki tokens tho pampu
+    # 4) JWT tokens tho frontend ki pampu
     refresh = RefreshToken.for_user(user)
-    access_token = str(refresh.access_token)
-    refresh_token = str(refresh)
-
-    return redirect(f"{frontend}/login?access={access_token}&refresh={refresh_token}")
+    return redirect(f"{frontend}/login?access={str(refresh.access_token)}&refresh={str(refresh)}")
