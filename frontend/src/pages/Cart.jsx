@@ -11,7 +11,7 @@ const injectCartStyles = () => {
   s.innerHTML = `
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap');
 
-    .smc-root { min-height:100vh; background:#f5f5f5; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
+    .smc-root { min-height:100vh; background:transparent; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
     .smc-root::before {
       content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
       background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);

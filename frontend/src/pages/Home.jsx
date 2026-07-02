@@ -43,7 +43,7 @@ try {
 return (
 <div
 style={{
-background: "#f5f5f5",
+background: "transparent",
 minHeight: "100vh",
 color: "#111",
 }}
@@ -99,7 +99,7 @@ SOLEMATE </h1>
       <button
         onClick={handleProtectedRoute}
         style={{
-          background: "#fff",
+          background: "transparent",
           color: "#111",
           padding: "16px 40px",
           border: "none",
@@ -161,7 +161,7 @@ SOLEMATE </h1>
   {/* SPOTLIGHT */}
   <section
     style={{
-      background: "#fff",
+      background:"transparent",
       padding: "80px 40px",
     }}
   >

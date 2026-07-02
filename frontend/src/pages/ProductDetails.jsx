@@ -133,14 +133,14 @@ function ProductDetails() {
 
   if (loading) {
     return (
-      <div style={{ background: "#f5f5f5", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ background: "transparent", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ color: "#888", fontSize: "15px" }}>Loading product...</p>
       </div>
     );
   }
   if (error) {
     return (
-      <div style={{ background: "#f5f5f5", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ background: "transparent", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ color: "#dc2626" }}>{error}</p>
       </div>
     );
@@ -152,7 +152,7 @@ function ProductDetails() {
   const reviews = product?.reviews || [];
 
   return (
-    <div style={{ background: "#f5f5f5", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
+    <div style={{ background: "transparent", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
       <button
         onClick={() => navigate(-1)}
         style={{ background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: "14px", fontWeight: "600", display: "flex", alignItems: "center", gap: "6px", marginBottom: "32px" }}
@@ -167,7 +167,7 @@ function ProductDetails() {
           gap: isMobile ? "24px" : "48px",
           maxWidth: "1000px",
           margin: "0 auto",
-          background: "#fff",
+          background: "transparent",
           borderRadius: "20px",
           padding: isMobile ? "24px" : "48px",
           border: "1px solid #eee",

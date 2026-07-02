@@ -37,7 +37,7 @@ function Wishlist() {
   };
 
   return (
-    <div style={{ background: "#f5f5f5", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
+    <div style={{ background: "transparent", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         {/* HEADER */}

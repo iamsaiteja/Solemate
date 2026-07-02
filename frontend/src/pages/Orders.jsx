@@ -21,13 +21,13 @@ function Orders() {
   }, []);
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: "transparent", display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <p style={{ color: '#888', letterSpacing: '1px' }}>Loading...</p>
     </div>
   );
 
   return (
-    <div style={{ background: '#f5f5f5', minHeight: '100vh', paddingTop: '80px' }}>
+    <div style={{ background: "transparent", minHeight: '100vh', paddingTop: '80px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 40px' }}>
 
         {/* HEADER */}
