@@ -261,7 +261,7 @@ function Products() {
     <div className="sm-products-root">
       <div className="sm-inner" style={{ padding: isMobile ? "0 14px 60px" : "0 28px 80px" }}>
 
-        <div className="sm-header" style={{ padding: isMobile ? "80px 0 20px" : "56px 0 28px" }}>
+        <div className="sm-header" style={{ padding: isMobile ? "110px 0 22px" : "128px 0 30px" }}>
           <div className="sm-header-label">— Collection 2026</div>
           <div className="sm-header-title" style={{ fontSize: isMobile ? "56px" : "80px" }}>
             {headerTitle} <span>KICKS</span>
