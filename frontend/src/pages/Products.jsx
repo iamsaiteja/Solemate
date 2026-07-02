@@ -10,7 +10,7 @@ const injectStyles = () => {
   style.innerHTML = `
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap');
 
-    .sm-products-root { min-height:100vh; background:#f5f5f5; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
+    .sm-products-root { min-height:100vh; background:transparent; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
     .sm-products-root::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
     .sm-inner { position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:0 28px 80px; }
 
@@ -18,7 +18,7 @@ const injectStyles = () => {
     .sm-header-ghost { position:absolute; top:-20px; left:-8px; font-family:'Bebas Neue',sans-serif; font-size:180px; color:rgba(0,0,0,0.04); letter-spacing:-8px; pointer-events:none; white-space:nowrap; line-height:1; }
     .sm-header-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:4px; color:#1a1a1a; text-transform:uppercase; margin-bottom:10px; }
     .sm-header-title { font-family:'Bebas Neue',sans-serif; font-size:80px; letter-spacing:2px; line-height:0.88; margin-bottom:10px; color:#1a1a1a; }
-    .sm-header-title span { -webkit-text-stroke:1px rgba(0,0,0,0.2); color:transparent; }
+    .sm-header-title span { color:#c99a52; }
     .sm-header-sub { color:rgba(0,0,0,0.4); font-size:13px; letter-spacing:1px; }
 
     .sm-search-wrap { margin-bottom:16px; }
@@ -262,7 +262,6 @@ function Products() {
       <div className="sm-inner" style={{ padding: isMobile ? "0 14px 60px" : "0 28px 80px" }}>
 
         <div className="sm-header" style={{ padding: isMobile ? "80px 0 20px" : "56px 0 28px" }}>
-          <div className="sm-header-ghost">SOLEMATE</div>
           <div className="sm-header-label">— Collection 2026</div>
           <div className="sm-header-title" style={{ fontSize: isMobile ? "56px" : "80px" }}>
             {headerTitle} <span>KICKS</span>

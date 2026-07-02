@@ -2,40 +2,42 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 
 const ThemeContext = createContext(null);
 
-// system (phone/laptop) dark mode lo unda leda chudadam
 const getSystemTheme = () =>
   window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
 export function ThemeProvider({ children }) {
-  // theme: 'light' | 'dark' | 'auto'  (auto = system batti)
   const [theme, setThemeState] = useState(() => localStorage.getItem("theme") || "auto");
   const [language, setLanguageState] = useState(() => localStorage.getItem("language") || "en");
 
-  // resolvedTheme = asalu apply ayye theme (auto resolve chesaka)
   const [resolvedTheme, setResolvedTheme] = useState(() =>
     (localStorage.getItem("theme") || "auto") === "auto" ? getSystemTheme() : (localStorage.getItem("theme") || "light")
   );
 
-  // global CSS variables inject (light/dark colors)
+  // global CSS variables + SEASIDE gradient background (all pages)
   useEffect(() => {
     if (document.getElementById("sm-theme-vars")) return;
     const s = document.createElement("style");
     s.id = "sm-theme-vars";
     s.innerHTML = `
       :root, [data-theme="light"] {
-        --bg:#f5f5f5; --surface:#ffffff; --text:#1a1a1a; --muted:#888;
-        --border:#eaeaea; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --bg:transparent; --surface:#ffffff; --text:#1a1a1a; --muted:#777;
+        --border:#e7e2d8; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --page-gradient: linear-gradient(165deg, #d9edf6 0%, #e8f3ee 30%, #f6f1e6 66%, #f1e6d3 100%);
       }
       [data-theme="dark"] {
-        --bg:#0d0d0f; --surface:#18181b; --text:#f4f4f5; --muted:#9a9aa2;
-        --border:#2a2a2e; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --bg:transparent; --surface:#161b24; --text:#f2f4f7; --muted:#9aa4b2;
+        --border:#252d3a; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --page-gradient: linear-gradient(165deg, #0a1622 0%, #0e1c2b 46%, #14273b 100%);
       }
-      body { background: var(--bg); transition: background .3s ease, color .3s ease; }
+      body {
+        background: var(--page-gradient);
+        background-attachment: fixed;
+        transition: background .4s ease, color .3s ease;
+      }
     `;
     document.head.appendChild(s);
   }, []);
 
-  // theme marinapudu / system marinapudu apply chey
   useEffect(() => {
     const apply = () => {
       const r = theme === "auto" ? getSystemTheme() : theme;
@@ -43,8 +45,6 @@ export function ThemeProvider({ children }) {
       document.documentElement.setAttribute("data-theme", r);
     };
     apply();
-
-    // auto mode lo system theme marithe follow avvali
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const listener = () => { if (theme === "auto") apply(); };
     if (mq.addEventListener) mq.addEventListener("change", listener);
@@ -55,15 +55,8 @@ export function ThemeProvider({ children }) {
     };
   }, [theme]);
 
-  const setTheme = useCallback((t) => {
-    setThemeState(t);
-    localStorage.setItem("theme", t);
-  }, []);
-
-  const setLanguage = useCallback((l) => {
-    setLanguageState(l);
-    localStorage.setItem("language", l);
-  }, []);
+  const setTheme = useCallback((t) => { setThemeState(t); localStorage.setItem("theme", t); }, []);
+  const setLanguage = useCallback((l) => { setLanguageState(l); localStorage.setItem("language", l); }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, language, setLanguage }}>
