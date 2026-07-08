@@ -1,0 +1,316 @@
+/* ============================================
+   SOLEMATE — 3D SCROLL EXPERIENCE
+============================================ */
+
+.s3d-track {
+  position: relative;
+}
+
+.s3d-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.s3d-bg,
+.s3d-glow,
+.s3d-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.s3d-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.s3d-canvas.is-ready {
+  opacity: 1;
+}
+
+.s3d-canvas:active {
+  cursor: grabbing;
+}
+
+.s3d-vignette {
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* Giant watermark word behind the shoe */
+.s3d-ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(110px, 24vw, 320px);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.02);
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Text frames */
+.s3d-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 8vw 70px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.s3d-frame.align-center { align-items: center; text-align: center; }
+.s3d-frame.align-left   { align-items: flex-start; text-align: left; }
+.s3d-frame.align-right  { align-items: flex-end; text-align: right; }
+
+.s3d-frame-inner { max-width: 540px; }
+.s3d-frame.align-center .s3d-frame-inner { max-width: 900px; }
+
+.s3d-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+.s3d-frame.align-left .s3d-eyebrow::before,
+.s3d-frame.align-right .s3d-eyebrow::before {
+  content: "";
+  width: 36px;
+  height: 1px;
+  background: currentColor;
+}
+
+.s3d-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8.5vw, 128px);
+  line-height: 0.95;
+  color: #fff;
+  margin: 18px 0 6px;
+  will-change: letter-spacing;
+}
+
+.s3d-title.is-hero {
+  font-size: clamp(68px, 13vw, 190px);
+}
+
+.s3d-body {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 520px;
+  margin-top: 12px;
+}
+
+.s3d-frame.align-center .s3d-body { margin-left: auto; margin-right: auto; }
+
+/* CTA buttons on the final frame */
+.s3d-cta-row {
+  display: flex;
+  gap: 18px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.s3d-btn {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 42px;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.s3d-btn-primary {
+  background: #e8ff3b;
+  color: #111;
+  border: 2px solid #e8ff3b;
+}
+
+.s3d-btn-primary:hover {
+  box-shadow: 0 10px 34px rgba(232, 255, 59, 0.35);
+}
+
+.s3d-btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.s3d-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Scroll hint */
+.s3d-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+.s3d-hint-line {
+  width: 1px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.s3d-hint-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -50%;
+  width: 100%;
+  height: 50%;
+  background: #e8ff3b;
+  animation: s3dScrollPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes s3dScrollPulse {
+  0%   { top: -50%; }
+  100% { top: 110%; }
+}
+
+/* Right-side progress rail */
+.s3d-rail {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 5;
+}
+
+.s3d-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
+}
+
+.s3d-dot.is-active {
+  height: 26px;
+  background: #e8ff3b;
+}
+
+/* Bottom-left frame counter */
+.s3d-counter {
+  position: absolute;
+  left: 34px;
+  bottom: 26px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.s3d-counter b {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+/* Loader */
+.s3d-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.s3d-loader-bar {
+  width: 180px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.s3d-loader-bar span {
+  display: block;
+  height: 100%;
+  background: #e8ff3b;
+  transition: width 0.25s ease;
+}
+
+@media (max-width: 768px) {
+  .s3d-frame {
+    justify-content: flex-end;
+    padding: 110px 24px 110px;
+  }
+
+  .s3d-frame.align-left,
+  .s3d-frame.align-right {
+    align-items: center;
+    text-align: center;
+  }
+
+  .s3d-frame.align-left .s3d-eyebrow::before,
+  .s3d-frame.align-right .s3d-eyebrow::before {
+    display: none;
+  }
+
+  .s3d-ghost {
+    font-size: clamp(90px, 30vw, 180px);
+    top: 38%;
+  }
+
+  .s3d-rail { display: none; }
+  .s3d-counter { left: 22px; bottom: 20px; }
+  .s3d-body { font-size: 14px; }
+}
