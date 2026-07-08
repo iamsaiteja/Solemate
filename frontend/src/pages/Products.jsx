@@ -27,6 +27,11 @@ const injectStyles = () => {
     .sm-search-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(232,255,59,.3); }
     .sm-search-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .sm-ai-result { margin-top:12px; background:var(--cin-surface); border:1px solid var(--cin-border); border-left:3px solid var(--cin-accent); padding:16px 20px; font-size:14px; line-height:1.7; color:var(--cin-muted); white-space:pre-wrap; border-radius:0 12px 12px 0; }
+    .sm-ai-note { margin-top:12px; display:flex; gap:14px; align-items:flex-start; background:var(--cin-glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border); border-radius:14px; padding:16px 20px; animation:smNoteUp .35s ease; }
+    .sm-ai-note-icon { width:38px; height:38px; flex-shrink:0; border-radius:12px; background:var(--cin-accent); color:var(--cin-accent-ink); display:flex; align-items:center; justify-content:center; font-size:19px; }
+    .sm-ai-note-title { font-family:var(--font-display); font-size:18px; letter-spacing:1px; color:var(--cin-text); margin:0 0 3px; }
+    .sm-ai-note-body { font-size:13px; line-height:1.7; color:var(--cin-muted); margin:0; }
+    @keyframes smNoteUp { from{ opacity:0; transform:translateY(8px); } }
 
     .sm-filterbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--cin-glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border); border-radius:14px; padding:14px 16px; margin-bottom:22px; }
     .sm-filter-group { display:flex; flex-direction:column; gap:4px; }
@@ -114,7 +119,9 @@ function Products() {
   const [likedIds, setLikedIds] = useState(new Set());
   const [query, setQuery] = useState("");
   const [aiResult, setAiResult] = useState("");
+  const [aiUnavailable, setAiUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fetchFailed, setFetchFailed] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
 
   // FILTERS
@@ -128,12 +135,19 @@ function Products() {
   const [addingId, setAddingId] = useState(null);
   const [toast, setToast] = useState("");
 
+  const loadProducts = () => {
+    setLoading(true);
+    setFetchFailed(false);
+    API.get("/products/")
+      .then((res) => { setProducts(res.data); setFetchFailed(false); })
+      .catch((err) => { console.error(err); setFetchFailed(true); })
+      .finally(() => setLoading(false));
+  };
+
   useEffect(() => {
     injectStyles();
-    API.get("/products/")
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+    loadProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -185,11 +199,14 @@ function Products() {
     if (!query.trim()) return;
     setAiLoading(true);
     setAiResult("");
+    setAiUnavailable(false);
     try {
       const res = await API.post("/products/ai-search/", { query });
       setAiResult(res.data.result);
     } catch (err) {
-      setAiResult("Something went wrong. Please try again.");
+      // AI temporarily down — the grid below still live-filters by the query,
+      // so tell the customer that instead of showing a raw error
+      setAiUnavailable(true);
     } finally {
       setAiLoading(false);
     }
@@ -266,6 +283,18 @@ function Products() {
             <button className="sm-search-btn" onClick={handleSearch} disabled={aiLoading}>{aiLoading ? "..." : "SEARCH"}</button>
           </div>
           {aiResult && <div className="sm-ai-result">{aiResult}</div>}
+          {aiUnavailable && (
+            <div className="sm-ai-note">
+              <div className="sm-ai-note-icon">✨</div>
+              <div>
+                <p className="sm-ai-note-title">OUR AI STYLIST IS TAKING A QUICK BREAK</p>
+                <p className="sm-ai-note-body">
+                  No worries — your search still works! The collection below is already filtered
+                  for “{query}”. Try the AI stylist again in a few minutes.
+                </p>
+              </div>
+            </div>
+          )}
         </Reveal>
 
         {/* FILTER BAR */}
@@ -330,6 +359,18 @@ function Products() {
                 </div>
               </div>
             ))}
+          </div>
+        ) : fetchFailed && products.length === 0 ? (
+          <div className="cin-glass cin-empty" style={{ maxWidth: "560px", margin: "0 auto" }}>
+            <div style={{ fontSize: "40px", marginBottom: "10px" }}>👟</div>
+            <div className="cin-empty-title" style={{ fontSize: "40px" }}>RESTOCKING THE SHELVES</div>
+            <div className="cin-sub" style={{ margin: "10px 0 24px", lineHeight: 1.7 }}>
+              Fresh kicks are on their way — we couldn't reach the store right now.
+              <br />Give it a moment and try again.
+            </div>
+            <button className="cin-btn cin-btn-primary" onClick={loadProducts}>
+              ↻ Try Again
+            </button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="cin-empty">

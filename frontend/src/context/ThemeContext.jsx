@@ -5,6 +5,14 @@ const ThemeContext = createContext(null);
 const getSystemTheme = () =>
   window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
+// One-time migration: themes saved before the cinematic redesign ("auto"/"light")
+// would render the new pages washed-out; reset once to the new dark default.
+// Users can still pick light/auto again in Settings afterwards.
+if (typeof window !== "undefined" && !localStorage.getItem("sm_theme_v2")) {
+  localStorage.setItem("sm_theme_v2", "1");
+  localStorage.setItem("theme", "dark");
+}
+
 export function ThemeProvider({ children }) {
   // Cinematic dark is the brand default; "auto"/"light" remain selectable in Settings.
   const [theme, setThemeState] = useState(() => localStorage.getItem("theme") || "dark");
