@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API, { getImage } from "../utils/api";
 import useIsMobile from "../utils/useIsMobile";
+import PageShell from "../components/ui/PageShell";
+import Reveal from "../components/ui/Reveal";
+import "../styles/cinematic.css";
 
 /* ---------- styles (keyframes inline styles lo raavu, anduke inject) ---------- */
 const injectCartStyles = () => {
@@ -9,52 +12,39 @@ const injectCartStyles = () => {
   const s = document.createElement('style');
   s.id = 'solemate-cart-style';
   s.innerHTML = `
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap');
-
-    .smc-root { min-height:100vh; background:transparent; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
-    .smc-root::before {
-      content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-      background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);
-      background-size:54px 54px;
-    }
-    .smc-inner { position:relative; z-index:1; }
-    .smc-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:3px; color:#888; text-transform:uppercase; }
-    .smc-h1 { font-family:'Bebas Neue',sans-serif; letter-spacing:1px; line-height:0.9; color:#1a1a1a; margin:6px 0 0; }
-    .smc-mono { font-family:'Space Mono',monospace; font-weight:700; }
-
-    .smc-item { background:#fff; border:1px solid #eee; border-radius:14px; transition:opacity .28s ease, transform .28s ease, box-shadow .25s; }
-    .smc-item:hover { box-shadow:0 10px 28px rgba(0,0,0,.07); }
+    .smc-item { background:var(--cin-glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid var(--cin-border); border-radius:16px; transition:opacity .28s ease, transform .28s ease, box-shadow .25s, border-color .25s; }
+    .smc-item:hover { box-shadow:var(--cin-shadow-soft); border-color:var(--cin-border-strong); transform:translateY(-2px); }
     .smc-item.removing { opacity:0; transform:translateX(40px) scale(.96); }
 
-    .smc-step { width:34px; height:34px; border-radius:50%; border:1px solid #e0e0e0; background:#fff; color:#1a1a1a; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
-    .smc-step:hover { background:#1a1a1a; color:#e8ff3b; border-color:#1a1a1a; }
+    .smc-step { width:34px; height:34px; border-radius:50%; border:1px solid var(--cin-border); background:var(--cin-input-bg); color:var(--cin-text); cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .smc-step:hover { background:var(--cin-accent); color:var(--cin-accent-ink); border-color:var(--cin-accent); }
 
-    .smc-btn { background:#1a1a1a; color:#e8ff3b; border:none; border-radius:10px; font-family:'Space Mono',monospace; font-weight:700; letter-spacing:1px; cursor:pointer; transition:transform .12s, background .2s; }
-    .smc-btn:hover { background:#000; }
+    .smc-btn { background:var(--cin-accent); color:var(--cin-accent-ink); border:none; border-radius:12px; font-family:'Space Mono',monospace; font-weight:700; letter-spacing:1px; cursor:pointer; transition:transform .12s, box-shadow .2s; }
+    .smc-btn:hover { transform:translateY(-1px); box-shadow:0 10px 26px rgba(232,255,59,.28); }
     .smc-btn:active { transform:scale(.98); }
     .smc-btn:disabled { opacity:.5; cursor:not-allowed; }
 
-    .smc-pay { flex:1; padding:13px; border-radius:10px; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; cursor:pointer; transition:all .18s; }
+    .smc-pay { flex:1; padding:13px; border-radius:12px; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; cursor:pointer; transition:all .18s; }
 
-    .smc-prog { height:7px; background:#eee; border-radius:99px; overflow:hidden; }
-    .smc-prog-fill { height:100%; background:linear-gradient(90deg,#1a1a1a,#444); border-radius:99px; animation:smcFill 1s cubic-bezier(.22,1,.36,1) both; }
+    .smc-prog { height:7px; background:var(--cin-surface-2); border-radius:99px; overflow:hidden; }
+    .smc-prog-fill { height:100%; background:linear-gradient(90deg,var(--cin-accent),#b8d02c); border-radius:99px; animation:smcFill 1s cubic-bezier(.22,1,.36,1) both; }
     @keyframes smcFill { from{ width:0; } }
 
     /* ---- SUCCESS OVERLAY ---- */
-    .smc-overlay { position:fixed; inset:0; z-index:3000; background:rgba(10,10,10,.86); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; animation:smcFade .3s ease; }
+    .smc-overlay { position:fixed; inset:0; z-index:3000; background:rgba(5,5,10,.7); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; animation:smcFade .3s ease; }
     @keyframes smcFade { from{ opacity:0; } }
-    .smc-card-success { background:#fff; border-radius:24px; padding:44px 32px; max-width:420px; width:100%; text-align:center; position:relative; animation:smcPop .5s cubic-bezier(.18,1.25,.4,1) both; }
+    .smc-card-success { background:var(--cin-glass-strong); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid var(--cin-border-strong); border-radius:24px; padding:44px 32px; max-width:420px; width:100%; text-align:center; position:relative; box-shadow:var(--cin-shadow); animation:smcPop .5s cubic-bezier(.18,1.25,.4,1) both; }
     @keyframes smcPop { from{ opacity:0; transform:translateY(24px) scale(.9); } }
 
     .smc-ring { width:96px; height:96px; margin:0 auto 22px; position:relative; }
     .smc-ring svg { width:100%; height:100%; transform:rotate(-90deg); }
     .smc-ring circle { fill:none; stroke-width:5; }
-    .smc-ring .bg { stroke:#eee; }
-    .smc-ring .fg { stroke:#1a1a1a; stroke-linecap:round; stroke-dasharray:283; stroke-dashoffset:283; animation:smcRing 0.7s ease forwards .15s; }
+    .smc-ring .bg { stroke:var(--cin-surface-2); }
+    .smc-ring .fg { stroke:var(--cin-accent); stroke-linecap:round; stroke-dasharray:283; stroke-dashoffset:283; animation:smcRing 0.7s ease forwards .15s; }
     @keyframes smcRing { to{ stroke-dashoffset:0; } }
     .smc-tick { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
     .smc-tick svg { width:46px; height:46px; transform:none; }
-    .smc-tick path { fill:none; stroke:#1a1a1a; stroke-width:6; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:60; stroke-dashoffset:60; animation:smcTick .4s ease forwards .6s; }
+    .smc-tick path { fill:none; stroke:var(--cin-accent); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:60; stroke-dashoffset:60; animation:smcTick .4s ease forwards .6s; }
     @keyframes smcTick { to{ stroke-dashoffset:0; } }
 
     .smc-fade-up { opacity:0; animation:smcUp .5s ease forwards; }
@@ -220,107 +210,110 @@ function Cart() {
   };
 
   if (loading) return (
-    <div className="smc-root">
-      <div style={{ padding: '140px 40px', textAlign: 'center', color: '#888', fontFamily: 'Space Mono, monospace', letterSpacing: '2px' }}>
-        LOADING BAG...
+    <PageShell ghost="BAG">
+      <div style={{ padding: '80px 40px', textAlign: 'center' }}>
+        <div className="cin-spin" style={{ marginBottom: '16px' }} />
+        <span className="cin-mono" style={{ color: 'var(--cin-muted)', letterSpacing: '2px', fontSize: '12px' }}>LOADING BAG...</span>
       </div>
-    </div>
+    </PageShell>
   );
 
   const itemCount = cart.items.reduce((a, it) => a + (it.quantity || 1), 0);
 
   return (
-    <div className="smc-root">
-      <div className="smc-inner" style={{ maxWidth: '1100px', margin: '0 auto', padding: isMobile ? '86px 16px 50px' : '110px 40px 70px' }}>
+    <PageShell ghost="BAG" maxWidth={1140}>
 
         {/* HEADER */}
-        <div style={{ marginBottom: isMobile ? '22px' : '30px' }}>
-          <span className="smc-label">— Secure Checkout</span>
-          <h1 className="smc-h1" style={{ fontSize: isMobile ? '46px' : '68px' }}>YOUR BAG</h1>
+        <Reveal style={{ marginBottom: isMobile ? '22px' : '30px' }}>
+          <span className="cin-label">Secure Checkout</span>
+          <h1 className="cin-title" style={{ fontSize: isMobile ? '46px' : '68px' }}>YOUR BAG</h1>
           {cart.items.length > 0 && (
-            <span className="smc-label" style={{ color: '#bbb' }}>{itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'}</span>
+            <span className="cin-mono" style={{ fontSize: '11px', letterSpacing: '2px', color: 'var(--cin-faint)' }}>{itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'}</span>
           )}
-        </div>
+        </Reveal>
 
         {cart.items.length === 0 ? (
           /* EMPTY */
-          <div style={{ textAlign: 'center', padding: isMobile ? '60px 20px' : '90px 20px', background: '#fff', borderRadius: '20px', border: '1px solid #eee' }}>
+          <Reveal className="cin-glass" style={{ textAlign: 'center', padding: isMobile ? '60px 20px' : '90px 20px' }}>
             <div style={{ fontSize: '50px', marginBottom: '14px' }}>🛒</div>
-            <h2 className="smc-h1" style={{ fontSize: '34px', marginBottom: '8px' }}>BAG IS EMPTY</h2>
-            <p style={{ color: '#999', fontSize: '14px', marginBottom: '26px' }}>Time to find your next pair.</p>
+            <h2 className="cin-title" style={{ fontSize: '38px', marginBottom: '8px' }}>BAG IS EMPTY</h2>
+            <p className="cin-sub" style={{ marginBottom: '26px' }}>Time to find your next pair.</p>
             <button className="smc-btn" onClick={() => navigate('/products')} style={{ padding: '14px 30px', fontSize: '13px' }}>
               BROWSE KICKS →
             </button>
-          </div>
+          </Reveal>
         ) : (
           /* TWO COLUMN: items | summary */
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: isMobile ? '18px' : '28px', alignItems: 'start' }}>
 
             {/* LEFT — items */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {cart.items.map(item => (
-                <div key={item.id} className={`smc-item ${removingId === item.id ? 'removing' : ''}`}
+              {cart.items.map((item, idx) => (
+                <Reveal key={item.id} delay={idx * 70}>
+                <div className={`smc-item ${removingId === item.id ? 'removing' : ''}`}
                   style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '18px', padding: isMobile ? '12px' : '16px' }}>
                   <img
                     src={getImage(item?.product?.image)}
                     alt={item?.product?.name}
-                    style={{ width: isMobile ? '64px' : '84px', height: isMobile ? '64px' : '84px', objectFit: 'contain', borderRadius: '10px', background: '#f8f8f8', padding: '6px', flexShrink: 0 }}
+                    style={{ width: isMobile ? '64px' : '84px', height: isMobile ? '64px' : '84px', objectFit: 'contain', borderRadius: '10px', background: 'var(--cin-img-bg)', padding: '6px', flexShrink: 0, filter: 'drop-shadow(0 8px 10px rgba(0,0,0,.3))' }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontFamily: 'Bebas Neue, sans-serif', fontSize: isMobile ? '20px' : '24px', letterSpacing: '.5px', lineHeight: 1.05, color: '#1a1a1a' }}>
+                    <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: isMobile ? '20px' : '24px', letterSpacing: '.5px', lineHeight: 1.05, color: 'var(--cin-text)' }}>
                       {item?.product?.name}
                     </p>
-                    <p className="smc-mono" style={{ margin: '4px 0 0', color: '#1a1a1a', fontSize: '13px' }}>
+                    <p className="cin-mono" style={{ margin: '4px 0 0', color: 'var(--cin-accent)', fontSize: '13px' }}>
                       ₹{item?.product?.price}
                     </p>
                     {isMobile && (
-                      <button onClick={() => removeItem(item.id)} style={{ marginTop: '6px', background: 'none', border: 'none', color: '#e53935', fontSize: '12px', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
+                      <button onClick={() => removeItem(item.id)} style={{ marginTop: '6px', background: 'none', border: 'none', color: 'var(--cin-danger)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
                         Remove
                       </button>
                     )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <button className="smc-step" onClick={() => updateQty(item.id, item.quantity - 1)}>−</button>
-                    <span className="smc-mono" style={{ fontSize: '15px', minWidth: '22px', textAlign: 'center', color: '#1a1a1a' }}>{item.quantity}</span>
+                    <span className="cin-mono" style={{ fontSize: '15px', minWidth: '22px', textAlign: 'center', color: 'var(--cin-text)' }}>{item.quantity}</span>
                     <button className="smc-step" onClick={() => updateQty(item.id, item.quantity + 1)}>+</button>
                   </div>
                   {!isMobile && (
-                    <button onClick={() => removeItem(item.id)} style={{ padding: '8px 14px', background: '#fff', border: '1px solid #ffcdd2', borderRadius: '8px', color: '#e53935', cursor: 'pointer', fontWeight: 600, fontSize: '12px' }}>
+                    <button onClick={() => removeItem(item.id)} className="cin-btn cin-btn-danger" style={{ padding: '8px 14px', fontSize: '10px' }}>
                       Remove
                     </button>
                   )}
                 </div>
+                </Reveal>
               ))}
             </div>
 
             {/* RIGHT — sticky summary */}
-            <div style={{ position: isMobile ? 'static' : 'sticky', top: '110px', background: '#fff', borderRadius: '18px', border: '1px solid #eee', padding: '22px', boxShadow: '0 4px 20px rgba(0,0,0,.05)' }}>
+            <Reveal delay={120}>
+            <div className="cin-glass" style={{ position: isMobile ? 'static' : 'sticky', top: '110px', padding: '22px' }}>
 
               {/* free shipping badge + progress */}
               <div style={{ marginBottom: '18px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '7px' }}>
-                  <span className="smc-label" style={{ color: '#15803d' }}>🚚 FREE SHIPPING UNLOCKED</span>
+                  <span className="cin-mono" style={{ fontSize: '10px', letterSpacing: '2px', color: 'var(--cin-success)' }}>🚚 FREE SHIPPING UNLOCKED</span>
                 </div>
                 <div className="smc-prog"><div className="smc-prog-fill" style={{ width: '100%' }} /></div>
               </div>
 
               {/* breakdown */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                <span>Subtotal</span><span className="smc-mono" style={{ color: '#1a1a1a' }}>₹{cart.total}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
+                <span>Subtotal</span><span className="cin-mono" style={{ color: 'var(--cin-text)' }}>₹{cart.total}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                <span>Shipping</span><span className="smc-mono" style={{ color: '#15803d' }}>FREE</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
+                <span>Shipping</span><span className="cin-mono" style={{ color: 'var(--cin-success)' }}>FREE</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderTop: '1px dashed #ddd', marginTop: '6px' }}>
-                <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '24px', letterSpacing: '1px' }}>TOTAL</span>
-                <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '34px', letterSpacing: '.5px', color: '#1a1a1a' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderTop: '1px dashed var(--cin-border-strong)', marginTop: '6px' }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', color: 'var(--cin-text)' }}>TOTAL</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '34px', letterSpacing: '.5px', color: 'var(--cin-accent)' }}>
                   <CountUp value={cart.total} />
                 </span>
               </div>
 
               {/* delivery estimate */}
-              <div style={{ background: '#f8f8f8', borderRadius: '10px', padding: '11px 14px', fontSize: '13px', color: '#555', marginBottom: '18px' }}>
-                📦 Delivery by <strong style={{ color: '#1a1a1a' }}>{deliveryDate}</strong>
+              <div className="cin-panel" style={{ padding: '11px 14px', fontSize: '13px', color: 'var(--cin-muted)', marginBottom: '18px' }}>
+                📦 Delivery by <strong style={{ color: 'var(--cin-text)' }}>{deliveryDate}</strong>
               </div>
 
               {step === 'cart' ? (
@@ -330,45 +323,45 @@ function Cart() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
                   <input
+                    className="cin-input"
                     placeholder="Shipping Address"
                     value={form.shipping_address}
                     onChange={e => setForm({ ...form, shipping_address: e.target.value })}
-                    style={{ padding: '12px 14px', borderRadius: '9px', border: '1px solid #e0e0e0', background: '#f8f8f8', color: '#1a1a1a', fontSize: '14px', outline: 'none' }}
                   />
                   <input
+                    className="cin-input"
                     placeholder="Phone Number"
                     value={form.phone}
                     onChange={e => setForm({ ...form, phone: e.target.value })}
-                    style={{ padding: '12px 14px', borderRadius: '9px', border: '1px solid #e0e0e0', background: '#f8f8f8', color: '#1a1a1a', fontSize: '14px', outline: 'none' }}
                   />
                   <div style={{ display: 'flex', gap: '9px' }}>
                     <button className="smc-pay" onClick={() => setPaymentMethod('razorpay')}
-                      style={{ background: paymentMethod === 'razorpay' ? '#1a1a1a' : '#f5f5f5', color: paymentMethod === 'razorpay' ? '#e8ff3b' : '#999', border: paymentMethod === 'razorpay' ? '2px solid #1a1a1a' : '1px solid #e0e0e0' }}>
+                      style={{ background: paymentMethod === 'razorpay' ? 'var(--cin-accent)' : 'var(--cin-input-bg)', color: paymentMethod === 'razorpay' ? 'var(--cin-accent-ink)' : 'var(--cin-faint)', border: paymentMethod === 'razorpay' ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)' }}>
                       💳 ONLINE
                     </button>
                     <button className="smc-pay" onClick={() => setPaymentMethod('cod')}
-                      style={{ background: paymentMethod === 'cod' ? '#1a1a1a' : '#f5f5f5', color: paymentMethod === 'cod' ? '#e8ff3b' : '#999', border: paymentMethod === 'cod' ? '2px solid #1a1a1a' : '1px solid #e0e0e0' }}>
+                      style={{ background: paymentMethod === 'cod' ? 'var(--cin-accent)' : 'var(--cin-input-bg)', color: paymentMethod === 'cod' ? 'var(--cin-accent-ink)' : 'var(--cin-faint)', border: paymentMethod === 'cod' ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)' }}>
                       🚚 COD
                     </button>
                   </div>
                   {paymentMethod === 'cod' && (
-                    <div style={{ padding: '10px 13px', background: '#fffde7', border: '1px solid #fff176', borderRadius: '8px', fontSize: '12px', color: '#795548' }}>
+                    <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)' }}>
                       💡 Pay in cash when your order arrives.
                     </div>
                   )}
                   <button className="smc-btn" onClick={handleCheckout} disabled={placing}
-                    style={{ padding: '15px', fontSize: '14px', background: placing ? '#ccc' : '#1a1a1a' }}>
+                    style={{ padding: '15px', fontSize: '14px' }}>
                     {placing ? "PROCESSING..." : paymentMethod === 'cod' ? "🚚 PLACE ORDER" : "💳 PAY NOW"}
                   </button>
-                  <button onClick={() => setStep('cart')} style={{ padding: '11px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '9px', color: '#888', cursor: 'pointer', fontSize: '13px' }}>
+                  <button className="cin-btn cin-btn-ghost" onClick={() => setStep('cart')} style={{ padding: '11px', fontSize: '11px' }}>
                     ← Back to Bag
                   </button>
                 </div>
               )}
             </div>
+            </Reveal>
           </div>
         )}
-      </div>
 
       {/* ===================== SUCCESS OVERLAY ===================== */}
       {success && (
@@ -386,21 +379,21 @@ function Cart() {
             </div>
 
             <div className="smc-fade-up" style={{ animationDelay: '.7s' }}>
-              <span className="smc-label" style={{ color: '#15803d' }}>● ORDER CONFIRMED</span>
-              <h2 className="smc-h1" style={{ fontSize: '44px', margin: '8px 0 4px' }}>YOU'RE ALL SET</h2>
-              <p style={{ color: '#888', fontSize: '14px', margin: '0 0 20px' }}>
+              <span className="cin-mono" style={{ fontSize: '10px', letterSpacing: '2px', color: 'var(--cin-success)' }}>● ORDER CONFIRMED</span>
+              <h2 className="cin-title" style={{ fontSize: '44px', margin: '8px 0 4px' }}>YOU'RE ALL SET</h2>
+              <p className="cin-sub" style={{ margin: '0 0 20px' }}>
                 {success.method === 'cod' ? 'Pay cash on delivery.' : 'Payment received successfully.'}
               </p>
             </div>
 
-            <div className="smc-fade-up" style={{ animationDelay: '.85s', background: '#f8f8f8', borderRadius: '14px', padding: '16px', marginBottom: '22px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+            <div className="smc-fade-up cin-panel" style={{ animationDelay: '.85s', padding: '16px', marginBottom: '22px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '8px' }}>
                 <span>Amount</span>
-                <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '24px', color: '#1a1a1a' }}>₹{success.total}</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', color: 'var(--cin-accent)' }}>₹{success.total}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#666' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--cin-muted)' }}>
                 <span>Arrives by</span>
-                <strong style={{ color: '#1a1a1a' }}>{deliveryDate}</strong>
+                <strong style={{ color: 'var(--cin-text)' }}>{deliveryDate}</strong>
               </div>
             </div>
 
@@ -408,15 +401,15 @@ function Cart() {
               <button className="smc-btn" onClick={() => { setSuccess(null); navigate('/orders'); }} style={{ flex: 1, padding: '14px', fontSize: '13px' }}>
                 VIEW ORDERS
               </button>
-              <button onClick={() => { setSuccess(null); navigate('/products'); }}
-                style={{ flex: 1, padding: '14px', background: '#fff', border: '1px solid #e0e0e0', borderRadius: '10px', fontFamily: 'Space Mono, monospace', fontWeight: 700, fontSize: '13px', letterSpacing: '1px', color: '#1a1a1a', cursor: 'pointer' }}>
+              <button className="cin-btn cin-btn-ghost" onClick={() => { setSuccess(null); navigate('/products'); }}
+                style={{ flex: 1, padding: '14px', fontSize: '11px' }}>
                 SHOP MORE
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }
 
