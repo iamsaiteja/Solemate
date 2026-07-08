@@ -34,9 +34,11 @@ function MegaMenu({ data, visible, dark }) {
     <div
       style={{
         position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)",
-        width: "1000px", background: dark ? "#18181b" : "#fff",
-        borderTop: dark ? "1px solid #2a2a2e" : "1px solid #e5e5e5",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.25)", padding: "40px 60px",
+        width: "1000px", background: "var(--cin-glass-strong, rgba(14,14,22,.9))",
+        backdropFilter: "blur(20px) saturate(140%)", WebkitBackdropFilter: "blur(20px) saturate(140%)",
+        borderTop: "1px solid var(--cin-border)", border: "1px solid var(--cin-border)",
+        borderRadius: "0 0 18px 18px",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.35)", padding: "40px 60px",
         display: "grid", gridTemplateColumns: `repeat(${Object.keys(data).length}, 1fr)`,
         gap: "50px", zIndex: 999, opacity: visible ? 1 : 0,
         pointerEvents: visible ? "all" : "none", transition: "opacity 0.18s ease",
@@ -44,16 +46,16 @@ function MegaMenu({ data, visible, dark }) {
     >
       {Object.entries(data).map(([category, items]) => (
         <div key={category}>
-          <p style={{ fontSize: "12px", fontWeight: "700", color: dark ? "#f4f4f5" : "#111", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
+          <p style={{ fontSize: "12px", fontWeight: "700", color: "var(--cin-accent)", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "12px" }}>
             {category}
           </p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {items.map((item) => (
               <li key={item} style={{ marginBottom: "8px" }}>
                 <Link to={`/products?category=${encodeURIComponent(item.toLowerCase())}`}
-                  style={{ fontSize: "14px", color: dark ? "#9a9aa2" : "#555", textDecoration: "none", transition: "color 0.15s" }}
-                  onMouseEnter={(e) => (e.target.style.color = dark ? "#fff" : "#111")}
-                  onMouseLeave={(e) => (e.target.style.color = dark ? "#9a9aa2" : "#555")}>
+                  style={{ fontSize: "14px", color: "var(--cin-muted)", textDecoration: "none", transition: "color 0.15s" }}
+                  onMouseEnter={(e) => (e.target.style.color = "var(--cin-text)")}
+                  onMouseLeave={(e) => (e.target.style.color = "var(--cin-muted)")}>
                   {item}
                 </Link>
               </li>
@@ -80,10 +82,11 @@ function Navbar() {
   const themeCtx = useTheme() || {};
   const dark = themeCtx.resolvedTheme === "dark";
 
-  const navBg = dark ? "rgba(24,24,27,0.85)" : "rgba(255,255,255,0.85)";
-  const navText = dark ? "#f4f4f5" : "#111";
-  const navMuted = dark ? "#9a9aa2" : "#444";
-  const navBorder = dark ? "#2a2a2e" : "#eee";
+  const navBg = "var(--cin-nav-bg, rgba(11,11,17,0.62))";
+  const navText = "var(--cin-text, #f4f4f7)";
+  const navMuted = "var(--cin-muted, rgba(244,244,247,0.6))";
+  const navBorder = "var(--cin-nav-border, rgba(255,255,255,0.08))";
+  const accent = "var(--cin-accent, #e8ff3b)";
 
   useEffect(() => {
     const token = localStorage.getItem("access");
@@ -108,7 +111,7 @@ function Navbar() {
     return {
       fontSize: "13px", fontWeight: "600", color: isActive ? navText : navMuted,
       textDecoration: "none", letterSpacing: "0.02em", padding: "4px 0",
-      borderBottom: isActive ? `2px solid ${navText}` : "2px solid transparent",
+      borderBottom: isActive ? `2px solid ${accent}` : "2px solid transparent",
       transition: "color 0.15s, border-color 0.15s",
     };
   };
@@ -157,7 +160,7 @@ function Navbar() {
             <Link to="/products" style={navLinkStyle("/products")} onMouseEnter={() => setActiveMenu(null)}>Products</Link>
             {megaItems.map(({ key, label, path }) => (
               <div key={key} style={{ position: "relative", height: "100%", display: "flex", alignItems: "center" }} onMouseEnter={() => setActiveMenu(key)}>
-                <Link to={path} style={{ ...navLinkStyle("/products"), color: activeMenu === key ? navText : navMuted, borderBottom: activeMenu === key ? `2px solid ${navText}` : "2px solid transparent" }}>
+                <Link to={path} style={{ ...navLinkStyle("/products"), color: activeMenu === key ? navText : navMuted, borderBottom: activeMenu === key ? `2px solid ${accent}` : "2px solid transparent" }}>
                   {label}
                 </Link>
                 <MegaMenu data={megaMenuData[key]} visible={activeMenu === key} dark={dark} />
@@ -179,14 +182,14 @@ function Navbar() {
                   <span style={{ fontSize: "13px", fontWeight: "700", color: navText }}>{user}</span>
                   {email && <span style={{ fontSize: "11px", color: navMuted }}>{email}</span>}
                 </div>
-                <button onClick={logout} style={{ background: dark ? "#e8ff3b" : "#111", color: dark ? "#1a1a1a" : "#fff", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+                <button onClick={logout} style={{ background: accent, color: "#1a1a1a", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
                   Logout
                 </button>
               </>
             ) : (
               <>
                 <Link to="/login" style={navLinkStyle("/login")}>Login</Link>
-                <Link to="/register" style={{ background: "#111", color: "#e8ff3b", padding: "9px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "13px" }}>Register</Link>
+                <Link to="/register" style={{ background: accent, color: "#1a1a1a", padding: "9px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "13px" }}>Register</Link>
               </>
             )}
           </div>
@@ -203,7 +206,7 @@ function Navbar() {
       </nav>
 
       {isMobile && !isLoginPage && menuOpen && (
-        <div style={{ position: "fixed", top: 94, left: 0, right: 0, bottom: 0, background: dark ? "#18181b" : "#fff", zIndex: 999, padding: "20px 24px", overflowY: "auto" }}>
+        <div style={{ position: "fixed", top: 94, left: 0, right: 0, bottom: 0, background: "var(--cin-glass-strong, rgba(14,14,22,.94))", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", zIndex: 999, padding: "20px 24px", overflowY: "auto" }}>
           <Link to="/" style={mobileLink}>Home</Link>
           <Link to="/products" style={mobileLink}>Products</Link>
           {megaItems.map(({ key, label, path }) => <Link key={key} to={path} style={mobileLink}>{label}</Link>)}
@@ -219,7 +222,7 @@ function Navbar() {
                 <div style={{ fontSize: "15px", fontWeight: 700, color: navText }}>{user}</div>
                 {email && <div style={{ fontSize: "12px", color: navMuted, marginTop: "2px" }}>{email}</div>}
               </div>
-              <button onClick={logout} style={{ marginTop: "20px", width: "100%", background: dark ? "#e8ff3b" : "#111", color: dark ? "#1a1a1a" : "#fff", border: "none", padding: "14px", borderRadius: "10px", cursor: "pointer", fontSize: "15px", fontWeight: "700" }}>
+              <button onClick={logout} style={{ marginTop: "20px", width: "100%", background: accent, color: "#1a1a1a", border: "none", padding: "14px", borderRadius: "10px", cursor: "pointer", fontSize: "15px", fontWeight: "700" }}>
                 Logout
               </button>
             </>
@@ -227,7 +230,7 @@ function Navbar() {
             <>
               <Link to="/settings" style={mobileLink}>⚙ Settings</Link>
               <Link to="/login" style={mobileLink}>Login</Link>
-              <Link to="/register" style={{ marginTop: "20px", display: "block", textAlign: "center", background: "#111", color: "#e8ff3b", padding: "14px", borderRadius: "10px", textDecoration: "none", fontWeight: "700", fontSize: "15px" }}>Register</Link>
+              <Link to="/register" style={{ marginTop: "20px", display: "block", textAlign: "center", background: accent, color: "#1a1a1a", padding: "14px", borderRadius: "10px", textDecoration: "none", fontWeight: "700", fontSize: "15px" }}>Register</Link>
             </>
           )}
         </div>

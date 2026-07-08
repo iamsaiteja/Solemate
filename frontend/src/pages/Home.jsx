@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import API from "../utils/api";
 import { getImage } from "../utils/api";
 import Sneaker3DExperience from "../components/Sneaker3DExperience";
+import Reveal from "../components/ui/Reveal";
+import Tilt from "../components/ui/Tilt";
+import Footer from "../components/ui/Footer";
+import "../styles/cinematic.css";
 
 function Home() {
   const [products, setProducts] = useState([]);
@@ -39,283 +43,218 @@ function Home() {
   };
 
   return (
-    <div
-      style={{
-        background: "transparent",
-        minHeight: "100vh",
-        color: "#111",
-      }}
-    >
+    <div className="cin-page" style={{ background: "transparent" }}>
+      <div className="cin-bgfx" aria-hidden="true" />
+
       {/* 3D SCROLL EXPERIENCE HERO */}
       <Sneaker3DExperience onCta={handleProtectedRoute} />
 
       {/* STATS */}
-      <section
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          flexWrap: "wrap",
-          background: "#fff",
-          padding: "70px 20px",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        {[
-          ["10K+", "Happy Customers"],
-          ["500+", "Premium Products"],
-          ["24/7", "Support"],
-        ].map(([num, text]) => (
-          <div key={text} style={{ textAlign: "center" }}>
-            <h1
-              style={{
-                fontSize: "clamp(28px, 6vw, 52px)",
-                fontWeight: "900",
-              }}
-            >
-              {num}
-            </h1>
-
-            <p style={{ color: "#666" }}>{text}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* SPOTLIGHT */}
-      <section
-        style={{
-          background: "transparent",
-          padding: "80px 40px",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "52px",
-            marginBottom: "15px",
-            fontWeight: "900",
-          }}
-        >
-          SPOTLIGHT
-        </h2>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "#777",
-            marginBottom: "50px",
-          }}
-        >
-          Explore our most popular categories
-        </p>
-
+      <section style={{ padding: "90px 24px", maxWidth: "1100px", margin: "0 auto" }}>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
             gap: "20px",
           }}
         >
           {[
-            "Running",
-            "Lifestyle",
-            "Basketball",
-            "Training",
-            "Sports",
-            "Casual",
-          ].map((item) => (
-            <div
-              key={item}
-              style={{
-                background: "#f8f8f8",
-                padding: "35px",
-                borderRadius: "16px",
-                textAlign: "center",
-                fontWeight: "700",
-                cursor: "pointer",
-              }}
-            >
-              {item}
-            </div>
+            ["10K+", "Happy Customers"],
+            ["500+", "Premium Products"],
+            ["24/7", "Support"],
+          ].map(([num, text], i) => (
+            <Reveal key={text} delay={i * 120}>
+              <Tilt className="cin-glass" style={{ padding: "38px 20px", textAlign: "center" }}>
+                <h1
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(40px, 6vw, 64px)",
+                    letterSpacing: "1px",
+                    color: "var(--cin-accent)",
+                    margin: 0,
+                  }}
+                >
+                  {num}
+                </h1>
+                <p style={{ color: "var(--cin-muted)", marginTop: "6px", letterSpacing: "1px" }}>
+                  {text}
+                </p>
+              </Tilt>
+            </Reveal>
           ))}
         </div>
       </section>
 
-      {/* TRENDING */}
-      <section
-        style={{
-          background: "#111",
-          color: "#fff",
-          textAlign: "center",
-          padding: "100px 20px",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "clamp(28px, 7vw, 60px)",
-            marginBottom: "20px",
-          }}
-        >
-          TRENDING COLLECTION
-        </h2>
-
-        <p
-          style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            color: "#ccc",
-            lineHeight: "1.8",
-          }}
-        >
-          Discover the latest sneaker drops and premium
-          streetwear collections.
-        </p>
-      </section>
-
-      {/* FEATURED PRODUCTS */}
-      <section
-        style={{
-          padding: "80px 40px",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "clamp(24px, 5vw, 42px)",
-            marginBottom: "10px",
-          }}
-        >
-          Featured Products
-        </h2>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "#777",
-            marginBottom: "50px",
-          }}
-        >
-          Handpicked. Heat certified. Zero fake.
-        </p>
+      {/* SPOTLIGHT */}
+      <section style={{ padding: "10px 24px 90px", maxWidth: "1240px", margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: "50px" }}>
+          <span className="cin-label no-line">Spotlight</span>
+          <h2 className="cin-title" style={{ fontSize: "clamp(44px, 6vw, 72px)" }}>
+            MOST POPULAR CATEGORIES
+          </h2>
+          <p className="cin-sub">Explore the collections everyone is lacing up</p>
+        </Reveal>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
-            gap: "24px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            gap: "18px",
           }}
         >
-          {products.map((p) => (
+          {["Running", "Lifestyle", "Basketball", "Training", "Sports", "Casual"].map(
+            (item, i) => (
+              <Reveal key={item} delay={i * 80}>
+                <Tilt
+                  className="cin-glass"
+                  style={{ padding: "36px 16px", textAlign: "center", cursor: "pointer" }}
+                  onClick={() =>
+                    navigate(`/products?category=${encodeURIComponent(item.toLowerCase())}`)
+                  }
+                >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "24px",
+                      letterSpacing: "2px",
+                      color: "var(--cin-text)",
+                    }}
+                  >
+                    {item}
+                  </span>
+                </Tilt>
+              </Reveal>
+            )
+          )}
+        </div>
+      </section>
+
+      {/* TRENDING */}
+      <section style={{ padding: "0 24px 90px", maxWidth: "1240px", margin: "0 auto" }}>
+        <Reveal>
+          <div
+            className="cin-glass"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              textAlign: "center",
+              padding: "clamp(60px, 9vw, 110px) 24px",
+            }}
+          >
             <div
-              key={p.id}
-              onClick={() => navigate(`/products/${p.id}`)}
+              aria-hidden="true"
               style={{
-                background: "#fff",
-                borderRadius: "18px",
-                overflow: "hidden",
-                cursor: "pointer",
-                border: "1px solid #eee",
-                transition: ".3s",
+                position: "absolute",
+                inset: 0,
+                background:
+                  "radial-gradient(ellipse 60% 80% at 50% 120%, var(--cin-glow), transparent 65%)",
+                pointerEvents: "none",
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(90px, 16vw, 220px)",
+                letterSpacing: "6px",
+                color: "transparent",
+                WebkitTextStroke: "1.5px var(--cin-ghost)",
+                whiteSpace: "nowrap",
+                pointerEvents: "none",
               }}
             >
-              <div
-                style={{
-                  background: "#f8f8f8",
-                  padding: "25px",
-                }}
+              TRENDING
+            </span>
+            <span className="cin-label no-line">The Heat List</span>
+            <h2 className="cin-title" style={{ fontSize: "clamp(40px, 6vw, 68px)" }}>
+              TRENDING COLLECTION
+            </h2>
+            <p className="cin-sub" style={{ maxWidth: "620px", margin: "10px auto 0", lineHeight: 1.8 }}>
+              Discover the latest sneaker drops and premium streetwear collections.
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* FEATURED PRODUCTS */}
+      <section style={{ padding: "0 24px 100px", maxWidth: "1240px", margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: "50px" }}>
+          <span className="cin-label no-line">Featured</span>
+          <h2 className="cin-title" style={{ fontSize: "clamp(40px, 5vw, 64px)" }}>
+            FEATURED PRODUCTS
+          </h2>
+          <p className="cin-sub">Handpicked. Heat certified. Zero fake.</p>
+        </Reveal>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
+            gap: "22px",
+          }}
+        >
+          {products.map((p, i) => (
+            <Reveal key={p.id} delay={(i % 4) * 90}>
+              <Tilt
+                className="cin-glass"
+                style={{ overflow: "hidden", cursor: "pointer" }}
+                onClick={() => navigate(`/products/${p.id}`)}
               >
-                <img
-                  src={getImage(p.image)}
-                  alt={p.name}
-                  style={{
-                    width: "100%",
-                    height: "250px",
-                    objectFit: "contain",
-                  }}
-                />
-              </div>
+                <div style={{ background: "var(--cin-img-bg)", padding: "24px" }}>
+                  <img
+                    src={getImage(p.image)}
+                    alt={p.name}
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      height: "230px",
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 18px 22px rgba(0,0,0,.35))",
+                    }}
+                  />
+                </div>
 
-              <div style={{ padding: "20px" }}>
-                <h3
-                  style={{
-                    marginBottom: "10px",
-                    fontSize: "17px",
-                  }}
-                >
-                  {p.name}
-                </h3>
+                <div style={{ padding: "20px" }}>
+                  <h3
+                    style={{
+                      margin: "0 0 8px",
+                      fontFamily: "var(--font-display)",
+                      fontSize: "24px",
+                      letterSpacing: "1px",
+                      color: "var(--cin-text)",
+                      fontWeight: 400,
+                    }}
+                  >
+                    {p.name}
+                  </h3>
 
-                <p
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "800",
-                  }}
-                >
-                  ₹{p.price}
-                </p>
+                  <p className="cin-mono" style={{ fontSize: "18px", color: "var(--cin-accent)", margin: 0 }}>
+                    ₹{p.price}
+                  </p>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(p.id);
-                  }}
-                  style={{
-                    width: "100%",
-                    marginTop: "15px",
-                    padding: "14px",
-                    border: "none",
-                    background: "#111",
-                    color: "#fff",
-                    borderRadius: "10px",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                  }}
-                >
-                  Add To Cart
-                </button>
-              </div>
-            </div>
+                  <button
+                    className="cin-btn cin-btn-primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(p.id);
+                    }}
+                    style={{ width: "100%", marginTop: "16px" }}
+                  >
+                    Add To Cart
+                  </button>
+                </div>
+              </Tilt>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer
-        style={{
-          background: "#fff",
-          textAlign: "center",
-          padding: "50px 20px",
-          borderTop: "1px solid #eee",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "clamp(20px, 4vw, 34px)",
-            letterSpacing: "3px",
-          }}
-        >
-          SOLEMATE
-        </h2>
-
-        <p
-          style={{
-            color: "#777",
-            marginTop: "10px",
-          }}
-        >
-          Premium Sneakers For Modern Lifestyle
-        </p>
-
-        <p
-          style={{
-            color: "#999",
-            marginTop: "15px",
-            fontSize: "13px",
-          }}
-        >
-          © 2026 SOLEMATE. All Rights Reserved.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -6,11 +6,12 @@ const getSystemTheme = () =>
   window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState] = useState(() => localStorage.getItem("theme") || "auto");
+  // Cinematic dark is the brand default; "auto"/"light" remain selectable in Settings.
+  const [theme, setThemeState] = useState(() => localStorage.getItem("theme") || "dark");
   const [language, setLanguageState] = useState(() => localStorage.getItem("language") || "en");
 
   const [resolvedTheme, setResolvedTheme] = useState(() =>
-    (localStorage.getItem("theme") || "auto") === "auto" ? getSystemTheme() : (localStorage.getItem("theme") || "light")
+    (localStorage.getItem("theme") || "dark") === "auto" ? getSystemTheme() : (localStorage.getItem("theme") || "dark")
   );
 
   // global CSS variables + SEASIDE gradient background (all pages)
@@ -19,15 +20,15 @@ export function ThemeProvider({ children }) {
     const s = document.createElement("style");
     s.id = "sm-theme-vars";
     s.innerHTML = `
-      :root, [data-theme="light"] {
-        --bg:transparent; --surface:#ffffff; --text:#1a1a1a; --muted:#777;
-        --border:#e7e2d8; --accent:#e8ff3b; --accent-ink:#1a1a1a;
-        --page-gradient: linear-gradient(165deg, #d9edf6 0%, #e8f3ee 30%, #f6f1e6 66%, #f1e6d3 100%);
+      :root, [data-theme="dark"] {
+        --bg:transparent; --surface:#14141d; --text:#f4f4f7; --muted:#9aa0ad;
+        --border:#23232e; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --page-gradient: linear-gradient(165deg, #0a0a0e 0%, #101018 55%, #14141d 100%);
       }
-      [data-theme="dark"] {
-        --bg:transparent; --surface:#161b24; --text:#f2f4f7; --muted:#9aa4b2;
-        --border:#252d3a; --accent:#e8ff3b; --accent-ink:#1a1a1a;
-        --page-gradient: linear-gradient(165deg, #0a1622 0%, #0e1c2b 46%, #14273b 100%);
+      [data-theme="light"] {
+        --bg:transparent; --surface:#ffffff; --text:#17171b; --muted:#777;
+        --border:#e2ded2; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --page-gradient: linear-gradient(165deg, #f6f4ee 0%, #efece3 55%, #e7e4da 100%);
       }
       body {
         background: var(--page-gradient);

@@ -1,0 +1,439 @@
+/* ==========================================================
+   SOLEMATE CINEMATIC DESIGN SYSTEM
+   One design language for every page, derived from the
+   3D homepage hero: dark cinema, glass, Bebas display type,
+   #e8ff3b accent, soft glows, subtle 3D depth.
+   Tokens flip with [data-theme] so the theme toggle keeps working.
+========================================================== */
+
+:root,
+[data-theme="dark"] {
+  --cin-bg-0: #0a0a0e;
+  --cin-bg-1: #14141d;
+  --cin-text: #f4f4f7;
+  --cin-muted: rgba(244, 244, 247, 0.6);
+  --cin-faint: rgba(244, 244, 247, 0.34);
+  --cin-surface: rgba(255, 255, 255, 0.05);
+  --cin-surface-2: rgba(255, 255, 255, 0.08);
+  --cin-glass: rgba(16, 16, 24, 0.55);
+  --cin-glass-strong: rgba(14, 14, 22, 0.82);
+  --cin-border: rgba(255, 255, 255, 0.1);
+  --cin-border-strong: rgba(255, 255, 255, 0.2);
+  --cin-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  --cin-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --cin-ghost: rgba(255, 255, 255, 0.055);
+  --cin-accent: #e8ff3b;
+  --cin-accent-ink: #111111;
+  --cin-glow: rgba(232, 255, 59, 0.09);
+  --cin-danger: #ff5a5a;
+  --cin-danger-bg: rgba(255, 90, 90, 0.12);
+  --cin-success: #4ade80;
+  --cin-success-bg: rgba(74, 222, 128, 0.12);
+  --cin-input-bg: rgba(255, 255, 255, 0.06);
+  --cin-img-bg: rgba(255, 255, 255, 0.04);
+  --cin-nav-bg: rgba(11, 11, 17, 0.62);
+  --cin-nav-border: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] {
+  --cin-bg-0: #f3f1ea;
+  --cin-bg-1: #e7e4da;
+  --cin-text: #17171b;
+  --cin-muted: rgba(23, 23, 27, 0.62);
+  --cin-faint: rgba(23, 23, 27, 0.38);
+  --cin-surface: rgba(255, 255, 255, 0.62);
+  --cin-surface-2: rgba(255, 255, 255, 0.85);
+  --cin-glass: rgba(255, 255, 255, 0.55);
+  --cin-glass-strong: rgba(255, 255, 255, 0.85);
+  --cin-border: rgba(23, 23, 27, 0.1);
+  --cin-border-strong: rgba(23, 23, 27, 0.22);
+  --cin-shadow: 0 24px 60px rgba(23, 23, 27, 0.14);
+  --cin-shadow-soft: 0 10px 30px rgba(23, 23, 27, 0.1);
+  --cin-ghost: rgba(23, 23, 27, 0.05);
+  --cin-accent: #e8ff3b;
+  --cin-accent-ink: #111111;
+  --cin-glow: rgba(232, 255, 59, 0.22);
+  --cin-danger: #d92f2f;
+  --cin-danger-bg: rgba(217, 47, 47, 0.09);
+  --cin-success: #15803d;
+  --cin-success-bg: rgba(21, 128, 61, 0.1);
+  --cin-input-bg: rgba(255, 255, 255, 0.75);
+  --cin-img-bg: rgba(255, 255, 255, 0.8);
+  --cin-nav-bg: rgba(247, 245, 239, 0.7);
+  --cin-nav-border: rgba(23, 23, 27, 0.08);
+}
+
+/* ---------- page scaffold ---------- */
+
+.cin-page {
+  position: relative;
+  min-height: 100vh;
+  color: var(--cin-text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+.cin-bgfx {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 55% at 75% -5%, var(--cin-glow), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 10% 105%, var(--cin-glow), transparent 65%),
+    linear-gradient(165deg, var(--cin-bg-0) 0%, var(--cin-bg-1) 100%);
+}
+
+.cin-bgfx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--cin-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cin-border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.28;
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 20%, #000 30%, transparent 75%);
+          mask-image: radial-gradient(ellipse 90% 80% at 50% 20%, #000 30%, transparent 75%);
+}
+
+.cin-page-ghost {
+  position: fixed;
+  top: 8vh;
+  right: -1vw;
+  z-index: -1;
+  font-family: var(--font-display);
+  font-size: clamp(120px, 20vw, 300px);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--cin-ghost);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cin-page-inner {
+  position: relative;
+  margin: 0 auto;
+  padding: 128px 28px 90px;
+}
+
+/* ---------- typography ---------- */
+
+.cin-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cin-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cin-label::before {
+  content: "";
+  width: 30px;
+  height: 1px;
+  background: currentColor;
+}
+
+.cin-label.no-line::before { display: none; }
+
+.cin-title {
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+  line-height: 0.92;
+  color: var(--cin-text);
+  margin: 10px 0 6px;
+}
+
+.cin-sub {
+  color: var(--cin-muted);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.cin-mono {
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+}
+
+/* ---------- glass panels & 3D cards ---------- */
+
+.cin-glass {
+  background: var(--cin-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+          backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--cin-border);
+  border-radius: 18px;
+  box-shadow: var(--cin-shadow-soft);
+}
+
+.cin-panel {
+  background: var(--cin-surface);
+  border: 1px solid var(--cin-border);
+  border-radius: 18px;
+}
+
+/* Tilt.jsx drives --rx / --ry; everything else is pure CSS */
+.cin-tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
+    translateY(var(--lift, 0px));
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  will-change: transform;
+}
+
+.cin-tilt:hover {
+  --lift: -5px;
+  box-shadow: var(--cin-shadow);
+  border-color: var(--cin-border-strong);
+}
+
+.cin-tilt .cin-tilt-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.09), transparent 55%);
+}
+
+.cin-tilt:hover .cin-tilt-shine { opacity: 1; }
+
+/* ---------- buttons ---------- */
+
+.cin-btn {
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 12px;
+  padding: 14px 26px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  position: relative;
+  transform: translateY(0);
+  transition: transform 0.15s ease, box-shadow 0.25s ease, background 0.2s ease,
+    color 0.2s ease, border-color 0.2s ease;
+}
+
+.cin-btn:hover { transform: translateY(-2px); }
+.cin-btn:active { transform: translateY(0) scale(0.98); }
+.cin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.cin-btn-primary {
+  background: var(--cin-accent);
+  color: var(--cin-accent-ink);
+}
+
+.cin-btn-primary:hover { box-shadow: 0 10px 30px rgba(232, 255, 59, 0.3); }
+
+.cin-btn-dark {
+  background: var(--cin-text);
+  color: var(--cin-bg-0);
+}
+
+.cin-btn-ghost {
+  background: transparent;
+  color: var(--cin-text);
+  border-color: var(--cin-border-strong);
+}
+
+.cin-btn-ghost:hover { background: var(--cin-surface); }
+
+.cin-btn-danger {
+  background: var(--cin-danger-bg);
+  color: var(--cin-danger);
+  border-color: transparent;
+}
+
+/* ---------- inputs ---------- */
+
+.cin-input,
+.cin-select {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--cin-text);
+  background: var(--cin-input-bg);
+  border: 1px solid var(--cin-border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cin-input::placeholder { color: var(--cin-faint); }
+
+.cin-input:focus,
+.cin-select:focus {
+  border-color: var(--cin-accent);
+  box-shadow: 0 0 0 3px var(--cin-glow);
+}
+
+.cin-select { cursor: pointer; }
+.cin-select option { background: var(--cin-bg-1); color: var(--cin-text); }
+
+/* ---------- chips / badges ---------- */
+
+.cin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cin-accent);
+  color: var(--cin-accent-ink);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 99px;
+}
+
+.cin-tag {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--cin-surface-2);
+  color: var(--cin-muted);
+  border: 1px solid var(--cin-border);
+}
+
+.cin-tag.ok { background: var(--cin-success-bg); color: var(--cin-success); border-color: transparent; }
+.cin-tag.warn { background: var(--cin-danger-bg); color: var(--cin-danger); border-color: transparent; }
+
+/* ---------- scroll reveal ---------- */
+
+.cin-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+.cin-reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--rv-delay, 0ms),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--rv-delay, 0ms);
+}
+
+/* ---------- route transition ---------- */
+
+.cin-route {
+  animation: cinRouteIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cinRouteIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* ---------- misc ---------- */
+
+.cin-divider {
+  border: none;
+  border-top: 1px dashed var(--cin-border-strong);
+  margin: 14px 0;
+}
+
+.cin-empty {
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.cin-empty-title {
+  font-family: var(--font-display);
+  font-size: 52px;
+  letter-spacing: 2px;
+  color: var(--cin-faint);
+}
+
+.cin-spin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--cin-border-strong);
+  border-top-color: var(--cin-accent);
+  animation: cinSpin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes cinSpin { to { transform: rotate(360deg); } }
+
+.cin-skeleton {
+  background: linear-gradient(90deg, var(--cin-surface) 25%, var(--cin-surface-2) 50%, var(--cin-surface) 75%);
+  background-size: 400% 100%;
+  animation: cinShimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+
+@keyframes cinShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.cin-marquee {
+  border-top: 1px solid var(--cin-border);
+  border-bottom: 1px solid var(--cin-border);
+  padding: 13px 0;
+  overflow: hidden;
+  background: var(--cin-surface);
+}
+
+.cin-marquee-track {
+  display: flex;
+  white-space: nowrap;
+  animation: cinMarquee 22s linear infinite;
+}
+
+.cin-marquee-item {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--cin-faint);
+  text-transform: uppercase;
+  padding-right: 40px;
+}
+
+.cin-marquee-item em {
+  color: var(--cin-accent);
+  font-style: normal;
+  margin-right: 40px;
+}
+
+@keyframes cinMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cin-reveal { opacity: 1; transform: none; }
+  .cin-route { animation: none; }
+  .cin-tilt { transform: none !important; }
+  .cin-marquee-track { animation: none; }
+}
+
+@media (max-width: 768px) {
+  .cin-page-inner { padding: 108px 16px 60px; }
+  .cin-page-ghost { font-size: clamp(90px, 26vw, 160px); top: 10vh; }
+}
