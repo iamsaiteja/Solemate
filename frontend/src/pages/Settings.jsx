@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import useIsMobile from "../utils/useIsMobile";
+import PageShell from "../components/ui/PageShell";
+import Reveal from "../components/ui/Reveal";
+import "../styles/cinematic.css";
 
 // chinna i18n — Settings page text different languages lo
 const T = {
@@ -41,9 +44,12 @@ function Settings() {
   };
 
   const card = {
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: "16px",
+    background: "var(--cin-glass)",
+    backdropFilter: "blur(18px) saturate(140%)",
+    WebkitBackdropFilter: "blur(18px) saturate(140%)",
+    border: "1px solid var(--cin-border)",
+    borderRadius: "18px",
+    boxShadow: "var(--cin-shadow-soft)",
     padding: isMobile ? "18px" : "24px",
     marginBottom: "16px",
   };
@@ -75,16 +81,16 @@ function Settings() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", color: "var(--text)", fontFamily: "DM Sans, sans-serif", padding: isMobile ? "86px 16px 50px" : "110px 40px 70px" }}>
-      <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+    <PageShell ghost="TUNE" maxWidth={760}>
+      <div>
 
         {/* HEADER */}
-        <div style={{ marginBottom: "28px" }}>
-          <span style={sectionLabel}>— Personalize</span>
-          <h1 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: isMobile ? "46px" : "64px", letterSpacing: "1px", color: "var(--text)", margin: "4px 0 0" }}>
+        <Reveal style={{ marginBottom: "28px" }}>
+          <span className="cin-label">Personalize</span>
+          <h1 className="cin-title" style={{ fontSize: isMobile ? "46px" : "64px" }}>
             {t.settings}
           </h1>
-        </div>
+        </Reveal>
 
         {/* APPEARANCE */}
         <div style={card}>
@@ -167,17 +173,8 @@ function Settings() {
               {email && <div style={{ fontSize: "13px", color: "var(--muted)", marginTop: "2px" }}>{email}</div>}
               <button
                 onClick={logout}
-                style={{
-                  marginTop: "16px",
-                  background: "#1a1a1a",
-                  color: "#fff",
-                  border: "none",
-                  padding: "12px 24px",
-                  borderRadius: "10px",
-                  fontWeight: 700,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
+                className="cin-btn cin-btn-danger"
+                style={{ marginTop: "16px" }}
               >
                 {t.logout}
               </button>
@@ -187,7 +184,7 @@ function Settings() {
               <p style={{ color: "var(--muted)", fontSize: "14px", marginBottom: "14px" }}>{t.guest}</p>
               <button
                 onClick={() => navigate("/login")}
-                style={{ background: "var(--accent)", color: "var(--accent-ink)", border: "none", padding: "12px 24px", borderRadius: "10px", fontWeight: 700, fontSize: "14px", cursor: "pointer" }}
+                className="cin-btn cin-btn-primary"
               >
                 {t.login}
               </button>
@@ -196,7 +193,7 @@ function Settings() {
         </div>
 
       </div>
-    </div>
+    </PageShell>
   );
 }
 
