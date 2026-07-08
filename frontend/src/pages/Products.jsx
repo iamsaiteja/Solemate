@@ -2,97 +2,76 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import API, { getImage } from "../utils/api";
 import useIsMobile from "../utils/useIsMobile";
+import PageShell from "../components/ui/PageShell";
+import Reveal from "../components/ui/Reveal";
+import Tilt from "../components/ui/Tilt";
+import Footer from "../components/ui/Footer";
+import "../styles/cinematic.css";
 
 const injectStyles = () => {
   if (document.getElementById("solemate-products-style")) return;
   const style = document.createElement("style");
   style.id = "solemate-products-style";
   style.innerHTML = `
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap');
-
-    .sm-products-root { min-height:100vh; background:transparent; font-family:'DM Sans',sans-serif; color:#1a1a1a; position:relative; overflow-x:hidden; }
-    .sm-products-root::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
-    .sm-inner { position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:0 28px 80px; }
-
-    .sm-header { padding:56px 0 28px; position:relative; overflow:hidden; }
-    .sm-header-ghost { position:absolute; top:-20px; left:-8px; font-family:'Bebas Neue',sans-serif; font-size:180px; color:rgba(0,0,0,0.04); letter-spacing:-8px; pointer-events:none; white-space:nowrap; line-height:1; }
-    .sm-header-label { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:4px; color:#1a1a1a; text-transform:uppercase; margin-bottom:10px; }
-    .sm-header-title { font-family:'Bebas Neue',sans-serif; font-size:80px; letter-spacing:2px; line-height:0.88; margin-bottom:10px; color:#1a1a1a; }
-    .sm-header-title span { color:#c99a52; }
-    .sm-header-sub { color:rgba(0,0,0,0.4); font-size:13px; letter-spacing:1px; }
+    .sm-header { padding:26px 0 28px; position:relative; overflow:hidden; }
+    .sm-header-title { font-family:var(--font-display); font-size:80px; letter-spacing:2px; line-height:0.88; margin:10px 0; color:var(--cin-text); }
+    .sm-header-title span { color:var(--cin-accent); }
 
     .sm-search-wrap { margin-bottom:16px; }
-    .sm-search-box { display:flex; align-items:center; background:#fff; border:1.5px solid #e0e0e0; border-radius:8px; overflow:hidden; transition:border-color 0.2s; }
-    .sm-search-box:focus-within { border-color:#1a1a1a; }
-    .sm-search-badge { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:#fff; background:#1a1a1a; padding:5px 10px; white-space:nowrap; flex-shrink:0; }
-    .sm-search-input { flex:1; background:transparent; border:none; outline:none; color:#1a1a1a; font-family:'DM Sans',sans-serif; font-size:14px; padding:15px 16px; caret-color:#1a1a1a; min-width:0; }
-    .sm-search-input::placeholder { color:rgba(0,0,0,0.3); font-style:italic; }
-    .sm-search-btn { background:#1a1a1a; color:#e8ff3b; border:none; padding:12px 28px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background 0.15s; flex-shrink:0; }
-    .sm-search-btn:hover { background:#333; }
+    .sm-search-box { display:flex; align-items:center; background:var(--cin-glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border); border-radius:14px; overflow:hidden; transition:border-color .2s, box-shadow .2s; }
+    .sm-search-box:focus-within { border-color:var(--cin-accent); box-shadow:0 0 0 3px var(--cin-glow); }
+    .sm-search-badge { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--cin-accent-ink); background:var(--cin-accent); padding:6px 10px; margin-left:10px; border-radius:6px; white-space:nowrap; flex-shrink:0; }
+    .sm-search-input { flex:1; background:transparent; border:none; outline:none; color:var(--cin-text); font-family:var(--font-body); font-size:14px; padding:16px; caret-color:var(--cin-accent); min-width:0; }
+    .sm-search-input::placeholder { color:var(--cin-faint); font-style:italic; }
+    .sm-search-btn { background:var(--cin-accent); color:var(--cin-accent-ink); border:none; padding:13px 28px; margin-right:6px; border-radius:10px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:transform .15s, box-shadow .2s; flex-shrink:0; }
+    .sm-search-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(232,255,59,.3); }
     .sm-search-btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .sm-ai-result { margin-top:12px; background:#f8f8f8; border:1px solid #e0e0e0; border-left:3px solid #1a1a1a; padding:16px 20px; font-size:14px; line-height:1.7; color:#444; white-space:pre-wrap; border-radius:0 8px 8px 0; }
+    .sm-ai-result { margin-top:12px; background:var(--cin-surface); border:1px solid var(--cin-border); border-left:3px solid var(--cin-accent); padding:16px 20px; font-size:14px; line-height:1.7; color:var(--cin-muted); white-space:pre-wrap; border-radius:0 12px 12px 0; }
 
-    .sm-marquee { border-top:1px solid rgba(0,0,0,0.08); border-bottom:1px solid rgba(0,0,0,0.08); padding:13px 0; overflow:hidden; background:rgba(0,0,0,0.02); margin-bottom:22px; }
-    .sm-marquee-track { display:flex; white-space:nowrap; animation:smMarquee 22s linear infinite; }
-    .sm-marquee-item { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:4px; color:rgba(0,0,0,0.3); text-transform:uppercase; padding-right:40px; }
-    .sm-marquee-item em { color:#1a1a1a; font-style:normal; margin-right:40px; }
-    @keyframes smMarquee { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
-
-    /* ===== FILTER BAR ===== */
-    .sm-filterbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:#fff; border:1px solid #e8e8e8; border-radius:12px; padding:14px 16px; margin-bottom:22px; }
+    .sm-filterbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--cin-glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border); border-radius:14px; padding:14px 16px; margin-bottom:22px; }
     .sm-filter-group { display:flex; flex-direction:column; gap:4px; }
-    .sm-filter-lbl { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:1.5px; color:#999; text-transform:uppercase; }
-    .sm-filter-select, .sm-filter-price { border:1px solid #e0e0e0; border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:13px; color:#1a1a1a; background:#fafafa; outline:none; cursor:pointer; }
+    .sm-filter-lbl { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:1.5px; color:var(--cin-faint); text-transform:uppercase; }
+    .sm-filter-select, .sm-filter-price { border:1px solid var(--cin-border); border-radius:10px; padding:9px 12px; font-family:var(--font-body); font-size:13px; color:var(--cin-text); background:var(--cin-input-bg); outline:none; cursor:pointer; transition:border-color .2s; }
+    .sm-filter-select option { background:var(--cin-bg-1); color:var(--cin-text); }
+    .sm-filter-select:focus, .sm-filter-price:focus { border-color:var(--cin-accent); }
     .sm-filter-price { width:88px; cursor:text; }
-    .sm-filter-clear { margin-left:auto; background:none; border:1px solid #e0e0e0; border-radius:8px; padding:9px 16px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px; color:#666; cursor:pointer; text-transform:uppercase; transition:all .15s; }
-    .sm-filter-clear:hover { border-color:#1a1a1a; color:#1a1a1a; }
+    .sm-filter-clear { margin-left:auto; background:none; border:1px solid var(--cin-border); border-radius:10px; padding:9px 16px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--cin-muted); cursor:pointer; text-transform:uppercase; transition:all .15s; }
+    .sm-filter-clear:hover { border-color:var(--cin-accent); color:var(--cin-accent); }
 
     .sm-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
-    .sm-chip { display:inline-flex; align-items:center; gap:6px; background:#1a1a1a; color:#e8ff3b; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px; padding:6px 12px; border-radius:99px; text-transform:uppercase; }
-    .sm-chip button { background:none; border:none; color:#e8ff3b; cursor:pointer; font-size:14px; line-height:1; padding:0; }
 
-    .sm-countbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; padding-bottom:14px; border-bottom:1px solid #e0e0e0; }
-    .sm-count-text { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; color:rgba(0,0,0,0.4); text-transform:uppercase; }
-    .sm-count-text b { color:#1a1a1a; font-weight:700; }
+    .sm-countbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; padding-bottom:14px; border-bottom:1px solid var(--cin-border); }
+    .sm-count-text { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--cin-faint); text-transform:uppercase; }
+    .sm-count-text b { color:var(--cin-accent); font-weight:700; }
 
-    .sm-grid { display:grid; gap:16px; }
+    .sm-grid { display:grid; gap:18px; }
 
-    .sm-card { background:#fff; cursor:pointer; position:relative; border-radius:12px; border:1px solid #eee; overflow:hidden; transition:transform 0.3s, box-shadow 0.3s; }
-    .sm-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.1); }
+    .sm-card { background:var(--cin-glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); cursor:pointer; position:relative; border-radius:18px; border:1px solid var(--cin-border); overflow:hidden; }
 
-    .sm-card-img-wrap { position:relative; overflow:hidden; background:#f8f8f8; }
-    .sm-card-img { width:100%; height:100%; object-fit:contain; padding:16px; transition:transform 0.55s cubic-bezier(.25,.46,.45,.94); }
-    .sm-card:hover .sm-card-img { transform:scale(1.07); }
+    .sm-card-img-wrap { position:relative; overflow:hidden; background:var(--cin-img-bg); }
+    .sm-card-img { width:100%; height:100%; object-fit:contain; padding:16px; filter:drop-shadow(0 16px 18px rgba(0,0,0,.35)); transition:transform 0.55s cubic-bezier(.25,.46,.45,.94); }
+    .sm-card:hover .sm-card-img { transform:scale(1.07) rotate(-2deg); }
 
-    .sm-card-heart { position:absolute; top:12px; left:12px; width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.92); border:1px solid #eee; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:19px; line-height:1; z-index:5; padding:0; transition:transform 0.15s, color 0.2s; }
-    .sm-card-heart:hover { transform:scale(1.15); background:#fff; }
-    .sm-card-heart.liked { color:#e63946; }
-    .sm-card-heart.not-liked { color:#ccc; }
+    .sm-card-heart { position:absolute; top:12px; left:12px; width:38px; height:38px; border-radius:50%; background:var(--cin-glass-strong); border:1px solid var(--cin-border); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:19px; line-height:1; z-index:5; padding:0; transition:transform 0.15s, color 0.2s; }
+    .sm-card-heart:hover { transform:scale(1.15); }
+    .sm-card-heart.liked { color:#ff5a7a; }
+    .sm-card-heart.not-liked { color:var(--cin-faint); }
 
-    .sm-card-num { position:absolute; top:12px; right:14px; font-family:'Bebas Neue',sans-serif; font-size:52px; color:rgba(0,0,0,0.05); line-height:1; pointer-events:none; }
+    .sm-card-num { position:absolute; top:12px; right:14px; font-family:var(--font-display); font-size:52px; color:var(--cin-ghost); line-height:1; pointer-events:none; }
 
-    .sm-card-info { padding:16px; border-top:1px solid #f0f0f0; }
-    .sm-card-brand { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:3px; color:rgba(0,0,0,0.3); text-transform:uppercase; margin-bottom:4px; }
-    .sm-card-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; line-height:1; margin-bottom:10px; color:#1a1a1a; }
+    .sm-card-info { padding:16px; border-top:1px solid var(--cin-border); }
+    .sm-card-brand { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--cin-faint); text-transform:uppercase; margin-bottom:4px; }
+    .sm-card-name { font-family:var(--font-display); font-size:26px; letter-spacing:1px; line-height:1; margin-bottom:10px; color:var(--cin-text); }
     .sm-card-footer { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-    .sm-card-price { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:#1a1a1a; }
-    .sm-card-tag { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:2px; color:#15803d; background:#dcfce7; padding:3px 8px; border-radius:4px; text-transform:uppercase; }
+    .sm-card-price { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:var(--cin-accent); }
 
-    .sm-addcart { width:100%; background:#1a1a1a; color:#e8ff3b; border:none; padding:11px; border-radius:8px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:background .15s, transform .1s; }
-    .sm-addcart:hover { background:#000; }
+    .sm-addcart { width:100%; background:var(--cin-accent); color:var(--cin-accent-ink); border:none; padding:12px; border-radius:10px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:transform .12s, box-shadow .2s; }
+    .sm-addcart:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(232,255,59,.25); }
     .sm-addcart:active { transform:scale(.97); }
     .sm-addcart:disabled { opacity:.6; cursor:default; }
 
-    .sm-empty { text-align:center; padding:80px 20px; color:rgba(0,0,0,0.2); grid-column:1/-1; }
-    .sm-empty-title { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:2px; margin-bottom:8px; color:rgba(0,0,0,0.1); }
-
-    .sm-skeleton-img { background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%); background-size:400% 100%; animation:smShimmer 1.4s ease infinite; }
-    .sm-skeleton-line { height:10px; border-radius:2px; background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%); background-size:400% 100%; animation:smShimmer 1.4s ease infinite; margin-bottom:10px; }
-    @keyframes smShimmer { 0%{ background-position:100% 0; } 100%{ background-position:-100% 0; } }
-
-    /* ===== TOAST ===== */
-    .sm-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:14px 24px; border-radius:12px; font-size:14px; font-weight:600; z-index:5000; box-shadow:0 8px 30px rgba(0,0,0,.3); display:flex; align-items:center; gap:10px; animation:smToastUp .3s ease; max-width:90vw; }
-    .sm-toast b { color:#e8ff3b; }
+    .sm-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:var(--cin-glass-strong); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border-strong); color:var(--cin-text); padding:14px 24px; border-radius:14px; font-size:14px; font-weight:600; z-index:5000; box-shadow:var(--cin-shadow); display:flex; align-items:center; gap:10px; animation:smToastUp .3s ease; max-width:90vw; }
+    .sm-toast b { color:var(--cin-accent); }
     @keyframes smToastUp { from{ opacity:0; transform:translate(-50%,16px); } }
   `;
   document.head.appendChild(style);
@@ -258,28 +237,28 @@ function Products() {
   const imgH = isMobile ? "150px" : "240px";
 
   return (
-    <div className="sm-products-root">
-      <div className="sm-inner" style={{ padding: isMobile ? "0 14px 60px" : "0 28px 80px" }}>
+    <PageShell ghost="KICKS" maxWidth={1280}>
+      <div style={{ paddingTop: isMobile ? 0 : "4px" }}>
 
-        <div className="sm-header" style={{ padding: isMobile ? "110px 0 22px" : "128px 0 30px" }}>
-          <div className="sm-header-label">— Collection 2026</div>
+        <Reveal className="sm-header">
+          <span className="cin-label">Collection 2026</span>
           <div className="sm-header-title" style={{ fontSize: isMobile ? "56px" : "80px" }}>
             {headerTitle} <span>KICKS</span>
           </div>
-          <div className="sm-header-sub">Premium footwear, zero compromises.</div>
-        </div>
+          <div className="cin-sub">Premium footwear, zero compromises.</div>
+        </Reveal>
 
         {/* MARQUEE */}
-        <div className="sm-marquee">
-          <div className="sm-marquee-track">
+        <Reveal className="cin-marquee" style={{ marginBottom: "22px", borderRadius: "12px" }}>
+          <div className="cin-marquee-track">
             {MARQUEE_DOUBLED.map((item, i) => (
-              <span className="sm-marquee-item" key={i}><em>✦</em>{item}</span>
+              <span className="cin-marquee-item" key={i}><em>✦</em>{item}</span>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* AI SEARCH */}
-        <div className="sm-search-wrap">
+        <Reveal className="sm-search-wrap" delay={80}>
           <div className="sm-search-box">
             <span className="sm-search-badge">AI SEARCH</span>
             <input className="sm-search-input" placeholder="e.g. white sneakers..." value={query}
@@ -287,10 +266,10 @@ function Products() {
             <button className="sm-search-btn" onClick={handleSearch} disabled={aiLoading}>{aiLoading ? "..." : "SEARCH"}</button>
           </div>
           {aiResult && <div className="sm-ai-result">{aiResult}</div>}
-        </div>
+        </Reveal>
 
         {/* FILTER BAR */}
-        <div className="sm-filterbar">
+        <Reveal className="sm-filterbar" delay={140}>
           <div className="sm-filter-group">
             <span className="sm-filter-lbl">Min ₹</span>
             <input className="sm-filter-price" type="number" placeholder="1000" value={priceMin} onChange={(e) => setPriceMin(e.target.value)} />
@@ -324,14 +303,14 @@ function Products() {
           {hasActiveFilter && (
             <button className="sm-filter-clear" onClick={clearFilters}>✕ Clear</button>
           )}
-        </div>
+        </Reveal>
 
         {/* ACTIVE CATEGORY CHIP */}
         {urlCategory && (
           <div className="sm-chips">
-            <span className="sm-chip">
+            <span className="cin-chip">
               {urlCategory}
-              <button onClick={() => setSearchParams({})}>✕</button>
+              <button onClick={() => setSearchParams({})} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", fontSize: "14px", lineHeight: 1, padding: 0 }}>✕</button>
             </span>
           </div>
         )}
@@ -343,45 +322,47 @@ function Products() {
         {loading ? (
           <div className="sm-grid" style={{ gridTemplateColumns: gridCols }}>
             {[...Array(6)].map((_, i) => (
-              <div key={i} style={{ background: "#fff", borderRadius: "12px", border: "1px solid #eee", overflow: "hidden" }}>
-                <div className="sm-skeleton-img" style={{ height: imgH }} />
+              <div key={i} className="cin-panel" style={{ overflow: "hidden" }}>
+                <div className="cin-skeleton" style={{ height: imgH, borderRadius: 0 }} />
                 <div style={{ padding: "16px" }}>
-                  <div className="sm-skeleton-line" style={{ width: "40%" }} />
-                  <div className="sm-skeleton-line" style={{ width: "70%" }} />
+                  <div className="cin-skeleton" style={{ width: "40%", height: "10px", marginBottom: "10px" }} />
+                  <div className="cin-skeleton" style={{ width: "70%", height: "10px" }} />
                 </div>
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="sm-empty">
-            <div className="sm-empty-title">NO KICKS</div>
-            <div>No products match your filters.</div>
+          <div className="cin-empty">
+            <div className="cin-empty-title">NO KICKS</div>
+            <div className="cin-sub">No products match your filters.</div>
           </div>
         ) : (
           <div className="sm-grid" style={{ gridTemplateColumns: gridCols }}>
             {filtered.map((product, i) => (
-              <div className="sm-card" key={product.id} onClick={() => navigate(`/products/${product.id}`)}>
-                <div className="sm-card-img-wrap" style={{ height: imgH }}>
-                  <img className="sm-card-img" src={getImage(product.image)} alt={product.name} />
-                  <button
-                    className={`sm-card-heart ${likedIds.has(product.id) ? "liked" : "not-liked"}`}
-                    onClick={(e) => toggleLike(e, product.id)} aria-label="Wishlist">
-                    {likedIds.has(product.id) ? "♥" : "♡"}
-                  </button>
-                  {!isMobile && <span className="sm-card-num">{String(i + 1).padStart(2, "0")}</span>}
-                </div>
-                <div className="sm-card-info">
-                  <div className="sm-card-brand">{getBrand(product.name)}</div>
-                  <div className="sm-card-name" style={{ fontSize: isMobile ? "20px" : "26px" }}>{product.name}</div>
-                  <div className="sm-card-footer">
-                    <span className="sm-card-price">₹{parseFloat(product.price || 0).toLocaleString("en-IN")}</span>
-                    <span className="sm-card-tag">IN STOCK</span>
+              <Reveal key={product.id} delay={(i % 4) * 70}>
+                <Tilt className="sm-card" onClick={() => navigate(`/products/${product.id}`)}>
+                  <div className="sm-card-img-wrap" style={{ height: imgH }}>
+                    <img className="sm-card-img" src={getImage(product.image)} alt={product.name} loading="lazy" />
+                    <button
+                      className={`sm-card-heart ${likedIds.has(product.id) ? "liked" : "not-liked"}`}
+                      onClick={(e) => toggleLike(e, product.id)} aria-label="Wishlist">
+                      {likedIds.has(product.id) ? "♥" : "♡"}
+                    </button>
+                    {!isMobile && <span className="sm-card-num">{String(i + 1).padStart(2, "0")}</span>}
                   </div>
-                  <button className="sm-addcart" onClick={(e) => addToCart(e, product)} disabled={addingId === product.id}>
-                    {addingId === product.id ? "ADDING..." : "＋ ADD TO CART"}
-                  </button>
-                </div>
-              </div>
+                  <div className="sm-card-info">
+                    <div className="sm-card-brand">{getBrand(product.name)}</div>
+                    <div className="sm-card-name" style={{ fontSize: isMobile ? "20px" : "26px" }}>{product.name}</div>
+                    <div className="sm-card-footer">
+                      <span className="sm-card-price">₹{parseFloat(product.price || 0).toLocaleString("en-IN")}</span>
+                      <span className="cin-tag ok">IN STOCK</span>
+                    </div>
+                    <button className="sm-addcart" onClick={(e) => addToCart(e, product)} disabled={addingId === product.id}>
+                      {addingId === product.id ? "ADDING..." : "＋ ADD TO CART"}
+                    </button>
+                  </div>
+                </Tilt>
+              </Reveal>
             ))}
           </div>
         )}
@@ -393,7 +374,11 @@ function Products() {
           {toast === "__error__" ? "⚠ Something went wrong" : <>✓ <b>{toast}</b> added to cart</>}
         </div>
       )}
-    </div>
+
+      <div style={{ margin: "70px -28px -90px" }}>
+        <Footer />
+      </div>
+    </PageShell>
   );
 }
 
