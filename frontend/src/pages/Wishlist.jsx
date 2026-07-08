@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API, { getImage } from "../utils/api";
 import useIsMobile from "../utils/useIsMobile";
+import PageShell from "../components/ui/PageShell";
+import Reveal from "../components/ui/Reveal";
+import Tilt from "../components/ui/Tilt";
+import "../styles/cinematic.css";
 
 function Wishlist() {
   const navigate = useNavigate();
@@ -25,7 +29,7 @@ function Wishlist() {
   const removeItem = async (e, productId) => {
     e.stopPropagation(); // card click (detail ki vellatam) aapali
 
-    // mundu screen meeda venタне teesey (fast anipinchadaniki)
+    // mundu screen meeda vent테 teesey (fast anipinchadaniki)
     setItems((prev) => prev.filter((it) => it.product.id !== productId));
 
     try {
@@ -37,54 +41,54 @@ function Wishlist() {
   };
 
   return (
-    <div style={{ background: "transparent", minHeight: "100vh", padding: isMobile ? "90px 16px 40px" : "100px 40px 60px" }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <PageShell ghost="LOVED" maxWidth={1140}>
+      {/* HEADER */}
+      <Reveal style={{ marginBottom: "28px" }}>
+        <span className="cin-label">
+          {items.length} {items.length === 1 ? "Item" : "Items"}
+        </span>
+        <h1 className="cin-title" style={{ fontSize: isMobile ? "44px" : "64px" }}>
+          MY WISHLIST
+        </h1>
+      </Reveal>
 
-        {/* HEADER */}
-        <div style={{ marginBottom: "28px" }}>
-          <p style={{ fontFamily: "monospace", fontSize: "11px", letterSpacing: "2px", color: "#888", textTransform: "uppercase", marginBottom: "6px" }}>
-            {items.length} {items.length === 1 ? "ITEM" : "ITEMS"}
-          </p>
-          <h1 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: isMobile ? "44px" : "64px", letterSpacing: "1px", color: "#1a1a1a", margin: 0 }}>
-            MY WISHLIST
-          </h1>
+      {/* LOADING */}
+      {loading ? (
+        <div style={{ padding: "40px 0", textAlign: "center" }}>
+          <div className="cin-spin" style={{ marginBottom: "14px" }} />
+          <p className="cin-sub">Loading wishlist...</p>
         </div>
-
-        {/* LOADING */}
-        {loading ? (
-          <p style={{ color: "#888", fontSize: "15px", padding: "40px 0" }}>Loading wishlist...</p>
-        ) : items.length === 0 ? (
-          /* EMPTY */
-          <div style={{ textAlign: "center", padding: "70px 20px", background: "#fff", borderRadius: "16px", border: "1px solid #eee" }}>
-            <div style={{ fontSize: "44px", marginBottom: "12px" }}>♡</div>
-            <h2 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "32px", color: "#1a1a1a", marginBottom: "8px" }}>
-              NO LIKES YET
-            </h2>
-            <p style={{ color: "#888", fontSize: "14px", marginBottom: "24px" }}>
-              Tap the ♡ on any product to save it here.
-            </p>
-            <button
-              onClick={() => navigate("/products")}
-              style={{ background: "#1a1a1a", color: "#e8ff3b", border: "none", padding: "14px 28px", borderRadius: "10px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}
-            >
-              Browse Products
-            </button>
-          </div>
-        ) : (
-          /* GRID */
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(220px, 1fr))", gap: isMobile ? "12px" : "18px" }}>
-            {items.map((item) => (
-              <div
-                key={item.id}
+      ) : items.length === 0 ? (
+        /* EMPTY */
+        <Reveal className="cin-glass" style={{ textAlign: "center", padding: "70px 20px" }}>
+          <div style={{ fontSize: "44px", marginBottom: "12px", color: "var(--cin-accent)" }}>♡</div>
+          <h2 className="cin-title" style={{ fontSize: "36px", marginBottom: "8px" }}>
+            NO LIKES YET
+          </h2>
+          <p className="cin-sub" style={{ marginBottom: "24px" }}>
+            Tap the ♡ on any product to save it here.
+          </p>
+          <button className="cin-btn cin-btn-primary" onClick={() => navigate("/products")}>
+            Browse Products
+          </button>
+        </Reveal>
+      ) : (
+        /* GRID */
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(220px, 1fr))", gap: isMobile ? "12px" : "18px" }}>
+          {items.map((item, i) => (
+            <Reveal key={item.id} delay={(i % 4) * 70}>
+              <Tilt
+                className="cin-glass"
                 onClick={() => navigate(`/products/${item.product.id}`)}
-                style={{ background: "#fff", borderRadius: "12px", border: "1px solid #eee", overflow: "hidden", cursor: "pointer", position: "relative" }}
+                style={{ overflow: "hidden", cursor: "pointer" }}
               >
                 {/* IMAGE */}
-                <div style={{ position: "relative", height: isMobile ? "150px" : "200px", background: "#f8f8f8" }}>
+                <div style={{ position: "relative", height: isMobile ? "150px" : "200px", background: "var(--cin-img-bg)" }}>
                   <img
                     src={getImage(item.product.image)}
                     alt={item.product.name}
-                    style={{ width: "100%", height: "100%", objectFit: "contain", padding: "14px" }}
+                    loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "contain", padding: "14px", filter: "drop-shadow(0 12px 14px rgba(0,0,0,.3))" }}
                   />
                   {/* REMOVE HEART */}
                   <button
@@ -95,9 +99,9 @@ function Wishlist() {
                       top: "10px", right: "10px",
                       width: "34px", height: "34px",
                       borderRadius: "50%",
-                      background: "rgba(255,255,255,0.92)",
-                      border: "1px solid #eee",
-                      color: "#e63946",
+                      background: "var(--cin-glass-strong)",
+                      border: "1px solid var(--cin-border)",
+                      color: "#ff5a7a",
                       fontSize: "17px",
                       lineHeight: 1,
                       cursor: "pointer",
@@ -105,6 +109,7 @@ function Wishlist() {
                       alignItems: "center",
                       justifyContent: "center",
                       padding: 0,
+                      zIndex: 2,
                     }}
                   >
                     ♥
@@ -112,20 +117,20 @@ function Wishlist() {
                 </div>
 
                 {/* INFO */}
-                <div style={{ padding: "12px 14px 14px" }}>
-                  <p style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "20px", letterSpacing: "0.5px", color: "#1a1a1a", margin: "0 0 6px", lineHeight: 1.1 }}>
+                <div style={{ padding: "12px 14px 14px", borderTop: "1px solid var(--cin-border)" }}>
+                  <p style={{ fontFamily: "var(--font-display)", fontSize: "20px", letterSpacing: "0.5px", color: "var(--cin-text)", margin: "0 0 6px", lineHeight: 1.1 }}>
                     {item.product.name}
                   </p>
-                  <p style={{ fontFamily: "monospace", fontSize: "13px", fontWeight: "700", color: "#1a1a1a", margin: 0 }}>
+                  <p className="cin-mono" style={{ fontSize: "13px", color: "var(--cin-accent)", margin: 0 }}>
                     ₹{parseFloat(item.product.price || 0).toLocaleString("en-IN")}
                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+              </Tilt>
+            </Reveal>
+          ))}
+        </div>
+      )}
+    </PageShell>
   );
 }
 
