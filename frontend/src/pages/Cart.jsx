@@ -131,7 +131,7 @@ function Cart() {
   const [form, setForm] = useState({ shipping_address: '', phone: '' });
   const [placing, setPlacing] = useState(false);
   const [step, setStep] = useState('cart');
-  const [paymentMethod, setPaymentMethod] = useState('razorpay');
+  const [paymentMethod, setPaymentMethod] = useState('upi');
   const [removingId, setRemovingId] = useState(null);
   const [success, setSuccess] = useState(null); // order confirm aithe ee overlay
 
@@ -189,6 +189,21 @@ function Cart() {
       } else {
         const res = await API.post('/orders/create/', form);
         const { razorpay_order_id, amount, key, name, email } = res.data;
+
+        // Same Razorpay order/verify flow — the chosen method only controls
+        // which instruments the Razorpay sheet opens with. UPI covers
+        // GPay / PhonePe / Paytm; card covers credit & debit cards.
+        const displayConfig =
+          paymentMethod === 'upi' ? {
+            blocks: { upi: { name: 'Pay with UPI · GPay · PhonePe · Paytm', instruments: [{ method: 'upi' }] } },
+            sequence: ['block.upi'],
+            preferences: { show_default_blocks: false },
+          } : paymentMethod === 'card' ? {
+            blocks: { card: { name: 'Pay with Card', instruments: [{ method: 'card' }] } },
+            sequence: ['block.card'],
+            preferences: { show_default_blocks: false },
+          } : undefined;
+
         const options = {
           key, amount, currency: 'INR', name: 'SoleMate',
           order_id: razorpay_order_id,
@@ -199,7 +214,8 @@ function Cart() {
             setStep('cart');
           },
           prefill: { name: name || "", email: email || "", contact: form.phone || "" },
-          theme: { color: '#1a1a1a' },
+          theme: { color: '#0a0a0e' },
+          ...(displayConfig ? { config: { display: displayConfig } } : {}),
         };
         if (window.Razorpay) { new window.Razorpay(options).open(); }
         else { alert("Payment SDK not loaded"); }
@@ -334,24 +350,43 @@ function Cart() {
                     value={form.phone}
                     onChange={e => setForm({ ...form, phone: e.target.value })}
                   />
-                  <div style={{ display: 'flex', gap: '9px' }}>
-                    <button className="smc-pay" onClick={() => setPaymentMethod('razorpay')}
-                      style={{ background: paymentMethod === 'razorpay' ? 'var(--cin-accent)' : 'var(--cin-input-bg)', color: paymentMethod === 'razorpay' ? 'var(--cin-accent-ink)' : 'var(--cin-faint)', border: paymentMethod === 'razorpay' ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)' }}>
-                      💳 ONLINE
-                    </button>
-                    <button className="smc-pay" onClick={() => setPaymentMethod('cod')}
-                      style={{ background: paymentMethod === 'cod' ? 'var(--cin-accent)' : 'var(--cin-input-bg)', color: paymentMethod === 'cod' ? 'var(--cin-accent-ink)' : 'var(--cin-faint)', border: paymentMethod === 'cod' ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)' }}>
-                      🚚 COD
-                    </button>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '9px' }}>
+                    {[
+                      { key: 'upi', icon: '📱', label: 'UPI' },
+                      { key: 'card', icon: '💳', label: 'CARD' },
+                      { key: 'cod', icon: '🚚', label: 'COD' },
+                    ].map(({ key, icon, label }) => (
+                      <button key={key} className="smc-pay" onClick={() => setPaymentMethod(key)}
+                        style={{
+                          padding: '12px 6px',
+                          background: paymentMethod === key ? 'var(--cin-accent)' : 'var(--cin-input-bg)',
+                          color: paymentMethod === key ? 'var(--cin-accent-ink)' : 'var(--cin-faint)',
+                          border: paymentMethod === key ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)',
+                        }}>
+                        <span style={{ display: 'block', fontSize: '18px', marginBottom: '3px' }}>{icon}</span>
+                        {label}
+                      </button>
+                    ))}
                   </div>
+                  {paymentMethod === 'upi' && (
+                    <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)', textAlign: 'center' }}>
+                      Pay instantly with <strong style={{ color: 'var(--cin-text)' }}>GPay · PhonePe · Paytm</strong> or any UPI app
+                    </div>
+                  )}
+                  {paymentMethod === 'card' && (
+                    <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)', textAlign: 'center' }}>
+                      Credit &amp; debit cards accepted — <strong style={{ color: 'var(--cin-text)' }}>Visa · Mastercard · RuPay</strong>
+                    </div>
+                  )}
                   {paymentMethod === 'cod' && (
-                    <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)' }}>
+                    <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)', textAlign: 'center' }}>
                       💡 Pay in cash when your order arrives.
                     </div>
                   )}
                   <button className="smc-btn" onClick={handleCheckout} disabled={placing}
                     style={{ padding: '15px', fontSize: '14px' }}>
-                    {placing ? "PROCESSING..." : paymentMethod === 'cod' ? "🚚 PLACE ORDER" : "💳 PAY NOW"}
+                    {placing ? "PROCESSING..." : paymentMethod === 'cod' ? "🚚 PLACE ORDER"
+                      : paymentMethod === 'upi' ? "📱 PAY WITH UPI" : "💳 PAY WITH CARD"}
                   </button>
                   <button className="cin-btn cin-btn-ghost" onClick={() => setStep('cart')} style={{ padding: '11px', fontSize: '11px' }}>
                     ← Back to Bag

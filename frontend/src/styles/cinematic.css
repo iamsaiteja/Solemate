@@ -70,7 +70,9 @@
   min-height: 100vh;
   color: var(--cin-text);
   font-family: var(--font-body);
-  overflow-x: hidden;
+  /* clip, not hidden: hidden turns the page into a scroll container and
+     silently breaks position:sticky (the 3D hero) and position:fixed inside */
+  overflow-x: clip;
   isolation: isolate;
 }
 
@@ -331,20 +333,20 @@
 
 /* ---------- route transition ---------- */
 
+/* fill-mode must stay 'none': a retained transform/filter would make this
+   wrapper the containing block for every fixed/sticky element inside it */
 .cin-route {
-  animation: cinRouteIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cinRouteIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes cinRouteIn {
   from {
     opacity: 0;
-    transform: translateY(16px);
     filter: blur(8px);
   }
   to {
     opacity: 1;
-    transform: none;
-    filter: blur(0);
+    filter: none;
   }
 }
 
