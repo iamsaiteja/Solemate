@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../utils/api';
+import "../styles/cinematic.css";
 
 function Register() {
   const [form, setForm] = useState({ username: '', email: '', password: '', first_name: '', last_name: '' });
@@ -27,31 +28,31 @@ function Register() {
 
   return (
     <div style={{
-      minHeight: '100vh', background: '#0a0a0a',
+      minHeight: '100vh',
+      background: 'radial-gradient(ellipse 80% 55% at 75% -5%, var(--cin-glow), transparent 60%), linear-gradient(165deg, var(--cin-bg-0) 0%, var(--cin-bg-1) 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '40px 20px', position: 'relative', overflow: 'hidden',
     }}>
       <div style={{
         position: 'absolute', inset: 0,
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px', pointerEvents: 'none',
+        backgroundImage: `linear-gradient(var(--cin-border) 1px, transparent 1px), linear-gradient(90deg, var(--cin-border) 1px, transparent 1px)`,
+        backgroundSize: '60px 60px', pointerEvents: 'none', opacity: 0.3,
       }} />
 
-      <div className="fade-up" style={{
+      <div className="fade-up cin-glass" style={{
         width: '100%', maxWidth: '420px',
-        background: '#111', border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: '16px', padding: '48px 40px', position: 'relative', zIndex: 1,
+        padding: '48px 40px', position: 'relative', zIndex: 1,
       }}>
         <Link to="/" style={{
-          fontFamily: 'Bebas Neue, sans-serif', fontSize: '22px',
-          letterSpacing: '3px', color: '#f5f5f5', display: 'block', marginBottom: '32px',
+          fontFamily: 'var(--font-display)', fontSize: '22px',
+          letterSpacing: '3px', color: 'var(--cin-text)', display: 'block', marginBottom: '32px',
         }}>SoleMate</Link>
 
         <h1 style={{
-          fontFamily: 'Bebas Neue, sans-serif', fontSize: '42px',
-          letterSpacing: '2px', color: '#f5f5f5', marginBottom: '8px',
+          fontFamily: 'var(--font-display)', fontSize: '42px',
+          letterSpacing: '2px', color: 'var(--cin-text)', marginBottom: '8px',
         }}>Join Us</h1>
-        <p style={{ fontSize: '14px', color: 'rgba(245,245,245,0.35)', marginBottom: '36px' }}>
+        <p style={{ fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '36px' }}>
           Create your account
         </p>
 
@@ -99,12 +100,8 @@ function Register() {
             </div>
           ))}
 
-          <button type="submit" disabled={loading} style={{
+          <button type="submit" disabled={loading} className="cin-btn cin-btn-primary" style={{
             width: '100%', padding: '15px', marginTop: '12px',
-            background: '#e8ff3b', color: '#0a0a0a',
-            border: 'none', borderRadius: '8px',
-            fontSize: '13px', fontWeight: '700',
-            letterSpacing: '1px', textTransform: 'uppercase',
             cursor: loading ? 'wait' : 'pointer',
             marginBottom: '24px', opacity: loading ? 0.7 : 1,
           }}>

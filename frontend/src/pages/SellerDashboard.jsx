@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import API from "../utils/api"
+import PageShell from "../components/ui/PageShell"
+import Reveal from "../components/ui/Reveal"
+import Tilt from "../components/ui/Tilt"
+import "../styles/cinematic.css"
+
+// seller dashboard endpoint api.js BASE_URL root lo untundi (not under /api)
+const DASHBOARD_URL = `${API.defaults.baseURL.replace(/\/api$/, "")}/orders/api/seller-dashboard/`
 
 function SellerDashboard() {
   const [data, setData] = useState({ orders: [], total_revenue: 0 })
@@ -8,72 +16,97 @@ function SellerDashboard() {
 
   useEffect(() => {
     if (!token) { navigate('/login'); return }
-    fetch("http://127.0.0.1:8000/orders/api/seller-dashboard/", {
+    fetch(DASHBOARD_URL, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(d => setData(d))
+      .catch(err => console.error(err))
   }, [navigate, token])
 
-  return (
-    <div style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
-      <h2>Seller Dashboard</h2>
+  const statusColors = {
+    delivered: { color: 'var(--cin-success)', bg: 'var(--cin-success-bg)' },
+    cancelled: { color: 'var(--cin-danger)', bg: 'var(--cin-danger-bg)' },
+  }
 
-      <div style={{ display: "flex", gap: "20px", marginBottom: "30px", flexWrap: "wrap" }}>
-        <div style={cardStyle}>
-          <h3>Total Orders</h3>
-          <p style={{ fontSize: "36px", fontWeight: "bold", margin: 0 }}>{data.orders?.length || 0}</p>
-        </div>
-        <div style={{ ...cardStyle, background: "#27ae60", color: "white" }}>
-          <h3>Total Revenue (Paid)</h3>
-          <p style={{ fontSize: "36px", fontWeight: "bold", margin: 0 }}>₹{parseFloat(data.total_revenue || 0).toFixed(2)}</p>
-        </div>
+  return (
+    <PageShell ghost="SELLER" maxWidth={1040}>
+      <Reveal style={{ marginBottom: "30px" }}>
+        <span className="cin-label">Admin Console</span>
+        <h1 className="cin-title" style={{ fontSize: "clamp(44px, 6vw, 64px)" }}>SELLER DASHBOARD</h1>
+      </Reveal>
+
+      <div style={{ display: "flex", gap: "20px", marginBottom: "34px", flexWrap: "wrap" }}>
+        <Reveal delay={60} style={{ flex: 1, minWidth: "220px" }}>
+          <Tilt className="cin-glass" style={{ padding: "24px" }}>
+            <span className="cin-label no-line" style={{ color: "var(--cin-muted)" }}>Total Orders</span>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: "52px", margin: "8px 0 0", color: "var(--cin-text)" }}>
+              {data.orders?.length || 0}
+            </p>
+          </Tilt>
+        </Reveal>
+        <Reveal delay={140} style={{ flex: 1, minWidth: "220px" }}>
+          <Tilt className="cin-glass" style={{ padding: "24px" }}>
+            <span className="cin-label no-line" style={{ color: "var(--cin-muted)" }}>Total Revenue (Paid)</span>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: "52px", margin: "8px 0 0", color: "var(--cin-accent)" }}>
+              ₹{parseFloat(data.total_revenue || 0).toFixed(2)}
+            </p>
+          </Tilt>
+        </Reveal>
       </div>
 
-      <h3>Order Items</h3>
-      {data.orders?.length === 0 ? (
-        <p>No orders received yet.</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f5f5f5" }}>
-              {["Order #", "Product", "Qty", "Price", "Subtotal", "Status", "Payment", "Date"].map(h => (
-                <th key={h} style={th}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.orders?.map((item, idx) => (
-              <tr key={idx} style={{ background: idx % 2 === 0 ? "white" : "#fafafa" }}>
-                <td style={td}>{item.order_number}</td>
-                <td style={td}>{item.product_name}</td>
-                <td style={td}>{item.quantity}</td>
-                <td style={td}>₹{item.price}</td>
-                <td style={td}>₹{item.subtotal}</td>
-                <td style={td}>
-                  <span style={{
-                    padding: "3px 8px", borderRadius: "12px", fontSize: "12px",
-                    background: item.order_status === 'delivered' ? '#27ae60' : item.order_status === 'cancelled' ? '#e74c3c' : '#f39c12',
-                    color: 'white'
-                  }}>{item.order_status}</span>
-                </td>
-                <td style={td}>
-                  <span style={{ color: item.payment_status === 'paid' ? 'green' : 'orange', fontWeight: 'bold' }}>
-                    {item.payment_status}
-                  </span>
-                </td>
-                <td style={td}>{item.date}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+      <Reveal delay={200}>
+        <h3 className="cin-label no-line" style={{ marginBottom: "14px" }}>Order Items</h3>
+        {data.orders?.length === 0 ? (
+          <div className="cin-glass" style={{ padding: "44px", textAlign: "center" }}>
+            <p className="cin-sub">No orders received yet.</p>
+          </div>
+        ) : (
+          <div className="cin-glass" style={{ overflow: "auto", padding: "6px" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "760px" }}>
+              <thead>
+                <tr>
+                  {["Order #", "Product", "Qty", "Price", "Subtotal", "Status", "Payment", "Date"].map(h => (
+                    <th key={h} style={th}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.orders?.map((item, idx) => {
+                  const sc = statusColors[item.order_status] || { color: '#f5c542', bg: 'rgba(245,197,66,.14)' }
+                  return (
+                    <tr key={idx} style={{ background: idx % 2 === 0 ? "transparent" : "var(--cin-surface)" }}>
+                      <td style={td} className="cin-mono">{item.order_number}</td>
+                      <td style={{ ...td, color: "var(--cin-text)", fontWeight: 600 }}>{item.product_name}</td>
+                      <td style={td}>{item.quantity}</td>
+                      <td style={td}>₹{item.price}</td>
+                      <td style={{ ...td, color: "var(--cin-accent)", fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>₹{item.subtotal}</td>
+                      <td style={td}>
+                        <span style={{
+                          padding: "4px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: 700,
+                          textTransform: "uppercase", letterSpacing: "0.5px",
+                          background: sc.bg, color: sc.color,
+                        }}>{item.order_status}</span>
+                      </td>
+                      <td style={td}>
+                        <span style={{ color: item.payment_status === 'paid' ? 'var(--cin-success)' : '#f5c542', fontWeight: 'bold' }}>
+                          {item.payment_status}
+                        </span>
+                      </td>
+                      <td style={td}>{item.date}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Reveal>
+    </PageShell>
   )
 }
 
-const cardStyle = { background: "#f8f9fa", border: "1px solid #dee2e6", borderRadius: "10px", padding: "20px", minWidth: "200px" }
-const th = { padding: "10px 12px", textAlign: "left", borderBottom: "2px solid #ddd" }
-const td = { padding: "10px 12px", borderBottom: "1px solid #eee" }
+const th = { padding: "12px 14px", textAlign: "left", borderBottom: "1px solid var(--cin-border-strong)", fontFamily: "'Space Mono', monospace", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--cin-faint)" }
+const td = { padding: "12px 14px", borderBottom: "1px solid var(--cin-border)", fontSize: "14px", color: "var(--cin-muted)" }
 
 export default SellerDashboard

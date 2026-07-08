@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../utils/api';
+import "../styles/cinematic.css";
 
 function Login() {
 
@@ -113,7 +114,7 @@ function Login() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '44px',
+          padding: '104px 44px 44px',
           position: 'relative',
           overflow: 'hidden'
         }}
@@ -178,10 +179,12 @@ function Login() {
 
           <div
             style={{
-              fontSize: '48px',
-              fontWeight: '700',
+              fontFamily: 'var(--font-display)',
+              fontSize: '76px',
+              fontWeight: '400',
+              letterSpacing: '2px',
               color: '#fff',
-              lineHeight: '1.1',
+              lineHeight: '0.95',
               marginBottom: '16px'
             }}
           >
@@ -261,7 +264,7 @@ function Login() {
       <div
         style={{
           flex: '1',
-          background: '#fff',
+          background: 'linear-gradient(165deg, var(--cin-bg-1) 0%, var(--cin-bg-0) 100%)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -281,19 +284,20 @@ function Login() {
 
         <div
           style={{
-            fontSize: '26px',
-            fontWeight: '700',
-            color: '#0a0a0a',
+            fontFamily: 'var(--font-display)',
+            fontSize: '40px',
+            letterSpacing: '1px',
+            color: 'var(--cin-text)',
             marginBottom: '4px'
           }}
         >
-          Welcome back
+          WELCOME BACK
         </div>
 
         <div
           style={{
             fontSize: '13px',
-            color: '#888',
+            color: 'var(--cin-muted)',
             marginBottom: '32px'
           }}
         >
@@ -322,9 +326,9 @@ function Login() {
           style={{
             width: '100%',
             padding: '13px',
-            background: '#fff',
-            border: '1.5px solid #e0e0e0',
-            borderRadius: '8px',
+            background: 'var(--cin-input-bg)',
+            border: '1.5px solid var(--cin-border)',
+            borderRadius: '10px',
             fontWeight: '600',
             fontSize: '14px',
             cursor: 'pointer',
@@ -333,16 +337,16 @@ function Login() {
             justifyContent: 'center',
             gap: '10px',
             marginBottom: '16px',
-            color: '#333',
+            color: 'var(--cin-text)',
             transition: 'border-color 0.2s'
           }}
 
           onMouseEnter={(e) =>
-            e.currentTarget.style.borderColor = '#0a0a0a'
+            e.currentTarget.style.borderColor = 'var(--cin-accent)'
           }
 
           onMouseLeave={(e) =>
-            e.currentTarget.style.borderColor = '#e0e0e0'
+            e.currentTarget.style.borderColor = 'var(--cin-border)'
           }
         >
 
@@ -388,14 +392,14 @@ function Login() {
             style={{
               flex: 1,
               height: '1px',
-              background: '#eee'
+              background: 'var(--cin-border)'
             }}
           />
 
           <span
             style={{
               fontSize: '12px',
-              color: '#aaa'
+              color: 'var(--cin-faint)'
             }}
           >
             or login with username
@@ -405,7 +409,7 @@ function Login() {
             style={{
               flex: 1,
               height: '1px',
-              background: '#eee'
+              background: 'var(--cin-border)'
             }}
           />
 
@@ -418,8 +422,8 @@ function Login() {
             style={{
               fontSize: '11px',
               fontWeight: '600',
-              color: '#0a0a0a',
-              letterSpacing: '1px',
+              color: 'var(--cin-accent)',
+              letterSpacing: '2px',
               marginBottom: '8px'
             }}
           >
@@ -437,17 +441,8 @@ function Login() {
               })
             }
             required
-            style={{
-              width: '100%',
-              background: '#f8f8f8',
-              border: '1.5px solid #eee',
-              borderRadius: '8px',
-              padding: '12px 16px',
-              fontSize: '14px',
-              color: '#0a0a0a',
-              outline: 'none',
-              boxSizing: 'border-box'
-            }}
+            className="cin-input"
+            style={{ boxSizing: 'border-box' }}
           />
 
         </div>
@@ -459,8 +454,8 @@ function Login() {
             style={{
               fontSize: '11px',
               fontWeight: '600',
-              color: '#0a0a0a',
-              letterSpacing: '1px',
+              color: 'var(--cin-accent)',
+              letterSpacing: '2px',
               marginBottom: '8px'
             }}
           >
@@ -478,17 +473,8 @@ function Login() {
               })
             }
             required
-            style={{
-              width: '100%',
-              background: '#f8f8f8',
-              border: '1.5px solid #eee',
-              borderRadius: '8px',
-              padding: '12px 16px',
-              fontSize: '14px',
-              color: '#0a0a0a',
-              outline: 'none',
-              boxSizing: 'border-box'
-            }}
+            className="cin-input"
+            style={{ boxSizing: 'border-box' }}
           />
 
         </div>
@@ -497,18 +483,8 @@ function Login() {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          style={{
-            width: '100%',
-            padding: '14px',
-            background: '#0a0a0a',
-            color: '#e8ff3b',
-            border: 'none',
-            borderRadius: '8px',
-            fontWeight: '700',
-            fontSize: '14px',
-            letterSpacing: '1px',
-            cursor: 'pointer'
-          }}
+          className="cin-btn cin-btn-primary"
+          style={{ width: '100%', padding: '15px' }}
         >
 
           {loading ? 'LOADING...' : 'LOGIN'}
@@ -520,16 +496,16 @@ function Login() {
             textAlign: 'center',
             marginTop: '20px',
             fontSize: '13px',
-            color: '#888'
+            color: 'var(--cin-muted)'
           }}
         >
 
-          New here?
+          New here?{' '}
 
           <Link
             to="/register"
             style={{
-              color: '#0a0a0a',
+              color: 'var(--cin-accent)',
               fontWeight: '700',
               textDecoration: 'underline'
             }}
