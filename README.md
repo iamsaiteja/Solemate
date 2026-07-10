@@ -1,371 +1,316 @@
-# SOLEMATE 👟
+<div align="center">
 
-> A full-stack multi-seller e-commerce marketplace built with Django + React. Razorpay payments, JWT authentication, Google OAuth, seller dashboards, and production deployment on AWS EC2.
+# 👟 SOLEMATE
 
-## 📸 Screenshots
+### A cinematic 3D sneaker marketplace — scroll it, spin it, own it.
 
-### Home Page
+**Full-stack multi-seller e-commerce** with a WebGL scroll-driven 3D hero, one glassmorphism design system across every page, UPI / Card / COD payments, JWT + Google OAuth, and seller dashboards.
 
-![Home](solemate-home.png)
+[![Live Demo](https://img.shields.io/badge/▶_Live_Demo-ecommerce--django--two.vercel.app-e8ff3b?style=for-the-badge&labelColor=0a0a0e)](https://ecommerce-django-two.vercel.app/)
 
-Multi-vendor E-commerce Platform built using Django REST Framework and React.
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)]()
+[![Django](https://img.shields.io/badge/Django-6.0-092E20?logo=django)]()
+[![DRF](https://img.shields.io/badge/DRF-REST_API-A30000)]()
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)]()
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000?logo=threedotjs)]()
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)]()
+[![Razorpay](https://img.shields.io/badge/Razorpay-UPI_·_Cards-0C2451)]()
+[![Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?logo=vercel)]()
+[![AWS](https://img.shields.io/badge/AWS_EC2-Backend-FF9900?logo=amazonwebservices&logoColor=white)]()
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://ecommerce-django-two.vercel.app/)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-black)](https://github.com/iamsaiteja/ecommerce-django)
-
-[![Python](https://img.shields.io/badge/Python-3.10+-blue)]()
-[![Django](https://img.shields.io/badge/Django-Backend-green)]()
-[![DRF](https://img.shields.io/badge/REST-API-red)]()
-[![React](https://img.shields.io/badge/React-Frontend-61DAFB)]()
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)]()
-[![AWS EC2](https://img.shields.io/badge/AWS-EC2-orange)]()
-[![Razorpay](https://img.shields.io/badge/Razorpay-Payments-blue)]()
-[![Google OAuth](https://img.shields.io/badge/Google-OAuth-red)]()
+</div>
 
 ---
 
-## ✨ Features
+## ✨ The Experience
 
-### 🛒 For Customers
-- Browse multi-seller catalog with categories, search, and filters
-- Shopping cart with coupon support
-- Secure Razorpay payment integration
-- Order tracking with real-time status updates
-- Product reviews and ratings
-- Google OAuth one-click login + email/password
-- Profile management with multiple addresses
+Scroll the homepage and a **real glTF sneaker** pins to your screen, spins through five cinematic frames, and **physically changes colorway** (midnight → beach → street) as backgrounds, rim-lights and giant parallax watermarks morph around it. Drag the shoe to spin it yourself.
+
+| The 3D Hero | Colorways morph on scroll |
+|:---:|:---:|
+| ![Home hero](docs/screenshots/home-hero.jpg) | ![Street DNA frame](docs/screenshots/home-street.jpg) |
+| **Glass storefront** | **UPI · Card · COD checkout** |
+| ![Products](docs/screenshots/products.jpg) | ![Checkout](docs/screenshots/checkout.jpg) |
+
+Every page — Products, Details, Cart, Wishlist, Orders, Auth, Settings, Seller Dashboard — shares **one cinematic design system**: dark cinema gradients, glassmorphism panels, Bebas Neue display type, a `#e8ff3b` signature accent, scroll-reveal animations, 3D-tilt cards and blurred page transitions.
+
+---
+
+## 🚀 Feature Tour
+
+### 🛍️ For Sneakerheads
+- **Scroll-driven 3D hero** — 22.7k-triangle glTF sneaker, KHR material variants, particles, contact shadows, drag-to-spin
+- **AI product search** with graceful fallback to instant local filtering
+- Catalog with category mega-menus, brand/gender/price filters and sorting
+- Product pages with size picker, quantity, star ratings and reviews
+- Wishlist with optimistic toggling
+- Cart with animated count-up totals, free-shipping progress and delivery estimates
+- **Checkout with UPI (GPay · PhonePe · Paytm), Cards and Cash-on-Delivery** via Razorpay
+- Order history with a visual tracking timeline (Ordered → Processing → Shipped → Delivered)
+- Login with **Google OAuth** or username/password (JWT)
+- Theme (dark / light / auto) and language (English · తెలుగు · हिंदी) settings
 
 ### 🏪 For Sellers
-- Dedicated seller dashboard with sales analytics
-- Product management (create, update, archive)
-- Order fulfillment workflow
-- Approval-based onboarding (admin verification)
+- Dashboard with revenue and order analytics
+- Per-item order table with status and payment state
 
-// 🔐 For Admins //
-- Django admin panel for full control
+### 🔐 For Admins
+- Django admin for products, categories, coupons, users and orders
 - Seller approval workflow
-- Coupon and discount management
-- User and order moderation
 
 ---
 
-// 🏗️ Architecture //
-┌──────────────────┐        ┌──────────────────┐        ┌─────────────────┐
+## 🏗️ Architecture
 
-│   React Frontend │ ─────► │  Django Backend  │ ─────► │   PostgreSQL    │
+```mermaid
+flowchart LR
+    subgraph Client["React 19 SPA · Vercel"]
+        UI["Cinematic design system + Three.js 3D hero"]
+    end
+    subgraph Server["Django 6 + DRF · AWS EC2"]
+        API["REST API · SimpleJWT · allauth"]
+        CEL["Celery workers"]
+    end
+    DB[("PostgreSQL")]
+    RZP["Razorpay: UPI · Cards"]
+    GO["Google OAuth"]
+    CLD["Cloudinary media"]
 
-│   Vercel         │  JWT   │  AWS EC2         │        │   (Database)    │
+    UI -- "Axios + Bearer JWT" --> API
+    API --> DB
+    API --> RZP
+    API --> GO
+    API --> CLD
+    API --> CEL
+```
 
-└──────────────────┘        └────────┬─────────┘        └─────────────────┘
+### 💳 Payment flow
 
-│
+```mermaid
+sequenceDiagram
+    participant C as Customer
+    participant F as React Frontend
+    participant B as Django API
+    participant R as Razorpay
 
-┌──────────┼──────────┐
-
-▼          ▼          ▼
-
-┌─────────┐ ┌─────────┐ ┌──────────┐
-
-│Razorpay │ │ Google  │ │  Nginx   │
-
-│Payments │ │  OAuth  │ │ Gunicorn │
-
-└─────────┘ └─────────┘ └──────────┘
-
-
-### Authentication Flow
-
-1. User logs in via Google OAuth or email/password
-2. Backend issues JWT (access + refresh tokens) via SimpleJWT
-3. Frontend stores token, attaches `Authorization: Bearer` header
-4. Refresh token rotation on expiry
-5. Role-based access (customer / seller / admin)
-
-### Payment Flow
-
-1. User checks out cart → backend creates Razorpay order
-2. Razorpay checkout opens with order ID
-3. User completes payment → Razorpay webhook to backend
-4. Backend verifies signature → marks order paid → notifies seller
-5. Order status updates trigger customer email
+    C->>F: Choose UPI / Card / COD
+    alt COD
+        F->>B: POST /orders/create-cod/
+        B-->>F: Order confirmed 🎉
+    else UPI or Card
+        F->>B: POST /orders/create/
+        B->>R: Create Razorpay order
+        R-->>F: Checkout opens (GPay / PhonePe / Paytm / Card)
+        C->>R: Completes payment
+        F->>B: POST /orders/verify-payment/
+        B->>R: Verify signature
+        B-->>F: Order paid ✅ confetti 🎊
+    end
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Django 5** — Python web framework
-- **Django REST Framework** — REST API
-- **SimpleJWT** — JWT authentication
-- **django-allauth** — Google OAuth integration
-- **PostgreSQL** — Production database
-- **Razorpay Python SDK** — Payment processing
-
-### Frontend
-- **React 19** — UI framework
-- **React Router** — Client-side routing
-- **Axios** — HTTP client with interceptors
-- **Tailwind CSS** — Styling
-- **Razorpay Checkout** — Payment widget
-
-### DevOps & Infrastructure
-- **AWS EC2** — Backend hosting (Ubuntu)
-- **Nginx** — Reverse proxy + static file serving
-- **Gunicorn** — WSGI application server
-- **Vercel** — Frontend hosting
-- **GitHub Actions** — CI/CD pipeline (auto-deploy on push to main)
-- **Let's Encrypt** — HTTPS/SSL certificates
+| Layer | Tech |
+|---|---|
+| **Frontend** | React 19, React Router 7, Axios, Three.js (glTF + KHR_materials_variants), Create React App |
+| **Design system** | Hand-rolled CSS tokens (`cinematic.css`), glassmorphism, Bebas Neue / DM Sans / Space Mono, IntersectionObserver reveals, rAF pointer-tilt — **zero animation libraries** |
+| **Backend** | Django 6, Django REST Framework, SimpleJWT, django-allauth (Google OAuth), Celery, Cloudinary |
+| **Database** | PostgreSQL (SQLite for local dev) |
+| **Payments** | Razorpay — UPI intent (GPay · PhonePe · Paytm), cards, COD |
+| **Infra** | AWS EC2 + Nginx + Gunicorn (API), Vercel (SPA), GitHub Actions CI/CD, Let's Encrypt |
 
 ---
 
-## 🚀 Local Setup
+## 📂 Monorepo Layout
 
-### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- PostgreSQL (or SQLite for dev)
-- Razorpay account ([sign up here](https://razorpay.com))
-- Google Cloud Console OAuth credentials
-
-### Backend Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/iamsaiteja/ecommerce-django.git
-cd ecommerce-django
-
-# Virtual environment
-python -m venv venv
-venv\Scripts\activate          # Windows
-source venv/bin/activate       # Linux/Mac
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create .env file in project root
+```
+Solemate/
+├── apps/                  # Django apps
+│   ├── api/               #   REST endpoints
+│   ├── users/             #   Auth, profiles, Google OAuth
+│   ├── products/          #   Catalog, categories, reviews, AI search
+│   ├── cart/              #   Shopping cart
+│   ├── orders/            #   Orders + Razorpay integration
+│   ├── wishlist/          #   Wishlist toggles
+│   ├── sellers/           #   Seller dashboard & approval
+│   └── coupons/           #   Discounts
+├── ecommerce/             # Django settings, urls, celery, wsgi
+├── frontend/              # React SPA
+│   └── src/
+│       ├── components/
+│       │   ├── Sneaker3DExperience.jsx   # 🎬 the 3D scroll hero
+│       │   ├── Navbar.jsx                # glass nav + mega menus
+│       │   └── ui/                       # PageShell · Reveal · Tilt · Footer
+│       ├── styles/cinematic.css          # 🎨 the design system
+│       ├── pages/                        # Home, Products, Cart, Orders…
+│       └── utils/                        # axios client, hooks
+├── media/                 # Product images
+└── manage.py
 ```
 
-**`.env` file:**
+---
+
+## ⚡ Quick Start
+
+### 1 · Backend (Django)
+
+```bash
+git clone https://github.com/iamsaiteja/Solemate.git
+cd Solemate
+
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create `.env` in the project root:
+
 ```env
 SECRET_KEY=your-django-secret-key
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 FRONTEND_URL=http://localhost:3000
 
-# Database
-DATABASE_URL=postgres://user:pass@localhost/solemate
+DATABASE_URL=postgres://user:pass@localhost/solemate   # or omit for SQLite
 
-# Razorpay
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
 RAZORPAY_KEY_SECRET=your_razorpay_secret
 
-# Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 ```bash
-# Migrations
-python manage.py makemigrations
 python manage.py migrate
-
-# Create admin user
 python manage.py createsuperuser
-
-# Run server
-python manage.py runserver
+python manage.py runserver       # → http://localhost:8000
 ```
 
-Backend runs on `http://localhost:8000`.
-
-### Frontend Setup
-
-Frontend is in a separate repo: [solemate-frontend](https://github.com/iamsaiteja/solemate-frontend)
+### 2 · Frontend (React) — lives in this repo
 
 ```bash
-cd solemate-frontend
+cd frontend
 npm install
-npm start
+npm start                        # → http://localhost:3000
 ```
 
-Frontend runs on `http://localhost:3000`.
+> Point the SPA at your API by editing `BASE_URL` in `frontend/src/utils/api.js`.
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Reference
 
-### Authentication
+<details>
+<summary><b>🔑 Authentication</b></summary>
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/auth/register/` | Create new account |
-| `POST` | `/api/auth/login/` | Get JWT access + refresh tokens |
-| `POST` | `/api/auth/refresh/` | Refresh access token |
+| `POST` | `/api/auth/register/` | Create account, returns JWT pair |
+| `POST` | `/api/auth/login/` | Access + refresh tokens |
+| `POST` | `/api/auth/refresh/` | Rotate access token |
 | `POST` | `/api/auth/google/` | Google OAuth login |
-| `POST` | `/api/auth/logout/` | Blacklist refresh token |
 
-### Products
+</details>
+
+<details>
+<summary><b>👟 Products & Reviews</b></summary>
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET`  | `/api/products/` | List all products |
-| `GET`  | `/api/products/?search=nike` | Search products |
-| `GET`  | `/api/products/{slug}/` | Product detail |
-| `GET`  | `/api/products/{slug}/reviews/` | Product reviews |
-| `POST` | `/api/products/{slug}/reviews/` | Post a review (auth) |
-| `GET`  | `/api/categories/` | All categories |
+| `GET`  | `/api/products/` | Catalog |
+| `GET`  | `/api/products/{id}/` | Detail with ratings & reviews |
+| `POST` | `/api/products/{id}/review/` | Post review 🔒 |
+| `POST` | `/api/products/ai-search/` | AI-powered search |
 
-### Cart & Orders
+</details>
+
+<details>
+<summary><b>🛒 Cart, Wishlist & Orders</b></summary>
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET`  | `/api/cart/` | Get current cart |
-| `POST` | `/api/cart/add/` | Add item to cart |
-| `POST` | `/api/orders/create/` | Create Razorpay order |
-| `POST` | `/api/orders/verify/` | Verify Razorpay payment |
-| `GET`  | `/api/orders/` | My order history |
+| `GET`  | `/api/cart/` | Current cart 🔒 |
+| `POST` | `/api/cart/add/` | Add item (with size) 🔒 |
+| `PATCH`| `/api/cart/update/{id}/` | Change quantity 🔒 |
+| `DELETE`| `/api/cart/remove/{id}/` | Remove item 🔒 |
+| `GET`  | `/api/wishlist/` · `/api/wishlist/ids/` | Wishlist 🔒 |
+| `POST` | `/api/wishlist/toggle/` | Like / unlike 🔒 |
+| `POST` | `/api/orders/create/` | Create Razorpay order 🔒 |
+| `POST` | `/api/orders/create-cod/` | Cash-on-delivery order 🔒 |
+| `POST` | `/api/orders/verify-payment/` | Verify Razorpay signature 🔒 |
+| `GET`  | `/api/orders/` | Order history with tracking 🔒 |
 
-### Seller (auth + approval required)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET`  | `/api/seller/dashboard/` | Sales analytics |
-| `POST` | `/api/seller/products/` | Create product |
-| `GET`  | `/api/seller/orders/` | Orders for seller's products |
-
-**Authentication example:**
-```bash
-# Get token
-curl -X POST https://solemate.servecounterstrike.com/api/auth/login/ \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"pass123"}'
-
-# Use token
-curl -H "Authorization: Bearer eyJ..." \
-  https://solemate.servecounterstrike.com/api/orders/
-```
+</details>
 
 ---
 
-## 💳 Razorpay Test Mode
-
-For local testing, use these test credentials:
+## 💳 Test Payments (Razorpay sandbox)
 
 | Field | Value |
 |-------|-------|
-| Card Number | `4111 1111 1111 1111` |
-| CVV | Any 3 digits |
-| Expiry | Any future date |
+| Card | `4111 1111 1111 1111` · any CVV · any future expiry |
+| UPI | success@razorpay |
 | OTP | `1234` |
 
 ---
 
-## 📂 Project Structure
+## 🎨 The Cinematic Design System
 
-ecommerce-django/
+One source of truth — `frontend/src/styles/cinematic.css` — themes the whole app with CSS custom properties (`data-theme` flips dark ⇆ light):
 
-├── apps/
+| Piece | What it does |
+|---|---|
+| **Tokens** | `--cin-bg-*`, `--cin-accent` (#e8ff3b), glass surfaces, borders, glows |
+| **`PageShell`** | Fixed gradient + glow backdrop, giant ghost watermark per page |
+| **`Reveal`** | IntersectionObserver scroll-reveal — fires once, zero scroll listeners |
+| **`Tilt`** | Pointer-tracked 3D card tilt + light sheen, rAF-batched CSS vars, no re-renders |
+| **`RouteFade`** | Blur/fade page transitions with scroll reset |
+| **`Sneaker3DExperience`** | 500vh pinned WebGL scrollytelling: keyframed camera/model choreography, variant switching, frame-rate-independent damping, reduced-motion & WebGL fallbacks |
 
-│   ├── users/          # Auth, profiles, addresses
-
-│   ├── products/       # Products, categories, reviews
-
-│   ├── cart/           # Shopping cart logic
-
-│   ├── orders/         # Orders + Razorpay integration
-
-│   ├── sellers/        # Seller dashboard & approval
-
-│   ├── coupons/        # Discount coupon system
-
-│   └── api/            # REST API endpoints
-
-├── templates/          # Django templates (Tailwind)
-
-├── static/             # CSS, JS, images
-
-├── ecommerce/          # Django settings, URLs, WSGI
-
-├── requirements.txt
-
-├── manage.py
-
-└── .github/
-
-└── workflows/
-
-└── deploy.yml  # GitHub Actions CI/
-
-
----
-
-## 🚢 Deployment
-
-### Production Stack
-- **Backend:** AWS EC2 (Ubuntu) + Nginx + Gunicorn
-- **Database:** PostgreSQL on EC2
-- **Frontend:** Vercel (auto-deploy from GitHub)
-- **CI/CD:** GitHub Actions (push to `main` → SSH to EC2 → pull + restart)
-- **SSL:** Let's Encrypt via Certbot
-- **Domain:** Custom subdomain via DuckDNS
-
-### GitHub Actions workflow (simplified)
-```yaml
-on: push: { branches: [main] }
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            cd /home/ubuntu/ecommerce-django
-            git fetch && git reset --hard origin/main
-            source venv/bin/activate
-            pip install -r requirements.txt
-            python manage.py migrate
-            sudo systemctl restart gunicorn
-```
+Performance rules baked in: transform/opacity-only animations, lazy images, DPR-capped renderer that pauses off-screen, and **no animation libraries**.
 
 ---
 
 ## 🗺️ Roadmap
 
-- [ ] Wishlist functionality
-- [ ] Real-time order tracking with WebSockets
-- [ ] Seller payout system (Razorpay Route)
-- [ ] Product recommendations (collaborative filtering)
-- [ ] Mobile app (React Native)
+- [x] Wishlist ❤️
+- [x] 3D scroll experience & cinematic design system
+- [x] UPI / Card / COD payment selection
+- [ ] Seller payout automation (Razorpay Route)
+- [ ] Real-time order tracking (WebSockets)
+- [ ] Product recommendations
 - [ ] Email notifications (Celery + SendGrid)
-- [ ] Multi-currency support
-- [ ] Advanced analytics for sellers
+- [ ] React Native mobile app
 
 ---
 
-## 🎯 Key Engineering Challenges Solved
+## 🧗 Engineering War Stories
 
-1. **Google OAuth redirect_uri_mismatch on production** — Resolved with conditional `if DEBUG` HTTP/HTTPS handling
-2. **Custom SocialAccountAdapter wrong redirect** — Fixed Nginx local IP issue with `FRONTEND_URL` env var
-3. **Cart 401 errors** — Replaced hardcoded `BASE_URL` with environment-based config in `api.js`
-4. **GitHub Actions deployment conflicts** — Switched from `git pull` to `git fetch && git reset --hard` for clean deploys
-5. **Production CORS + ALLOWED_HOSTS** — Configured Django middleware properly for cross-origin requests
+1. **`position: sticky` silently dying** — an `overflow-x: hidden` page wrapper turned the page into a scroll container and unpinned the 3D hero; fixed with `overflow-x: clip`
+2. **Route transitions breaking `position: fixed`** — a retained `filter` from `animation-fill-mode: both` made the route wrapper a containing block; keyframes now end at natural values
+3. **7.8 MB glTF model → 0.96 MB** — 1024px WebP texture recompression while preserving KHR material variants
+4. **Frame-rate-independent scrubbing** — `1 − e^(−λ·dt)` damping so 60 Hz, 120 Hz and slow devices all feel identical
+5. **Google OAuth `redirect_uri_mismatch`** in production — conditional HTTP/HTTPS handling + `FRONTEND_URL` env
 
 ---
 
 ## 👨‍💻 Author
 
 **Sai Teja Golla**
-- 💼 LinkedIn: [@golla-saiteja](https://www.linkedin.com/in/golla-saiteja)
-- 🐙 GitHub: [@iamsaiteja](https://github.com/iamsaiteja)
-- 📧 tejayadav872@gmail.com
+[LinkedIn](https://www.linkedin.com/in/golla-saiteja) · [GitHub](https://github.com/iamsaiteja) · tejayadav872@gmail.com
 
----
+## 🙏 Credits
+
+3D sneaker derived from [Materials Variants Shoe](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/MaterialsVariantsShoe) by Shopify (CC BY 4.0) — textures recompressed, geometry unchanged.
 
 ## 📜 License
 
-MIT License — feel free to learn from this and adapt it.
+MIT — learn from it, build on it.
 
----
+<div align="center">
 
-⭐ If you found this useful, give it a star!
+⭐ **If SoleMate made you scroll twice, drop a star!** ⭐
 
+</div>
