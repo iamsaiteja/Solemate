@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../utils/api';
+import { requestBrandIntro } from '../components/ui/BrandIntro';
 import "../styles/cinematic.css";
 
 function Login() {
@@ -29,6 +30,7 @@ function Login() {
       // save tokens
       localStorage.setItem('access', access);
       localStorage.setItem('refresh', refresh);
+      requestBrandIntro();
       API.get('/auth/profile/')
         .then((res) => {
           localStorage.setItem('username', res.data.username);
@@ -62,6 +64,7 @@ function Login() {
         localStorage.setItem('email', res.data.user.email || '');
       }
 
+      requestBrandIntro();
       navigate('/products');
 
     } catch (err) {
