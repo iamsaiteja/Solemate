@@ -81,23 +81,56 @@
   inset: 0;
   z-index: -2;
   pointer-events: none;
+  overflow: hidden;
   background:
     radial-gradient(ellipse 80% 55% at 75% -5%, var(--cin-glow), transparent 60%),
     radial-gradient(ellipse 60% 45% at 10% 105%, var(--cin-glow), transparent 65%),
     linear-gradient(165deg, var(--cin-bg-0) 0%, var(--cin-bg-1) 100%);
 }
 
+/* Maison layer: slow-drifting light orbs, like a boutique's ambient lighting */
+.cin-bgfx::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  background:
+    radial-gradient(circle 360px at 18% 28%, rgba(250, 84, 0, 0.075), transparent 70%),
+    radial-gradient(circle 460px at 82% 72%, rgba(250, 84, 0, 0.05), transparent 70%),
+    radial-gradient(circle 260px at 62% 14%, rgba(255, 255, 255, 0.035), transparent 70%),
+    radial-gradient(circle 200px at 35% 85%, rgba(255, 255, 255, 0.025), transparent 70%);
+  animation: cinOrbs 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes cinOrbs {
+  from { transform: translate3d(-2.5%, -1.5%, 0) scale(1); }
+  to { transform: translate3d(2.5%, 2%, 0) scale(1.07); }
+}
+
+/* Monogram layer: repeating brand mark, the luxury-house wallpaper treatment */
 .cin-bgfx::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cg transform='rotate(-24 120 120)' fill='rgba(255,255,255,0.026)' font-family='Arial,sans-serif' font-weight='700' letter-spacing='6'%3E%3Ctext x='6' y='84' font-size='30'%3ESOLEMATE%3C/text%3E%3Ctext x='-104' y='196' font-size='30'%3ESOLEMATE%3C/text%3E%3C/g%3E%3C/svg%3E"),
     linear-gradient(var(--cin-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--cin-border) 1px, transparent 1px);
-  background-size: 64px 64px;
-  opacity: 0.28;
-  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 20%, #000 30%, transparent 75%);
-          mask-image: radial-gradient(ellipse 90% 80% at 50% 20%, #000 30%, transparent 75%);
+  background-size: 240px 240px, 64px 64px, 64px 64px;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 25%, #000 30%, rgba(0, 0, 0, 0.25) 80%);
+          mask-image: radial-gradient(ellipse 95% 85% at 50% 25%, #000 30%, rgba(0, 0, 0, 0.25) 80%);
+}
+
+[data-theme="light"] .cin-bgfx::after {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cg transform='rotate(-24 120 120)' fill='rgba(23,23,27,0.035)' font-family='Arial,sans-serif' font-weight='700' letter-spacing='6'%3E%3Ctext x='6' y='84' font-size='30'%3ESOLEMATE%3C/text%3E%3Ctext x='-104' y='196' font-size='30'%3ESOLEMATE%3C/text%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(var(--cin-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cin-border) 1px, transparent 1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cin-bgfx::before { animation: none; }
 }
 
 .cin-page-ghost {
