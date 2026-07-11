@@ -24,12 +24,28 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Per-route browser-tab titles (helps SEO and makes tabs recognisable)
+const ROUTE_TITLES = {
+  "/": "SoleMate — Premium Sneakers Online",
+  "/products": "Shop Sneakers | SoleMate",
+  "/cart": "Your Bag | SoleMate",
+  "/wishlist": "Wishlist | SoleMate",
+  "/orders": "My Orders | SoleMate",
+  "/login": "Login | SoleMate",
+  "/register": "Create Account | SoleMate",
+  "/settings": "Settings | SoleMate",
+  "/seller": "Seller Dashboard | SoleMate",
+};
+
 // Cinematic page transition: remounts the routed subtree with a fade/blur-in
 // on every pathname change and resets the scroll position.
 const RouteFade = ({ children }) => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.title =
+      ROUTE_TITLES[pathname] ||
+      (pathname.startsWith("/products/") ? "Product | SoleMate" : "SoleMate");
   }, [pathname]);
   return (
     <div key={pathname} className="cin-route">

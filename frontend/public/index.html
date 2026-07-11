@@ -5,40 +5,75 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon-32x32.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#0a0a0e" />
+
+    <!-- Primary SEO -->
+    <title>SoleMate — Premium Sneakers Online | Nike, Adidas, Puma & More</title>
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="SoleMate is India's cinematic sneaker store. Shop premium kicks from Nike, Adidas, Puma, Jordan and more in an immersive 3D experience — UPI, cards & COD, free shipping, easy returns."
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <meta
+      name="keywords"
+      content="SoleMate, sneakers online India, buy shoes online, premium sneakers, Nike shoes, Adidas shoes, Jordan, running shoes, sneaker store, solemate sneakers"
+    />
+    <meta name="author" content="SoleMate" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://ecommerce-django-two.vercel.app/" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>SoleMate</title>
+    <!-- Open Graph (WhatsApp / Facebook / LinkedIn link previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SoleMate" />
+    <meta property="og:title" content="SoleMate — Premium Sneakers Online" />
+    <meta
+      property="og:description"
+      content="Step into the future. Shop premium sneakers in an immersive 3D experience — UPI, cards & COD."
+    />
+    <meta property="og:url" content="https://ecommerce-django-two.vercel.app/" />
+    <meta property="og:image" content="%PUBLIC_URL%/logo512.png" />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SoleMate — Premium Sneakers Online" />
+    <meta
+      name="twitter:description"
+      content="India's cinematic sneaker store. Premium kicks, immersive 3D shopping, UPI & COD."
+    />
+    <meta name="twitter:image" content="%PUBLIC_URL%/logo512.png" />
+
+    <!-- Structured data so search engines understand the brand -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SoleMate",
+        "alternateName": "SoleMate Sneakers",
+        "url": "https://ecommerce-django-two.vercel.app/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://ecommerce-django-two.vercel.app/products?category={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "OnlineStore",
+        "name": "SoleMate",
+        "description": "Premium sneaker store with an immersive 3D shopping experience.",
+        "url": "https://ecommerce-django-two.vercel.app/",
+        "logo": "https://ecommerce-django-two.vercel.app/logo512.png",
+        "paymentAccepted": "UPI, Credit Card, Debit Card, Cash on Delivery",
+        "currenciesAccepted": "INR"
+      }
+    </script>
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
