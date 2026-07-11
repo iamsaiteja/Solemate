@@ -30,12 +30,12 @@ export function ThemeProvider({ children }) {
     s.innerHTML = `
       :root, [data-theme="dark"] {
         --bg:transparent; --surface:#14141d; --text:#f4f4f7; --muted:#9aa0ad;
-        --border:#23232e; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --border:#23232e; --accent:#fa5400; --accent-ink:#ffffff;
         --page-gradient: linear-gradient(165deg, #0a0a0e 0%, #101018 55%, #14141d 100%);
       }
       [data-theme="light"] {
         --bg:transparent; --surface:#ffffff; --text:#17171b; --muted:#777;
-        --border:#e2ded2; --accent:#e8ff3b; --accent-ink:#1a1a1a;
+        --border:#e2ded2; --accent:#fa5400; --accent-ink:#ffffff;
         --page-gradient: linear-gradient(165deg, #f6f4ee 0%, #efece3 55%, #e7e4da 100%);
       }
       body {

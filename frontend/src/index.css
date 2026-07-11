@@ -8,7 +8,7 @@
   --border: rgba(0,0,0,0.1);
   --white: #1a1a1a;
   --white-muted: rgba(0,0,0,0.5);
-  --accent: #e8ff3b;
+  --accent: #fa5400;
   --red: #ff4545;
   --font-display: 'Bebas Neue', sans-serif;
   --font-body: 'DM Sans', sans-serif;
@@ -38,7 +38,7 @@ input, textarea {
 
 input:focus, textarea:focus {
   outline: none;
-  border-color: var(--accent, #e8ff3b);
+  border-color: var(--accent, #fa5400);
 }
 
 input::placeholder, textarea::placeholder { color: var(--muted, #9aa0ad); }

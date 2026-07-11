@@ -23,7 +23,7 @@ const injectStyles = () => {
     .sm-search-input { flex:1; background:transparent; border:none; outline:none; color:var(--cin-text); font-family:var(--font-body); font-size:14px; padding:16px; caret-color:var(--cin-accent); min-width:0; }
     .sm-search-input::placeholder { color:var(--cin-faint); font-style:italic; }
     .sm-search-btn { background:var(--cin-accent); color:var(--cin-accent-ink); border:none; padding:13px 28px; margin-right:6px; border-radius:10px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:transform .15s, box-shadow .2s; flex-shrink:0; }
-    .sm-search-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(232,255,59,.3); }
+    .sm-search-btn:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(250,84,0,.3); }
     .sm-search-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .sm-ai-result { margin-top:12px; background:var(--cin-surface); border:1px solid var(--cin-border); border-left:3px solid var(--cin-accent); padding:16px 20px; font-size:14px; line-height:1.7; color:var(--cin-muted); white-space:pre-wrap; border-radius:0 12px 12px 0; }
     .sm-ai-note { margin-top:12px; display:flex; gap:14px; align-items:flex-start; background:var(--cin-glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border); border-radius:14px; padding:16px 20px; animation:smNoteUp .35s ease; }
@@ -70,7 +70,7 @@ const injectStyles = () => {
     .sm-card-price { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:var(--cin-accent); }
 
     .sm-addcart { width:100%; background:var(--cin-accent); color:var(--cin-accent-ink); border:none; padding:12px; border-radius:10px; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:transform .12s, box-shadow .2s; }
-    .sm-addcart:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(232,255,59,.25); }
+    .sm-addcart:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(250,84,0,.25); }
     .sm-addcart:active { transform:scale(.97); }
     .sm-addcart:disabled { opacity:.6; cursor:default; }
 
@@ -80,7 +80,7 @@ const injectStyles = () => {
 
     /* ===== SNEAKER SHOWROOM SHELVES ===== */
     .shelf-cell { position:relative; cursor:pointer; padding-top:8px; }
-    .shelf-spot { position:absolute; top:0; left:50%; transform:translateX(-50%); width:78%; height:68%; background:radial-gradient(ellipse 60% 95% at 50% 0%, rgba(232,255,59,0.08), transparent 72%); pointer-events:none; z-index:0; }
+    .shelf-spot { position:absolute; top:0; left:50%; transform:translateX(-50%); width:78%; height:68%; background:radial-gradient(ellipse 60% 95% at 50% 0%, rgba(250,84,0,0.08), transparent 72%); pointer-events:none; z-index:0; }
     .shelf-stage { position:relative; display:flex; align-items:flex-end; justify-content:center; z-index:1; }
     .shelf-shoe { max-height:86%; max-width:84%; object-fit:contain; transform-origin:50% 92%; transition:transform .4s cubic-bezier(.22,1.45,.36,1), filter .4s ease; filter:drop-shadow(0 14px 12px rgba(0,0,0,.45)); z-index:2; }
     .shelf-cell:hover .shelf-shoe { transform:translateY(-16px) rotate(-7deg) scale(1.09); filter:drop-shadow(0 30px 22px rgba(0,0,0,.5)); }

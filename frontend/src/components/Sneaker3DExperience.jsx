@@ -24,7 +24,7 @@ const FRAMES = [
     ghost: "SNEAKERS",
     variant: "midnight",
     bg: ["#0a0a0e", "#17171f"],
-    accent: "#e8ff3b",
+    accent: "#fa5400",
     shoe: { pos: [0, -0.05, 0], rot: [0.12, -0.55, -0.08], scale: 1.0 },
   },
   {
@@ -69,7 +69,7 @@ const FRAMES = [
     ghost: "FUTURE",
     variant: "midnight",
     bg: ["#0a0a0e", "#101018"],
-    accent: "#e8ff3b",
+    accent: "#fa5400",
     shoe: { pos: [0, -0.05, 0], rot: [0.12, Math.PI * 2 - 0.55, -0.08], scale: 1.0 },
   },
 ];
@@ -191,7 +191,7 @@ function Sneaker3DExperience({ onCta }) {
     keyLight.position.set(2.5, 4, 3);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0xe8ff3b, 4.5);
+    const rimLight = new THREE.DirectionalLight(0xfa5400, 4.5);
     rimLight.position.set(-3, 2.2, -3.5);
     scene.add(rimLight);
 

@@ -2,7 +2,7 @@
    SOLEMATE CINEMATIC DESIGN SYSTEM
    One design language for every page, derived from the
    3D homepage hero: dark cinema, glass, Bebas display type,
-   #e8ff3b accent, soft glows, subtle 3D depth.
+   #fa5400 accent, soft glows, subtle 3D depth.
    Tokens flip with [data-theme] so the theme toggle keeps working.
 ========================================================== */
 
@@ -22,9 +22,9 @@
   --cin-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   --cin-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
   --cin-ghost: rgba(255, 255, 255, 0.055);
-  --cin-accent: #e8ff3b;
-  --cin-accent-ink: #111111;
-  --cin-glow: rgba(232, 255, 59, 0.09);
+  --cin-accent: #fa5400;
+  --cin-accent-ink: #ffffff;
+  --cin-glow: rgba(250, 84, 0, 0.09);
   --cin-danger: #ff5a5a;
   --cin-danger-bg: rgba(255, 90, 90, 0.12);
   --cin-success: #4ade80;
@@ -50,9 +50,9 @@
   --cin-shadow: 0 24px 60px rgba(23, 23, 27, 0.14);
   --cin-shadow-soft: 0 10px 30px rgba(23, 23, 27, 0.1);
   --cin-ghost: rgba(23, 23, 27, 0.05);
-  --cin-accent: #e8ff3b;
-  --cin-accent-ink: #111111;
-  --cin-glow: rgba(232, 255, 59, 0.22);
+  --cin-accent: #fa5400;
+  --cin-accent-ink: #ffffff;
+  --cin-glow: rgba(250, 84, 0, 0.22);
   --cin-danger: #d92f2f;
   --cin-danger-bg: rgba(217, 47, 47, 0.09);
   --cin-success: #15803d;
@@ -236,7 +236,7 @@
   color: var(--cin-accent-ink);
 }
 
-.cin-btn-primary:hover { box-shadow: 0 10px 30px rgba(232, 255, 59, 0.3); }
+.cin-btn-primary:hover { box-shadow: 0 10px 30px rgba(250, 84, 0, 0.3); }
 
 .cin-btn-dark {
   background: var(--cin-text);

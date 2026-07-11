@@ -24,7 +24,7 @@ const injectPdStyles = () => {
     .sm-star-btn:hover { transform:scale(1.2); }
     .sm-size-btn { width:48px; height:48px; border:1px solid var(--cin-border); background:var(--cin-input-bg); color:var(--cin-text); cursor:pointer; border-radius:10px; font-weight:600; font-size:14px; transition:all 0.2s; }
     .sm-size-btn:hover { border-color:var(--cin-accent); }
-    .sm-size-btn.sel { background:var(--cin-accent); color:var(--cin-accent-ink); border:2px solid var(--cin-accent); box-shadow:0 6px 18px rgba(232,255,59,.25); }
+    .sm-size-btn.sel { background:var(--cin-accent); color:var(--cin-accent-ink); border:2px solid var(--cin-accent); box-shadow:0 6px 18px rgba(250,84,0,.25); }
     .sm-qty-btn { width:40px; height:40px; border-radius:10px; border:1px solid var(--cin-border); background:var(--cin-input-bg); color:var(--cin-text); font-size:20px; cursor:pointer; transition:all .15s; }
     .sm-qty-btn:hover { border-color:var(--cin-accent); color:var(--cin-accent); }
   `;
