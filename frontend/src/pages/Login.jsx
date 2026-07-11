@@ -131,7 +131,7 @@ function Login() {
             width: '260px',
             height: '260px',
             borderRadius: '50%',
-            background: '#e8ff3b',
+            background: '#fa5400',
             opacity: '0.06'
           }}
         />
@@ -144,7 +144,7 @@ function Login() {
             width: '200px',
             height: '200px',
             borderRadius: '50%',
-            background: '#e8ff3b',
+            background: '#fa5400',
             opacity: '0.04'
           }}
         />
@@ -155,7 +155,7 @@ function Login() {
             style={{
               fontSize: '32px',
               fontWeight: '700',
-              color: '#e8ff3b',
+              color: '#fa5400',
               letterSpacing: '4px'
             }}
           >
@@ -194,7 +194,7 @@ function Login() {
             STEP
             <br />
 
-            <span style={{ color: '#e8ff3b' }}>
+            <span style={{ color: '#fa5400' }}>
               INTO
             </span>
 
@@ -237,7 +237,7 @@ function Login() {
 
               <div
                 style={{
-                  color: '#e8ff3b',
+                  color: '#fa5400',
                   fontSize: '18px',
                   fontWeight: '700'
                 }}
@@ -279,7 +279,7 @@ function Login() {
           style={{
             width: '40px',
             height: '4px',
-            background: '#e8ff3b',
+            background: '#fa5400',
             borderRadius: '2px',
             marginBottom: '24px'
           }}

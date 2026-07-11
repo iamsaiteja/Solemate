@@ -113,7 +113,7 @@ function Register() {
 
         <p style={{ textAlign: 'center', fontSize: '13px', color: 'rgba(245,245,245,0.3)' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: '#e8ff3b', fontWeight: '500' }}>Sign in</Link>
+          <Link to="/login" style={{ color: '#fa5400', fontWeight: '500' }}>Sign in</Link>
         </p>
       </div>
     </div>

@@ -86,7 +86,7 @@ function Navbar() {
   const navText = "var(--cin-text, #f4f4f7)";
   const navMuted = "var(--cin-muted, rgba(244,244,247,0.6))";
   const navBorder = "var(--cin-nav-border, rgba(255,255,255,0.08))";
-  const accent = "var(--cin-accent, #e8ff3b)";
+  const accent = "var(--cin-accent, #fa5400)";
 
   useEffect(() => {
     const token = localStorage.getItem("access");
@@ -134,7 +134,7 @@ function Navbar() {
           color: "#fff", textAlign: "center", padding: "9px 12px", fontSize: "12px",
           fontWeight: "700", letterSpacing: "2px", position: "fixed", top: 0, width: "100%", zIndex: 1001,
         }}>
-          🔥 UP TO <span style={{ color: "#e8ff3b" }}>40% OFF</span> ON PREMIUM SNEAKERS 🔥
+          🔥 UP TO <span style={{ color: "#fa5400" }}>40% OFF</span> ON PREMIUM SNEAKERS 🔥
         </div>
       )}
 
@@ -182,14 +182,14 @@ function Navbar() {
                   <span style={{ fontSize: "13px", fontWeight: "700", color: navText }}>{user}</span>
                   {email && <span style={{ fontSize: "11px", color: navMuted }}>{email}</span>}
                 </div>
-                <button onClick={logout} style={{ background: accent, color: "#1a1a1a", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+                <button onClick={logout} style={{ background: accent, color: "#fff", border: "none", padding: "9px 18px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
                   Logout
                 </button>
               </>
             ) : (
               <>
                 <Link to="/login" style={navLinkStyle("/login")}>Login</Link>
-                <Link to="/register" style={{ background: accent, color: "#1a1a1a", padding: "9px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "13px" }}>Register</Link>
+                <Link to="/register" style={{ background: accent, color: "#fff", padding: "9px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "13px" }}>Register</Link>
               </>
             )}
           </div>
@@ -222,7 +222,7 @@ function Navbar() {
                 <div style={{ fontSize: "15px", fontWeight: 700, color: navText }}>{user}</div>
                 {email && <div style={{ fontSize: "12px", color: navMuted, marginTop: "2px" }}>{email}</div>}
               </div>
-              <button onClick={logout} style={{ marginTop: "20px", width: "100%", background: accent, color: "#1a1a1a", border: "none", padding: "14px", borderRadius: "10px", cursor: "pointer", fontSize: "15px", fontWeight: "700" }}>
+              <button onClick={logout} style={{ marginTop: "20px", width: "100%", background: accent, color: "#fff", border: "none", padding: "14px", borderRadius: "10px", cursor: "pointer", fontSize: "15px", fontWeight: "700" }}>
                 Logout
               </button>
             </>
@@ -230,7 +230,7 @@ function Navbar() {
             <>
               <Link to="/settings" style={mobileLink}>⚙ Settings</Link>
               <Link to="/login" style={mobileLink}>Login</Link>
-              <Link to="/register" style={{ marginTop: "20px", display: "block", textAlign: "center", background: accent, color: "#1a1a1a", padding: "14px", borderRadius: "10px", textDecoration: "none", fontWeight: "700", fontSize: "15px" }}>Register</Link>
+              <Link to="/register" style={{ marginTop: "20px", display: "block", textAlign: "center", background: accent, color: "#fff", padding: "14px", borderRadius: "10px", textDecoration: "none", fontWeight: "700", fontSize: "15px" }}>Register</Link>
             </>
           )}
         </div>

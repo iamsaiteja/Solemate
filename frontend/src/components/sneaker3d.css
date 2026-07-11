@@ -147,13 +147,13 @@
 }
 
 .s3d-btn-primary {
-  background: #e8ff3b;
-  color: #111;
-  border: 2px solid #e8ff3b;
+  background: #fa5400;
+  color: #fff;
+  border: 2px solid #fa5400;
 }
 
 .s3d-btn-primary:hover {
-  box-shadow: 0 10px 34px rgba(232, 255, 59, 0.35);
+  box-shadow: 0 10px 34px rgba(250, 84, 0, 0.35);
 }
 
 .s3d-btn-ghost {
@@ -200,7 +200,7 @@
   top: -50%;
   width: 100%;
   height: 50%;
-  background: #e8ff3b;
+  background: #fa5400;
   animation: s3dScrollPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
@@ -234,7 +234,7 @@
 
 .s3d-dot.is-active {
   height: 26px;
-  background: #e8ff3b;
+  background: #fa5400;
 }
 
 /* Bottom-left frame counter */
@@ -284,7 +284,7 @@
 .s3d-loader-bar span {
   display: block;
   height: 100%;
-  background: #e8ff3b;
+  background: #fa5400;
   transition: width 0.25s ease;
 }
 

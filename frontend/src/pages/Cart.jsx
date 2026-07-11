@@ -20,7 +20,7 @@ const injectCartStyles = () => {
     .smc-step:hover { background:var(--cin-accent); color:var(--cin-accent-ink); border-color:var(--cin-accent); }
 
     .smc-btn { background:var(--cin-accent); color:var(--cin-accent-ink); border:none; border-radius:12px; font-family:'Space Mono',monospace; font-weight:700; letter-spacing:1px; cursor:pointer; transition:transform .12s, box-shadow .2s; }
-    .smc-btn:hover { transform:translateY(-1px); box-shadow:0 10px 26px rgba(232,255,59,.28); }
+    .smc-btn:hover { transform:translateY(-1px); box-shadow:0 10px 26px rgba(250,84,0,.28); }
     .smc-btn:active { transform:scale(.98); }
     .smc-btn:disabled { opacity:.5; cursor:not-allowed; }
 
@@ -66,7 +66,7 @@ const fireConfetti = () => {
   canvas.height = window.innerHeight;
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
-  const colors = ['#e8ff3b', '#1a1a1a', '#ff4d6d', '#4d9bff', '#ffffff', '#ffd23f'];
+  const colors = ['#fa5400', '#1a1a1a', '#ff4d6d', '#4d9bff', '#ffffff', '#ffd23f'];
   const pieces = [];
   for (let i = 0; i < 170; i++) {
     pieces.push({
@@ -277,16 +277,21 @@ function Cart() {
                     <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: isMobile ? '20px' : '24px', letterSpacing: '.5px', lineHeight: 1.05, color: 'var(--cin-text)' }}>
                       {item?.product?.name}
                     </p>
-                    <p className="cin-mono" style={{ margin: '4px 0 0', color: 'var(--cin-accent)', fontSize: '13px' }}>
-                      ₹{item?.product?.price}
-                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '4px 0 0', flexWrap: 'wrap' }}>
+                      <span className="cin-mono" style={{ color: 'var(--cin-accent)', fontSize: '13px' }}>
+                        ₹{item?.product?.price}
+                      </span>
+                      {item?.size && (
+                        <span className="cin-tag">SIZE {item.size}</span>
+                      )}
+                    </div>
                     {isMobile && (
                       <button onClick={() => removeItem(item.id)} style={{ marginTop: '6px', background: 'none', border: 'none', color: 'var(--cin-danger)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
                         Remove
                       </button>
                     )}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', minWidth: isMobile ? 'auto' : '118px', flexShrink: 0 }}>
                     <button className="smc-step" onClick={() => updateQty(item.id, item.quantity - 1)}>−</button>
                     <span className="cin-mono" style={{ fontSize: '15px', minWidth: '22px', textAlign: 'center', color: 'var(--cin-text)' }}>{item.quantity}</span>
                     <button className="smc-step" onClick={() => updateQty(item.id, item.quantity + 1)}>+</button>
@@ -303,7 +308,7 @@ function Cart() {
 
             {/* RIGHT — sticky summary */}
             <Reveal delay={120}>
-            <div className="cin-glass" style={{ position: isMobile ? 'static' : 'sticky', top: '110px', padding: '22px' }}>
+            <div className="cin-glass" style={{ position: isMobile ? 'static' : 'sticky', top: '122px', padding: '24px' }}>
 
               {/* free shipping badge + progress */}
               <div style={{ marginBottom: '18px' }}>
