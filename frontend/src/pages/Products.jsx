@@ -4,7 +4,6 @@ import API, { getImage } from "../utils/api";
 import useIsMobile from "../utils/useIsMobile";
 import PageShell from "../components/ui/PageShell";
 import Reveal from "../components/ui/Reveal";
-import Tilt from "../components/ui/Tilt";
 import Footer from "../components/ui/Footer";
 import "../styles/cinematic.css";
 
@@ -78,6 +77,23 @@ const injectStyles = () => {
     .sm-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:var(--cin-glass-strong); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid var(--cin-border-strong); color:var(--cin-text); padding:14px 24px; border-radius:14px; font-size:14px; font-weight:600; z-index:5000; box-shadow:var(--cin-shadow); display:flex; align-items:center; gap:10px; animation:smToastUp .3s ease; max-width:90vw; }
     .sm-toast b { color:var(--cin-accent); }
     @keyframes smToastUp { from{ opacity:0; transform:translate(-50%,16px); } }
+
+    /* ===== SNEAKER SHOWROOM SHELVES ===== */
+    .shelf-cell { position:relative; cursor:pointer; padding-top:8px; }
+    .shelf-spot { position:absolute; top:0; left:50%; transform:translateX(-50%); width:78%; height:68%; background:radial-gradient(ellipse 60% 95% at 50% 0%, rgba(232,255,59,0.08), transparent 72%); pointer-events:none; z-index:0; }
+    .shelf-stage { position:relative; display:flex; align-items:flex-end; justify-content:center; z-index:1; }
+    .shelf-shoe { max-height:86%; max-width:84%; object-fit:contain; transform-origin:50% 92%; transition:transform .4s cubic-bezier(.22,1.45,.36,1), filter .4s ease; filter:drop-shadow(0 14px 12px rgba(0,0,0,.45)); z-index:2; }
+    .shelf-cell:hover .shelf-shoe { transform:translateY(-16px) rotate(-7deg) scale(1.09); filter:drop-shadow(0 30px 22px rgba(0,0,0,.5)); }
+    .shelf-cell.picked .shelf-shoe { transform:translateY(-40px) rotate(-12deg) scale(1.3); filter:drop-shadow(0 46px 30px rgba(0,0,0,.55)); }
+    .shelf-shadow { position:absolute; bottom:3px; left:50%; width:58%; height:12px; transform:translateX(-50%); background:radial-gradient(ellipse at center, rgba(0,0,0,.6), transparent 70%); transition:all .4s ease; z-index:1; pointer-events:none; }
+    .shelf-cell:hover .shelf-shadow { width:42%; opacity:.55; }
+    .shelf-cell.picked .shelf-shadow { width:30%; opacity:.3; }
+    .shelf-plank { position:relative; height:10px; border-radius:3px; background:linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.07) 45%, rgba(0,0,0,.4)); border:1px solid var(--cin-border-strong); box-shadow:0 16px 26px rgba(0,0,0,.45); z-index:3; }
+    .shelf-plank::after { content:''; position:absolute; top:100%; left:6%; right:6%; height:24px; background:linear-gradient(180deg, rgba(255,255,255,.06), transparent); pointer-events:none; }
+    .shelf-tag { padding:20px 6px 0; text-align:center; }
+    .shelf-tag .sm-card-footer { justify-content:center; gap:12px; }
+    .shelf-tag .sm-addcart { max-width:210px; margin:0 auto; display:block; }
+    .shelf-cell .sm-card-heart { position:absolute; top:2px; right:4px; left:auto; }
   `;
   document.head.appendChild(style);
 };
@@ -134,6 +150,14 @@ function Products() {
   // ADD TO CART
   const [addingId, setAddingId] = useState(null);
   const [toast, setToast] = useState("");
+
+  // SHOWROOM PICKUP — shoe lifts off the shelf, then the detail page opens
+  const [pickedId, setPickedId] = useState(null);
+  const pickUp = (product) => {
+    if (pickedId) return;
+    setPickedId(product.id);
+    setTimeout(() => navigate(`/products/${product.id}`), 360);
+  };
 
   const loadProducts = () => {
     setLoading(true);
@@ -378,20 +402,25 @@ function Products() {
             <div className="cin-sub">No products match your filters.</div>
           </div>
         ) : (
-          <div className="sm-grid" style={{ gridTemplateColumns: gridCols }}>
+          <div className="sm-grid" style={{ gridTemplateColumns: gridCols, rowGap: "44px" }}>
             {filtered.map((product, i) => (
               <Reveal key={product.id} delay={(i % 4) * 70}>
-                <Tilt className="sm-card" onClick={() => navigate(`/products/${product.id}`)}>
-                  <div className="sm-card-img-wrap" style={{ height: imgH }}>
-                    <img className="sm-card-img" src={getImage(product.image)} alt={product.name} loading="lazy" />
+                <div
+                  className={`shelf-cell${pickedId === product.id ? " picked" : ""}`}
+                  onClick={() => pickUp(product)}
+                >
+                  <div className="shelf-spot" />
+                  <div className="shelf-stage" style={{ height: imgH }}>
                     <button
                       className={`sm-card-heart ${likedIds.has(product.id) ? "liked" : "not-liked"}`}
                       onClick={(e) => toggleLike(e, product.id)} aria-label="Wishlist">
                       {likedIds.has(product.id) ? "♥" : "♡"}
                     </button>
-                    {!isMobile && <span className="sm-card-num">{String(i + 1).padStart(2, "0")}</span>}
+                    <img className="shelf-shoe" src={getImage(product.image)} alt={product.name} loading="lazy" />
+                    <div className="shelf-shadow" />
                   </div>
-                  <div className="sm-card-info">
+                  <div className="shelf-plank" />
+                  <div className="shelf-tag">
                     <div className="sm-card-brand">{getBrand(product.name)}</div>
                     <div className="sm-card-name" style={{ fontSize: isMobile ? "20px" : "26px" }}>{product.name}</div>
                     <div className="sm-card-footer">
@@ -402,7 +431,7 @@ function Products() {
                       {addingId === product.id ? "ADDING..." : "＋ ADD TO CART"}
                     </button>
                   </div>
-                </Tilt>
+                </div>
               </Reveal>
             ))}
           </div>

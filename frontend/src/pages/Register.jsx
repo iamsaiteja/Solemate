@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../utils/api';
+import { requestBrandIntro } from '../components/ui/BrandIntro';
 import "../styles/cinematic.css";
 
 function Register() {
@@ -17,6 +18,7 @@ function Register() {
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
       localStorage.setItem('username', res.data.user.username);
+      requestBrandIntro();
       navigate('/');
       window.location.reload();
     } catch (err) {

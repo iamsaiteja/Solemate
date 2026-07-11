@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import './styles/cinematic.css';
 
 import Navbar from './components/Navbar';
+import BrandIntro from './components/ui/BrandIntro';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
@@ -41,6 +42,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <BrandIntro />
         <Navbar />
         <RouteFade>
         <Routes>
