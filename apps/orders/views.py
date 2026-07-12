@@ -82,6 +82,35 @@ def send_order_email(order):
         print("Order email failed:", e)
 
 
+def _apply_discount(request, total):
+    """Resolve the single applicable offer: a valid coupon wins; otherwise a
+    5% instant card discount (capped at ₹300) when paying by card. Returns
+    (payable_total, discount_amount, offer_code)."""
+    from decimal import Decimal
+    from apps.coupons.models import Coupon
+
+    coupon_code = (request.data.get('coupon_code') or '').strip().upper()
+    payment_method = (request.data.get('payment_method') or '').strip().lower()
+
+    if coupon_code:
+        try:
+            coupon = Coupon.objects.get(code__iexact=coupon_code)
+            discount = coupon.get_discount(total)
+            if discount > 0:
+                coupon.used_count += 1
+                coupon.save(update_fields=['used_count'])
+                return total - discount, discount, coupon.code
+        except Coupon.DoesNotExist:
+            pass
+        return total, Decimal('0'), ''
+
+    if payment_method == 'card':
+        card_discount = min(total * Decimal('0.05'), Decimal('300')).quantize(Decimal('0.01'))
+        return total - card_discount, card_discount, 'CARD5'
+
+    return total, Decimal('0'), ''
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_order(request):
@@ -96,6 +125,7 @@ def create_order(request):
             return Response({'error': 'Cart is empty'}, status=400)
 
         total = sum(item.get_subtotal() for item in cart_items)
+        total, discount_amount, offer_code = _apply_discount(request, total)
 
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         razorpay_order = client.order.create({
@@ -131,6 +161,8 @@ def create_order(request):
             'key': settings.RAZORPAY_KEY_ID,
             'name': request.user.get_full_name() or request.user.username,
             'email': request.user.email,
+            'discount': str(discount_amount),
+            'offer': offer_code,
         })
 
     except Cart.DoesNotExist:
@@ -206,6 +238,7 @@ def create_cod_order(request):
             return Response({'error': 'Cart is empty'}, status=400)
 
         total = sum(item.get_subtotal() for item in cart_items)
+        total, discount_amount, offer_code = _apply_discount(request, total)
 
         order = Order.objects.create(
             user=request.user,
@@ -231,7 +264,9 @@ def create_cod_order(request):
 
         return Response({
             'message': 'Order placed successfully!',
-            'order_id': order.id
+            'order_id': order.id,
+            'discount': str(discount_amount),
+            'offer': offer_code,
         })
 
     except Cart.DoesNotExist:

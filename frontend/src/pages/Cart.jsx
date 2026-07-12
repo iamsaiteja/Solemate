@@ -24,11 +24,22 @@ const injectCartStyles = () => {
     .smc-btn:active { transform:scale(.98); }
     .smc-btn:disabled { opacity:.5; cursor:not-allowed; }
 
-    .smc-pay { flex:1; padding:13px; border-radius:12px; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; cursor:pointer; transition:all .18s; }
+    .smc-pay { flex:1; padding:12px 6px; border-radius:12px; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; cursor:pointer; transition:all .18s; }
 
     .smc-prog { height:7px; background:var(--cin-surface-2); border-radius:99px; overflow:hidden; }
-    .smc-prog-fill { height:100%; background:linear-gradient(90deg,var(--cin-accent),#b8d02c); border-radius:99px; animation:smcFill 1s cubic-bezier(.22,1,.36,1) both; }
+    .smc-prog-fill { height:100%; background:linear-gradient(90deg,var(--cin-accent),#ff8b4d); border-radius:99px; animation:smcFill 1s cubic-bezier(.22,1,.36,1) both; }
     @keyframes smcFill { from{ width:0; } }
+
+    /* Nike-style address form */
+    .smc-field { position:relative; }
+    .smc-field label { position:absolute; top:-7px; left:12px; padding:0 6px; background:var(--cin-bg-1); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--cin-muted); border-radius:4px; }
+    .smc-field input { width:100%; }
+    .smc-field .err { color:var(--cin-danger); font-size:11px; margin:4px 0 0 4px; display:block; }
+    .smc-field input.invalid { border-color:var(--cin-danger); }
+
+    /* coupon chips */
+    .smc-chip { background:var(--cin-surface-2); border:1px dashed var(--cin-border-strong); color:var(--cin-text); font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; padding:6px 10px; border-radius:8px; cursor:pointer; transition:all .15s; }
+    .smc-chip:hover { border-color:var(--cin-accent); color:var(--cin-accent); }
 
     /* ---- SUCCESS OVERLAY ---- */
     .smc-overlay { position:fixed; inset:0; z-index:3000; background:rgba(5,5,10,.7); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; animation:smcFade .3s ease; }
@@ -122,18 +133,37 @@ function CountUp({ value }) {
   return <>₹{display.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</>;
 }
 
+/* Backend unreachable aithe kuda ee codes pani cheyali (same rules as the
+   seeded Coupon rows) — real charge backend redeploy tarvata match avtundi */
+const LOCAL_COUPONS = {
+  SOLE20: { pct: 20, min: 1999, cap: 1500 },
+  SOLE30: { pct: 30, min: 3999, cap: 2500 },
+  SOLE70: { pct: 70, min: 5999, cap: 5000 },
+};
+
+const CARD_OFFER = { pct: 5, cap: 300 }; // instant card discount, no coupon stacked
+
 function Cart() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const [cart, setCart] = useState({ items: [], total: '0' });
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ shipping_address: '', phone: '' });
   const [placing, setPlacing] = useState(false);
   const [step, setStep] = useState('cart');
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [removingId, setRemovingId] = useState(null);
   const [success, setSuccess] = useState(null); // order confirm aithe ee overlay
+
+  // Nike-style structured address
+  const [addr, setAddr] = useState({ name: '', phone: '', pincode: '', city: '', state: '', house: '', road: '' });
+  const [errors, setErrors] = useState({});
+
+  // Coupons
+  const [couponInput, setCouponInput] = useState('');
+  const [coupon, setCoupon] = useState(null); // { code, discount }
+  const [couponErr, setCouponErr] = useState('');
+  const [applying, setApplying] = useState(false);
 
   useEffect(() => { injectCartStyles(); }, []);
 
@@ -171,23 +201,95 @@ function Cart() {
     } catch (err) { console.error(err); }
   };
 
+  /* ---------- discount math ---------- */
+  const subtotal = parseFloat(cart.total) || 0;
+  const couponDiscount = coupon ? Math.min(parseFloat(coupon.discount) || 0, subtotal) : 0;
+  const cardDiscount = !coupon && paymentMethod === 'card'
+    ? Math.min((subtotal * CARD_OFFER.pct) / 100, CARD_OFFER.cap)
+    : 0;
+  const payable = Math.max(subtotal - couponDiscount - cardDiscount, 0);
+
+  // coupon becomes invalid if the cart total drops below its minimum
+  useEffect(() => {
+    if (coupon && LOCAL_COUPONS[coupon.code] && subtotal < LOCAL_COUPONS[coupon.code].min) {
+      setCoupon(null);
+      setCouponErr(`${coupon.code} needs a minimum order of ₹${LOCAL_COUPONS[coupon.code].min}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal]);
+
+  const applyCoupon = async () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) { setCouponErr('Enter a coupon code'); return; }
+    setApplying(true);
+    setCouponErr('');
+    try {
+      const res = await API.post('/coupons/validate/', { code, total: subtotal });
+      setCoupon({ code: res.data.code, discount: res.data.discount });
+      setCouponInput('');
+    } catch (err) {
+      const serverMsg = err.response?.data?.error;
+      if (serverMsg) {
+        setCouponErr(serverMsg);
+      } else if (LOCAL_COUPONS[code]) {
+        // backend not reachable — apply the same seeded rules locally
+        const rule = LOCAL_COUPONS[code];
+        if (subtotal < rule.min) {
+          setCouponErr(`${code} needs a minimum order of ₹${rule.min.toLocaleString('en-IN')}`);
+        } else {
+          const disc = Math.min((subtotal * rule.pct) / 100, rule.cap);
+          setCoupon({ code, discount: disc.toFixed(2) });
+          setCouponInput('');
+        }
+      } else {
+        setCouponErr('Invalid coupon code');
+      }
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  /* ---------- address validation (Nike-style) ---------- */
+  const validateAddress = () => {
+    const e = {};
+    if (!addr.name.trim()) e.name = 'Name is required';
+    if (!/^\d{10}$/.test(addr.phone.trim())) e.phone = 'Enter a valid 10-digit phone number';
+    if (!/^\d{6}$/.test(addr.pincode.trim())) e.pincode = 'Pincode is compulsory (6 digits)';
+    if (!addr.house.trim()) e.house = 'House / Flat No. is required';
+    if (!addr.road.trim()) e.road = 'Road / Area / Colony is required';
+    if (!addr.city.trim()) e.city = 'City is required';
+    if (!addr.state.trim()) e.state = 'State is required';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const composedAddress = () =>
+    `${addr.name}, ${addr.house}, ${addr.road}, ${addr.city}, ${addr.state} - ${addr.pincode}`;
+
   const celebrate = (total, method) => {
-    setSuccess({ total, method });
+    setSuccess({ total, method, saved: couponDiscount + cardDiscount, offer: coupon?.code || (cardDiscount ? 'CARD OFFER' : '') });
+    setCoupon(null);
     fireConfetti();
   };
 
   const handleCheckout = async () => {
-    if (!form.shipping_address.trim()) { alert('Enter shipping address'); return; }
-    const orderTotal = cart.total; // fetch tarwata cart khali avtundi, anduke mundu pattuko
+    if (!validateAddress()) return;
+    const orderTotal = payable.toFixed(2); // fetch tarwata cart khali avtundi, anduke mundu pattuko
+    const payload = {
+      shipping_address: composedAddress(),
+      phone: addr.phone,
+      coupon_code: coupon?.code || '',
+      payment_method: paymentMethod,
+    };
     setPlacing(true);
     try {
       if (paymentMethod === 'cod') {
-        await API.post('/orders/create-cod/', form);
+        await API.post('/orders/create-cod/', payload);
         celebrate(orderTotal, 'cod');
         fetchCart();
         setStep('cart');
       } else {
-        const res = await API.post('/orders/create/', form);
+        const res = await API.post('/orders/create/', payload);
         const { razorpay_order_id, amount, key, name, email } = res.data;
 
         // Same Razorpay order/verify flow — the chosen method only controls
@@ -213,7 +315,7 @@ function Cart() {
             fetchCart();
             setStep('cart');
           },
-          prefill: { name: name || "", email: email || "", contact: form.phone || "" },
+          prefill: { name: addr.name || name || "", email: email || "", contact: addr.phone || "" },
           theme: { color: '#0a0a0e' },
           ...(displayConfig ? { config: { display: displayConfig } } : {}),
         };
@@ -235,6 +337,19 @@ function Cart() {
   );
 
   const itemCount = cart.items.reduce((a, it) => a + (it.quantity || 1), 0);
+
+  const field = (key, label, props = {}) => (
+    <div className="smc-field" style={{ flex: 1, minWidth: props.minWidth || '120px' }}>
+      <label>{label}</label>
+      <input
+        className={`cin-input ${errors[key] ? 'invalid' : ''}`}
+        value={addr[key]}
+        onChange={(e) => { setAddr({ ...addr, [key]: e.target.value }); if (errors[key]) setErrors({ ...errors, [key]: '' }); }}
+        {...props}
+      />
+      {errors[key] && <span className="err">{errors[key]}</span>}
+    </div>
+  );
 
   return (
     <PageShell ghost="BAG" maxWidth={1140}>
@@ -260,7 +375,7 @@ function Cart() {
           </Reveal>
         ) : (
           /* TWO COLUMN: items | summary */
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: isMobile ? '18px' : '28px', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 360px', gap: isMobile ? '18px' : '28px', alignItems: 'start' }}>
 
             {/* LEFT — items */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -304,6 +419,48 @@ function Cart() {
                 </div>
                 </Reveal>
               ))}
+
+              {/* COUPONS */}
+              <Reveal delay={140}>
+                <div className="cin-glass" style={{ padding: '18px' }}>
+                  <span className="cin-label no-line" style={{ marginBottom: '12px', display: 'inline-block' }}>🎟️ Apply Coupon</span>
+                  {coupon ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                      <span style={{ color: 'var(--cin-success)', fontWeight: 700, fontSize: '14px' }}>
+                        ✓ {coupon.code} applied — you save ₹{Number(couponDiscount).toLocaleString('en-IN')}
+                      </span>
+                      <button className="cin-btn cin-btn-ghost" style={{ padding: '8px 14px', fontSize: '10px' }}
+                        onClick={() => { setCoupon(null); setCouponErr(''); }}>
+                        ✕ Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <input
+                          className="cin-input"
+                          placeholder="Enter code — e.g. SOLE30"
+                          value={couponInput}
+                          onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponErr(''); }}
+                          onKeyDown={(e) => e.key === 'Enter' && applyCoupon()}
+                          style={{ flex: 1, textTransform: 'uppercase' }}
+                        />
+                        <button className="smc-btn" onClick={applyCoupon} disabled={applying} style={{ padding: '0 22px', fontSize: '12px' }}>
+                          {applying ? '...' : 'APPLY'}
+                        </button>
+                      </div>
+                      {couponErr && <p style={{ color: 'var(--cin-danger)', fontSize: '12px', margin: '8px 0 0' }}>{couponErr}</p>}
+                      <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                        {Object.entries(LOCAL_COUPONS).map(([code, r]) => (
+                          <button key={code} className="smc-chip" onClick={() => { setCouponInput(code); setCouponErr(''); }}>
+                            {code} · {r.pct}% OFF {subtotal < r.min ? `(min ₹${r.min.toLocaleString('en-IN')})` : ''}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </Reveal>
             </div>
 
             {/* RIGHT — sticky summary */}
@@ -320,17 +477,32 @@ function Cart() {
 
               {/* breakdown */}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
-                <span>Subtotal</span><span className="cin-mono" style={{ color: 'var(--cin-text)' }}>₹{cart.total}</span>
+                <span>Bag Total ({itemCount} items)</span><span className="cin-mono" style={{ color: 'var(--cin-text)' }}>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
+              {couponDiscount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
+                  <span>Coupon ({coupon.code})</span><span className="cin-mono" style={{ color: 'var(--cin-success)' }}>−₹{Number(couponDiscount).toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {cardDiscount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
+                  <span>💳 Card offer ({CARD_OFFER.pct}%)</span><span className="cin-mono" style={{ color: 'var(--cin-success)' }}>−₹{cardDiscount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--cin-muted)', marginBottom: '10px' }}>
                 <span>Shipping</span><span className="cin-mono" style={{ color: 'var(--cin-success)' }}>FREE</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderTop: '1px dashed var(--cin-border-strong)', marginTop: '6px' }}>
-                <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', color: 'var(--cin-text)' }}>TOTAL</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', color: 'var(--cin-text)' }}>YOU PAY</span>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '34px', letterSpacing: '.5px', color: 'var(--cin-accent)' }}>
-                  <CountUp value={cart.total} />
+                  <CountUp value={payable} />
                 </span>
               </div>
+              {(couponDiscount > 0 || cardDiscount > 0) && (
+                <div style={{ textAlign: 'center', fontSize: '12px', color: 'var(--cin-success)', marginBottom: '12px' }}>
+                  🎉 You save ₹{(couponDiscount + cardDiscount).toLocaleString('en-IN', { maximumFractionDigits: 0 })} on this order
+                </div>
+              )}
 
               {/* delivery estimate */}
               <div className="cin-panel" style={{ padding: '11px 14px', fontSize: '13px', color: 'var(--cin-muted)', marginBottom: '18px' }}>
@@ -342,19 +514,23 @@ function Cart() {
                   PROCEED TO CHECKOUT →
                 </button>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
-                  <input
-                    className="cin-input"
-                    placeholder="Shipping Address"
-                    value={form.shipping_address}
-                    onChange={e => setForm({ ...form, shipping_address: e.target.value })}
-                  />
-                  <input
-                    className="cin-input"
-                    placeholder="Phone Number"
-                    value={form.phone}
-                    onChange={e => setForm({ ...form, phone: e.target.value })}
-                  />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* NIKE-STYLE ADDRESS */}
+                  <span className="cin-label no-line" style={{ fontSize: '10px' }}>Shipping Address</span>
+                  {field('name', 'Full Name *', { placeholder: 'Sai Teja' })}
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {field('phone', 'Phone *', { placeholder: '10-digit mobile', maxLength: 10, inputMode: 'numeric' })}
+                    {field('pincode', 'Pincode *', { placeholder: '500090', maxLength: 6, inputMode: 'numeric' })}
+                  </div>
+                  {field('house', 'House / Flat / Office No. *', { placeholder: 'Flat 402, Sunrise Residency' })}
+                  {field('road', 'Road / Area / Colony *', { placeholder: 'Thipudam Pally' })}
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {field('city', 'City *', { placeholder: 'Hyderabad' })}
+                    {field('state', 'State *', { placeholder: 'Telangana' })}
+                  </div>
+
+                  {/* PAYMENT METHOD */}
+                  <span className="cin-label no-line" style={{ fontSize: '10px', marginTop: '4px' }}>Payment Method</span>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '9px' }}>
                     {[
                       { key: 'upi', icon: '📱', label: 'UPI' },
@@ -363,7 +539,6 @@ function Cart() {
                     ].map(({ key, icon, label }) => (
                       <button key={key} className="smc-pay" onClick={() => setPaymentMethod(key)}
                         style={{
-                          padding: '12px 6px',
                           background: paymentMethod === key ? 'var(--cin-accent)' : 'var(--cin-input-bg)',
                           color: paymentMethod === key ? 'var(--cin-accent-ink)' : 'var(--cin-faint)',
                           border: paymentMethod === key ? '2px solid var(--cin-accent)' : '1px solid var(--cin-border)',
@@ -380,7 +555,9 @@ function Cart() {
                   )}
                   {paymentMethod === 'card' && (
                     <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)', textAlign: 'center' }}>
-                      Credit &amp; debit cards accepted — <strong style={{ color: 'var(--cin-text)' }}>Visa · Mastercard · RuPay</strong>
+                      {coupon
+                        ? <>Credit &amp; debit cards — <strong style={{ color: 'var(--cin-text)' }}>Visa · Mastercard · RuPay</strong></>
+                        : <><strong style={{ color: 'var(--cin-success)' }}>{CARD_OFFER.pct}% instant discount</strong> (up to ₹{CARD_OFFER.cap}) on Visa · Mastercard · RuPay</>}
                     </div>
                   )}
                   {paymentMethod === 'cod' && (
@@ -431,6 +608,12 @@ function Cart() {
                 <span>Amount</span>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '24px', color: 'var(--cin-accent)' }}>₹{success.total}</span>
               </div>
+              {success.saved > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--cin-success)', marginBottom: '8px' }}>
+                  <span>You saved {success.offer && `(${success.offer})`}</span>
+                  <strong>₹{Number(success.saved).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</strong>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--cin-muted)' }}>
                 <span>Arrives by</span>
                 <strong style={{ color: 'var(--cin-text)' }}>{deliveryDate}</strong>

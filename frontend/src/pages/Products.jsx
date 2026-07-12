@@ -201,13 +201,25 @@ function Products() {
     }
   };
 
-  // card mida direct add to cart
+  // size select cheyakunda add cheyanivvamu — Nike laga
+  const SIZES = [6, 7, 8, 9, 10, 11, 12];
+  const [sizeOpenId, setSizeOpenId] = useState(null);
+
   const addToCart = async (e, product) => {
     e.stopPropagation();
     if (!localStorage.getItem("access")) { navigate("/login"); return; }
+    // mundu size adugutam — picker open chesi reminder toast
+    setSizeOpenId(product.id);
+    setToast("__size__");
+    setTimeout(() => setToast(""), 2200);
+  };
+
+  const addWithSize = async (e, product, size) => {
+    e.stopPropagation();
+    setSizeOpenId(null);
     setAddingId(product.id);
     try {
-      await API.post("/cart/add/", { product_id: product.id, quantity: 1 });
+      await API.post("/cart/add/", { product_id: product.id, quantity: 1, size });
       setToast(product.name);
       setTimeout(() => setToast(""), 2200);
     } catch (err) {
@@ -427,9 +439,29 @@ function Products() {
                       <span className="sm-card-price">₹{parseFloat(product.price || 0).toLocaleString("en-IN")}</span>
                       <span className="cin-tag ok">IN STOCK</span>
                     </div>
-                    <button className="sm-addcart" onClick={(e) => addToCart(e, product)} disabled={addingId === product.id}>
-                      {addingId === product.id ? "ADDING..." : "＋ ADD TO CART"}
-                    </button>
+                    {sizeOpenId === product.id ? (
+                      <div onClick={(e) => e.stopPropagation()} style={{ marginTop: "4px" }}>
+                        <div className="cin-label no-line" style={{ fontSize: "9px", marginBottom: "8px" }}>Select Size (UK)</div>
+                        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "center" }}>
+                          {SIZES.map((s) => (
+                            <button key={s} onClick={(e) => addWithSize(e, product, s)}
+                              style={{
+                                width: "36px", height: "36px", borderRadius: "8px",
+                                border: "1px solid var(--cin-border)", background: "var(--cin-input-bg)",
+                                color: "var(--cin-text)", fontWeight: 600, fontSize: "13px", cursor: "pointer",
+                              }}
+                              onMouseEnter={(ev) => { ev.currentTarget.style.background = "var(--cin-accent)"; ev.currentTarget.style.color = "var(--cin-accent-ink)"; }}
+                              onMouseLeave={(ev) => { ev.currentTarget.style.background = "var(--cin-input-bg)"; ev.currentTarget.style.color = "var(--cin-text)"; }}>
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="sm-addcart" onClick={(e) => addToCart(e, product)} disabled={addingId === product.id}>
+                        {addingId === product.id ? "ADDING..." : "＋ ADD TO CART"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </Reveal>
@@ -441,7 +473,9 @@ function Products() {
       {/* TOAST */}
       {toast && (
         <div className="sm-toast">
-          {toast === "__error__" ? "⚠ Something went wrong" : <>✓ <b>{toast}</b> added to cart</>}
+          {toast === "__error__" ? "⚠ Something went wrong"
+            : toast === "__size__" ? <>👟 Please select a <b>size</b> before adding to cart</>
+            : <>✓ <b>{toast}</b> added to cart</>}
         </div>
       )}
 
