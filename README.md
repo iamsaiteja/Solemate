@@ -1,6 +1,6 @@
 <div align="center">
 
-# SOLEMATE
+# 👟 SOLEMATE
 
 ### A cinematic 3D sneaker marketplace — scroll it, spin it, own it.
 
@@ -22,7 +22,7 @@
 
 ---
 
-## The Experience
+## ✨ The Experience
 
 Scroll the homepage and a **real glTF sneaker** pins to your screen, spins through five cinematic frames, and **physically changes colorway** (midnight → beach → street) as backgrounds, rim-lights and giant parallax watermarks morph around it. Drag the shoe to spin it yourself.
 
@@ -36,9 +36,9 @@ Every page — Products, Details, Cart, Wishlist, Orders, Auth, Settings, Seller
 
 ---
 
-## Feature Tour
+## 🚀 Feature Tour
 
-###  For Sneakerheads
+### 🛍️ For Sneakerheads
 - **Scroll-driven 3D hero** — 22.7k-triangle glTF sneaker, KHR material variants, particles, contact shadows, drag-to-spin
 - **AI product search** with graceful fallback to instant local filtering
 - Catalog with category mega-menus, brand/gender/price filters and sorting
@@ -50,17 +50,17 @@ Every page — Products, Details, Cart, Wishlist, Orders, Auth, Settings, Seller
 - Login with **Google OAuth** or username/password (JWT)
 - Theme (dark / light / auto) and language (English · తెలుగు · हिंदी) settings
 
-###  For Sellers
+### 🏪 For Sellers
 - Dashboard with revenue and order analytics
 - Per-item order table with status and payment state
 
-### For Admins
+### 🔐 For Admins
 - Django admin for products, categories, coupons, users and orders
 - Seller approval workflow
 
 ---
 
-##  Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
@@ -84,7 +84,7 @@ flowchart LR
     API --> CEL
 ```
 
-### Payment flow
+### 💳 Payment flow
 
 ```mermaid
 sequenceDiagram
@@ -96,7 +96,7 @@ sequenceDiagram
     C->>F: Choose UPI / Card / COD
     alt COD
         F->>B: POST /orders/create-cod/
-        B-->>F: Order confirmed 
+        B-->>F: Order confirmed 🎉
     else UPI or Card
         F->>B: POST /orders/create/
         B->>R: Create Razorpay order
@@ -104,13 +104,13 @@ sequenceDiagram
         C->>R: Completes payment
         F->>B: POST /orders/verify-payment/
         B->>R: Verify signature
-        B-->>F: Order paid confetti 
+        B-->>F: Order paid ✅ confetti 🎊
     end
 ```
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Tech |
 |---|---|
@@ -123,7 +123,7 @@ sequenceDiagram
 
 ---
 
-## Monorepo Layout
+## 📂 Monorepo Layout
 
 ```
 Solemate/
@@ -140,10 +140,10 @@ Solemate/
 ├── frontend/              # React SPA
 │   └── src/
 │       ├── components/
-│       │   ├── Sneaker3DExperience.jsx   #  the 3D scroll hero
+│       │   ├── Sneaker3DExperience.jsx   # 🎬 the 3D scroll hero
 │       │   ├── Navbar.jsx                # glass nav + mega menus
 │       │   └── ui/                       # PageShell · Reveal · Tilt · Footer
-│       ├── styles/cinematic.css          #  the design system
+│       ├── styles/cinematic.css          # 🎨 the design system
 │       ├── pages/                        # Home, Products, Cart, Orders…
 │       └── utils/                        # axios client, hooks
 ├── media/                 # Product images
@@ -152,7 +152,7 @@ Solemate/
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
 ### 1 · Backend (Django)
 
@@ -165,22 +165,7 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Create `.env` in the project root:
-
-```env
-SECRET_KEY=your-django-secret-key
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-FRONTEND_URL=http://localhost:3000
-
-DATABASE_URL=postgres://user:pass@localhost/solemate   # or omit for SQLite
-
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=your_razorpay_secret
-
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
+Copy `.env.example` to `.env` and generate a random SECRET_KEY. For local development use DEBUG=True and omit DB_NAME for SQLite. Production requires PostgreSQL DB_NAME, DB_USER, DB_PASSWORD, DB_HOST and DB_PORT, DEBUG=False, the actual ALLOWED_HOSTS and frontend CORS_ALLOWED_ORIGINS. Payment and OAuth keys are optional locally; online checkout is unavailable until valid Razorpay sandbox keys are configured.
 
 ```bash
 python manage.py migrate
@@ -196,14 +181,14 @@ npm install
 npm start                        # → http://localhost:3000
 ```
 
-> Point the SPA at your API by editing `BASE_URL` in `frontend/src/utils/api.js`.
+> Set `REACT_APP_API_URL` in frontend/.env.local (or the hosting environment) to your backend URL. Default: http://localhost:8000.
 
 ---
 
-##  API Reference
+## 📡 API Reference
 
 <details>
-<summary><b> Authentication</b></summary>
+<summary><b>🔑 Authentication</b></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -215,7 +200,7 @@ npm start                        # → http://localhost:3000
 </details>
 
 <details>
-<summary><b> Products & Reviews</b></summary>
+<summary><b>👟 Products & Reviews</b></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -231,22 +216,22 @@ npm start                        # → http://localhost:3000
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET`  | `/api/cart/` | Current cart  |
-| `POST` | `/api/cart/add/` | Add item (with size)  |
-| `PATCH`| `/api/cart/update/{id}/` | Change quantity  |
-| `DELETE`| `/api/cart/remove/{id}/` | Remove item |
-| `GET`  | `/api/wishlist/` · `/api/wishlist/ids/` | Wishlist |
-| `POST` | `/api/wishlist/toggle/` | Like / unlike |
-| `POST` | `/api/orders/create/` | Create Razorpay order |
-| `POST` | `/api/orders/create-cod/` | Cash-on-delivery order |
-| `POST` | `/api/orders/verify-payment/` | Verify Razorpay signature |
-| `GET`  | `/api/orders/` | Order history with tracking |
+| `GET`  | `/api/cart/` | Current cart 🔒 |
+| `POST` | `/api/cart/add/` | Add item (with size) 🔒 |
+| `PATCH`| `/api/cart/update/{id}/` | Change quantity 🔒 |
+| `DELETE`| `/api/cart/remove/{id}/` | Remove item 🔒 |
+| `GET`  | `/api/wishlist/` · `/api/wishlist/ids/` | Wishlist 🔒 |
+| `POST` | `/api/wishlist/toggle/` | Like / unlike 🔒 |
+| `POST` | `/api/orders/create/` | Create Razorpay order 🔒 |
+| `POST` | `/api/orders/create-cod/` | Cash-on-delivery order 🔒 |
+| `POST` | `/api/orders/verify-payment/` | Verify Razorpay signature 🔒 |
+| `GET`  | `/api/orders/` | Order history with tracking 🔒 |
 
 </details>
 
 ---
 
-## Test Payments (Razorpay sandbox)
+## 💳 Test Payments (Razorpay sandbox)
 
 | Field | Value |
 |-------|-------|
@@ -256,7 +241,7 @@ npm start                        # → http://localhost:3000
 
 ---
 
-## The Cinematic Design System
+## 🎨 The Cinematic Design System
 
 One source of truth — `frontend/src/styles/cinematic.css` — themes the whole app with CSS custom properties (`data-theme` flips dark ⇆ light):
 
@@ -273,9 +258,9 @@ Performance rules baked in: transform/opacity-only animations, lazy images, DPR-
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-- [x] Wishlist 
+- [x] Wishlist ❤️
 - [x] 3D scroll experience & cinematic design system
 - [x] UPI / Card / COD payment selection
 - [ ] Seller payout automation (Razorpay Route)
@@ -286,7 +271,7 @@ Performance rules baked in: transform/opacity-only animations, lazy images, DPR-
 
 ---
 
-## Engineering War Stories
+## 🧗 Engineering War Stories
 
 1. **`position: sticky` silently dying** — an `overflow-x: hidden` page wrapper turned the page into a scroll container and unpinned the 3D hero; fixed with `overflow-x: clip`
 2. **Route transitions breaking `position: fixed`** — a retained `filter` from `animation-fill-mode: both` made the route wrapper a containing block; keyframes now end at natural values
@@ -296,21 +281,27 @@ Performance rules baked in: transform/opacity-only animations, lazy images, DPR-
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 **Sai Teja Golla**
 [LinkedIn](https://www.linkedin.com/in/golla-saiteja) · [GitHub](https://github.com/iamsaiteja) · tejayadav872@gmail.com
 
-## Credits
+## 🙏 Credits
 
 3D sneaker derived from [Materials Variants Shoe](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/MaterialsVariantsShoe) by Shopify (CC BY 4.0) — textures recompressed, geometry unchanged.
 
-## License
+## 📜 License
 
 MIT — learn from it, build on it.
 
 <div align="center">
 
- **If SoleMate made you scroll twice, drop a star!** 
+⭐ **If SoleMate made you scroll twice, drop a star!** ⭐
 
 </div>
+
+
+## Reliability and security
+Read [SECURITY.md](SECURITY.md) before deploying. Run `python -m pytest -q` and `python manage.py makemigrations --check --dry-run --settings=ecommerce.test_settings`. Checkout requires an `Idempotency-Key` header; the frontend provides one. Totals and coupon rules are calculated on the server. Card-method discounts have been removed because a browser-provided payment method is not trusted. Failed online checkout preserves the cart; successful confirmation updates stock once. Captured payments with changed stock/offer availability are marked for manual merchant review/refund. The sample does not yet provide automatic refunds or payment webhooks.
+
+Deployment is manual after CI passes. Environment variables are configured on the host, never overwritten by CI. Tests use SQLite and mocked payment responses; production uses PostgreSQL row locks. This is a portfolio demo, not a claim of production payment certification.

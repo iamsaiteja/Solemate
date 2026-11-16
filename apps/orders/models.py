@@ -19,6 +19,8 @@ class Order(models.Model):
     razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
     razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
     payment_status = models.CharField(max_length=20, default='pending')
+    coupon_code = models.CharField(max_length=50, blank=True)
+    checkout_key = models.CharField(max_length=64, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -26,6 +28,7 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.user.username}"
 
     class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'checkout_key'], name='unique_user_checkout_key')]
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['user']),

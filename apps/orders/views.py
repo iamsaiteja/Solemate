@@ -82,194 +82,142 @@ def send_order_email(order):
         print("Order email failed:", e)
 
 
-def _apply_discount(request, total):
-    """Resolve the single applicable offer: a valid coupon wins; otherwise a
-    5% instant card discount (capped at ₹300) when paying by card. Returns
-    (payable_total, discount_amount, offer_code)."""
-    from decimal import Decimal
-    from apps.coupons.models import Coupon
 
-    coupon_code = (request.data.get('coupon_code') or '').strip().upper()
-    payment_method = (request.data.get('payment_method') or '').strip().lower()
+import logging
+import re
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
+from apps.cart.models import Cart
+from .checkout import lock_cart, price_order, save_items, fulfill
 
-    if coupon_code:
-        try:
-            coupon = Coupon.objects.get(code__iexact=coupon_code)
-            discount = coupon.get_discount(total)
-            if discount > 0:
-                coupon.used_count += 1
-                coupon.save(update_fields=['used_count'])
-                return total - discount, discount, coupon.code
-        except Coupon.DoesNotExist:
-            pass
-        return total, Decimal('0'), ''
+logger = logging.getLogger(__name__)
 
-    if payment_method == 'card':
-        card_discount = min(total * Decimal('0.05'), Decimal('300')).quantize(Decimal('0.01'))
-        return total - card_discount, card_discount, 'CARD5'
 
-    return total, Decimal('0'), ''
+def checkout_input(request):
+    address = str(request.data.get('shipping_address') or '').strip()
+    phone = str(request.data.get('phone') or '').strip()
+    key = request.headers.get('Idempotency-Key', '')
+    if not address or len(address) > 2000 or not re.fullmatch(r'[+0-9 ()-]{7,15}', phone):
+        raise ValidationError('A shipping address and valid phone are required.')
+    if not re.fullmatch(r'[a-zA-Z0-9_-]{16,64}', key):
+        raise ValidationError('Send a unique Idempotency-Key (16–64 letters, digits, _ or -).')
+    return address, phone, key
+
+
+def payment_client():
+    if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+        raise ValidationError('Online payments are not configured.')
+    return razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+
+def order_response(order):
+    return {'order_id': order.pk, 'razorpay_order_id': order.razorpay_order_id,
+            'amount': int(order.total_amount * 100), 'currency': 'INR',
+            'key': settings.RAZORPAY_KEY_ID, 'name': order.user.get_full_name() or order.user.username,
+            'email': order.user.email, 'offer': order.coupon_code,
+            'payment_status': order.payment_status}
+
+
+def create_checkout(request, cod=False):
+    address, phone, key = checkout_input(request)
+    try:
+        with transaction.atomic():
+            # Serialize duplicate submissions from this user's cart.
+            cart, _ = Cart.objects.get_or_create(user=request.user)
+            Cart.objects.select_for_update().get(pk=cart.pk)
+            existing = Order.objects.filter(user=request.user, checkout_key=key).first()
+            if existing:
+                return Response(order_response(existing))
+            cart, items = lock_cart(request.user)
+            total, discount, code = price_order(request.data, items)
+            gateway_id = None
+            if not cod:
+                gateway_id = payment_client().order.create({
+                    'amount': int(total * 100), 'currency': 'INR', 'payment_capture': 1,
+                })['id']
+            order = Order.objects.create(user=request.user, total_amount=total,
+                shipping_address=address, phone=phone, checkout_key=key, coupon_code=code,
+                razorpay_order_id=gateway_id, payment_status='cod' if cod else 'pending')
+            save_items(order, items)
+            if cod:
+                fulfill(order)
+                transaction.on_commit(lambda: send_order_email(order))
+            result = order_response(order)
+            result.update(discount=str(discount), message='Order created')
+            return Response(result, status=201)
+    except ValidationError:
+        raise
+    except Exception:
+        logger.exception('Checkout failed')
+        return Response({'error': 'Checkout failed. Your cart is preserved; retry with the same key.'}, status=502)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_order(request):
-    shipping_address = request.data.get('shipping_address', '')
-    phone = request.data.get('phone', '')
+    return create_checkout(request)
 
-    try:
-        cart = Cart.objects.get(user=request.user)
-        cart_items = list(cart.items.select_related('product').all())
 
-        if not cart_items:
-            return Response({'error': 'Cart is empty'}, status=400)
-
-        total = sum(item.get_subtotal() for item in cart_items)
-        total, discount_amount, offer_code = _apply_discount(request, total)
-
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-        razorpay_order = client.order.create({
-            'amount': int(total * 100),
-            'currency': 'INR',
-            'payment_capture': 1,
-        })
-
-        order = Order.objects.create(
-            user=request.user,
-            total_amount=total,
-            shipping_address=shipping_address,
-            phone=phone,
-            razorpay_order_id=razorpay_order['id'],
-        )
-
-        for item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                product_name=item.product.name,
-                quantity=item.quantity,
-                price=item.product.price,
-            )
-
-        cart.items.all().delete()
-
-        return Response({
-            'order_id': order.id,
-            'razorpay_order_id': razorpay_order['id'],
-            'amount': int(total * 100),
-            'currency': 'INR',
-            'key': settings.RAZORPAY_KEY_ID,
-            'name': request.user.get_full_name() or request.user.username,
-            'email': request.user.email,
-            'discount': str(discount_amount),
-            'offer': offer_code,
-        })
-
-    except Cart.DoesNotExist:
-        return Response({'error': 'Cart not found'}, status=404)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_cod_order(request):
+    return create_checkout(request, cod=True)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def verify_payment(request):
-    razorpay_payment_id = request.data.get('razorpay_payment_id')
-    razorpay_order_id = request.data.get('razorpay_order_id')
-    razorpay_signature = request.data.get('razorpay_signature')
-
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    gateway_id = request.data.get('razorpay_order_id')
+    payment_id = request.data.get('razorpay_payment_id')
+    signature = request.data.get('razorpay_signature')
+    if not all(isinstance(v, str) and v for v in [gateway_id, payment_id, signature]):
+        raise ValidationError('Payment id, order id and signature are required.')
+    # Look up ownership before asking the gateway about a payment.
+    order = get_object_or_404(Order, razorpay_order_id=gateway_id, user=request.user)
+    client = payment_client()
     try:
-        client.utility.verify_payment_signature({
-            'razorpay_order_id': razorpay_order_id,
-            'razorpay_payment_id': razorpay_payment_id,
-            'razorpay_signature': razorpay_signature,
-        })
-        order = Order.objects.get(razorpay_order_id=razorpay_order_id, user=request.user)
-        order.razorpay_payment_id = razorpay_payment_id
+        client.utility.verify_payment_signature({'razorpay_order_id': order.razorpay_order_id,
+            'razorpay_payment_id': payment_id, 'razorpay_signature': signature})
+        payment = client.payment.fetch(payment_id)
+    except Exception:
+        return Response({'error': 'Payment verification failed'}, status=400)
+    if (payment.get('order_id') != order.razorpay_order_id or
+        payment.get('amount') != int(order.total_amount * 100) or
+        payment.get('currency') != 'INR' or payment.get('status') != 'captured'):
+        return Response({'error': 'Payment is not captured for this order and amount.'}, status=400)
+    with transaction.atomic():
+        # Same lock order as checkout: cart, order, products, coupon.
+        Cart.objects.select_for_update().filter(user=request.user).first()
+        order = Order.objects.select_for_update().get(pk=order.pk)
+        if order.payment_status == 'paid':
+            return Response({'message': 'Payment already confirmed', 'order_id': order.pk})
+        if order.payment_status == 'review':
+            return Response({'error': 'Payment received; merchant review/refund required.'}, status=409)
+        try:
+            with transaction.atomic():
+                fulfill(order)
+        except ValidationError:
+            order.payment_status = 'review'
+            order.razorpay_payment_id = payment_id
+            order.save(update_fields=['payment_status', 'razorpay_payment_id', 'updated_at'])
+            logger.error('Paid order %s requires manual reconciliation', order.pk)
+            return Response({'error': 'Payment received but stock/offer changed. Contact merchant for review/refund.'}, status=409)
+        order.razorpay_payment_id = payment_id
         order.payment_status = 'paid'
         order.status = 'processing'
         order.save()
-
-        send_order_email(order)  # confirmation email
-
-        return Response({'message': 'Payment successful!', 'order_id': order.id})
-    except Exception:
-        return Response({'error': 'Payment verification failed'}, status=400)
+        transaction.on_commit(lambda: send_order_email(order))
+    return Response({'message': 'Payment successful!', 'order_id': order.pk})
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_orders(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items')
-    data = []
-    for order in orders:
-        data.append({
-            'id': order.id,
-            'total_amount': str(order.total_amount),
-            'status': order.status,
-            'payment_status': order.payment_status,
-            'shipping_address': order.shipping_address,
-            'created_at': order.created_at.strftime('%d %b %Y'),
-            'items': [
-                {
-                    'product_name': item.product_name,
-                    'quantity': item.quantity,
-                    'price': str(item.price),
-                    'subtotal': str(item.get_subtotal()),
-                }
-                for item in order.items.all()
-            ],
-        })
-    return Response(data)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create_cod_order(request):
-    shipping_address = request.data.get('shipping_address', '')
-    phone = request.data.get('phone', '')
-
-    try:
-        cart = Cart.objects.get(user=request.user)
-        cart_items = list(cart.items.select_related('product').all())
-
-        if not cart_items:
-            return Response({'error': 'Cart is empty'}, status=400)
-
-        total = sum(item.get_subtotal() for item in cart_items)
-        total, discount_amount, offer_code = _apply_discount(request, total)
-
-        order = Order.objects.create(
-            user=request.user,
-            total_amount=total,
-            shipping_address=shipping_address,
-            phone=phone,
-            payment_status='cod',
-            status='pending'
-        )
-
-        for item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                product_name=item.product.name,
-                quantity=item.quantity,
-                price=item.product.price,
-            )
-
-        cart.items.all().delete()
-
-        send_order_email(order)  # confirmation email
-
-        return Response({
-            'message': 'Order placed successfully!',
-            'order_id': order.id,
-            'discount': str(discount_amount),
-            'offer': offer_code,
-        })
-
-    except Cart.DoesNotExist:
-        return Response({'error': 'Cart not found'}, status=404)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
+    return Response([{'id': o.pk, 'total_amount': str(o.total_amount), 'status': o.status,
+        'payment_status': o.payment_status, 'shipping_address': o.shipping_address,
+        'created_at': o.created_at.strftime('%d %b %Y'),
+        'items': [{'product_name': i.product_name, 'quantity': i.quantity,
+                   'price': str(i.price), 'subtotal': str(i.get_subtotal())} for i in o.items.all()]
+    } for o in orders])

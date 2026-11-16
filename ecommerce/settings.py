@@ -10,26 +10,17 @@ import cloudinary.uploader
 import cloudinary.api
 load_dotenv()
 
-logging.basicConfig(level=logging.DEBUG)
-
-sentry_sdk.init(
-    dsn="https://e57ec843bb8d9ab5fcf43f3d971e2f0d@o4511451689320448.ingest.us.sentry.io/4511451787952128",
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=True,
-)
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'your-secret-key-change-this-in-production'
-DEBUG = False
-
-ALLOWED_HOSTS = [
-    'solemate.servecounterstrike.com',
-    "localhost",
-    "127.0.0.1",
-    "100.56.17.207",
-    "ecommerce-django-umber.vercel.app",
-]
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+SECRET_KEY = os.getenv('SECRET_KEY', '')
+if not SECRET_KEY or len(SECRET_KEY) < 32:
+    raise ImproperlyConfigured('Set SECRET_KEY to a random value of at least 32 characters.')
+ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+if os.getenv('SENTRY_DSN'):
+    sentry_sdk.init(dsn=os.environ['SENTRY_DSN'], integrations=[DjangoIntegration()],
+                    traces_sample_rate=0.1, send_default_pii=False)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -95,16 +86,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-DATABASES = {
-    'default': {
+if os.getenv('DB_NAME'):
+    DATABASES = {'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
-}
+        'NAME': os.environ['DB_NAME'], 'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASSWORD'], 'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }}
+elif DEBUG:
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
+else:
+    raise ImproperlyConfigured('Production requires DB_NAME, DB_USER and DB_PASSWORD.')
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -123,21 +115,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://solemate01.vercel.app",
-    "https://ecommerce-django-umber.vercel.app",
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "https://solemate01.vercel.app",
-    "https://ecommerce-django-umber.vercel.app",
-    "https://solemate-33tpuetc1-iamsaitejas-projects.vercel.app",
-    'https://solemate.servecounterstrike.com',
-    'http://solemate.servecounterstrike.com',
-    'https://ecommerce-django-two.vercel.app',
-]
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [v.strip() for v in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',') if v.strip()]
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -163,8 +143,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-RAZORPAY_KEY_ID = 'your_razorpay_key_id'
-RAZORPAY_KEY_SECRET = 'your_razorpay_key_secret'
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '')
 
 SITE_ID = 1
 
@@ -215,6 +195,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
+(BASE_DIR / 'logs').mkdir(exist_ok=True)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

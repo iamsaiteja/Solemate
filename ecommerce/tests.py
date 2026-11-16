@@ -18,10 +18,16 @@ class AuthAPITest(TestCase):
 
     def test_login_api(self):
         response = self.client.post('/api/auth/login/', {
-            'email': 'test@test.com',
+            'username': 'testuser',
             'password': 'Test@1234'
         })
-        self.assertIn(response.status_code, [200, 400, 401])
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_wrong_password_is_rejected(self):
+        response = self.client.post('/api/auth/login/', {'username': 'testuser', 'password': 'wrong'})
+        self.assertEqual(response.status_code, 401)
+        self.assertNotIn('access', response.data)
 
 
 class ProductAPITest(TestCase):
@@ -61,4 +67,4 @@ class OrderAPITest(TestCase):
 
     def test_orders_list(self):
         response = self.client.get('/api/orders/')
-        self.assertIn(response.status_code, [200, 400, 401])
+        self.assertEqual(response.status_code, 200)

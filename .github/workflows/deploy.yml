@@ -1,45 +1,53 @@
-name: Deploy to EC2
-
+name: Validate and deploy
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Deploy via SSH
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python manage.py makemigrations --check --dry-run --settings=ecommerce.test_settings
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci && npm run build
+        working-directory: frontend
+        env:
+          CI: 'false'
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy validated revision
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-
+          envs: DEPLOY_SHA
           script: |
-            sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Sai@1234Db';"
-            sudo -u postgres psql -c "CREATE DATABASE ecommerce_db;" || true
+            set -eu
             cd /home/ubuntu/ecommerce-django
+            test -s .env
             git fetch origin main
-            git reset --hard origin/main
-            source venv/bin/activate
+            git checkout --detach "$DEPLOY_SHA"
+            . venv/bin/activate
             pip install -r requirements.txt
-            printf 'DB_NAME=ecommerce_db\nDB_USER=postgres\nDB_PASSWORD=Sai@1234Db\nDB_HOST=localhost\nDB_PORT=5432\nAWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}\nAWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}\nGOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}\nGOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}\nFRONTEND_URL=https://ecommerce-django-two.vercel.app\n' > /home/ubuntu/ecommerce-django/.env
-            python manage.py migrate
-            python manage.py fix_prices
-            python manage.py dedupe_products
-            
-            printf '[Unit]\nDescription=gunicorn daemon\nAfter=network.target\n\n[Service]\nUser=ubuntu\nWorkingDirectory=/home/ubuntu/ecommerce-django\nEnvironmentFile=/home/ubuntu/ecommerce-django/.env\nExecStart=/home/ubuntu/ecommerce-django/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 ecommerce.wsgi:application\n\n[Install]\nWantedBy=multi-user.target\n' | sudo tee /etc/systemd/system/gunicorn.service
-            sudo systemctl daemon-reload
+            python manage.py check --deploy
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
             sudo systemctl restart gunicorn
-            sudo apt install nginx -y
-            sudo apt install certbot python3-certbot-nginx -y
-            printf 'server {\n    listen 80;\n    server_name solemate.servecounterstrike.com;\n\n    location /static/ {\n        alias /home/ubuntu/ecommerce-django/staticfiles/;\n    }\n\n    location /media/ {\n        alias /home/ubuntu/ecommerce-django/media/;\n    }\n\n    location / {\n        proxy_pass http://127.0.0.1:8000;\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n    }\n}\n' | sudo tee /etc/nginx/sites-available/solemate
-            sudo ln -sf /etc/nginx/sites-available/solemate /etc/nginx/sites-enabled/
-            sudo nginx -t
-            sudo systemctl restart nginx
-            sudo certbot --nginx -d solemate.servecounterstrike.com --non-interactive --agree-tos -m tejayadav872@gmail.com --keep-until-expiring
-            sudo systemctl restart gunicorn
-            echo "from django.contrib.auth import get_user_model; U = get_user_model(); U.objects.filter(username='admin').exists() or U.objects.create_superuser('admin', 'tejayadav872@gmail.com', 'Admin@1234')" | python manage.py shell
