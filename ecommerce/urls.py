@@ -19,7 +19,7 @@ def health_check(request):
 
 
 urlpatterns = [
-    path('send-email/', send_test_email),
+
     
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

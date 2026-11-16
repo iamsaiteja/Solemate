@@ -141,7 +141,7 @@ const LOCAL_COUPONS = {
   SOLE70: { pct: 70, min: 5999, cap: 5000 },
 };
 
-const CARD_OFFER = { pct: 5, cap: 300 }; // instant card discount, no coupon stacked
+const CARD_OFFER = { pct: 0, cap: 0 }; // instant card discount, no coupon stacked
 
 function Cart() {
   const navigate = useNavigate();
@@ -204,9 +204,7 @@ function Cart() {
   /* ---------- discount math ---------- */
   const subtotal = parseFloat(cart.total) || 0;
   const couponDiscount = coupon ? Math.min(parseFloat(coupon.discount) || 0, subtotal) : 0;
-  const cardDiscount = !coupon && paymentMethod === 'card'
-    ? Math.min((subtotal * CARD_OFFER.pct) / 100, CARD_OFFER.cap)
-    : 0;
+  const cardDiscount = 0; // Discounts are validated by the server through coupons only.
   const payable = Math.max(subtotal - couponDiscount - cardDiscount, 0);
 
   // coupon becomes invalid if the cart total drops below its minimum
@@ -274,22 +272,31 @@ function Cart() {
 
   const handleCheckout = async () => {
     if (!validateAddress()) return;
-    const orderTotal = payable.toFixed(2); // fetch tarwata cart khali avtundi, anduke mundu pattuko
     const payload = {
       shipping_address: composedAddress(),
       phone: addr.phone,
       coupon_code: coupon?.code || '',
       payment_method: paymentMethod,
     };
+    // Persist the key across retries; a changed cart/address gets a new checkout attempt.
+    const fingerprint = JSON.stringify({ payload, items: cart.items });
+    let attempt;
+    try { attempt = JSON.parse(sessionStorage.getItem('solemate-checkout')); } catch { /* malformed storage */ }
+    if (!attempt || attempt.fingerprint !== fingerprint) {
+      attempt = { fingerprint, key: crypto.randomUUID() };
+      sessionStorage.setItem('solemate-checkout', JSON.stringify(attempt));
+    }
+    const requestOptions = { headers: { 'Idempotency-Key': attempt.key } };
     setPlacing(true);
     try {
       if (paymentMethod === 'cod') {
-        await API.post('/orders/create-cod/', payload);
-        celebrate(orderTotal, 'cod');
+        const result = await API.post('/orders/create-cod/', payload, requestOptions);
+        sessionStorage.removeItem('solemate-checkout');
+        celebrate((result.data.amount / 100).toFixed(2), 'cod');
         fetchCart();
         setStep('cart');
       } else {
-        const res = await API.post('/orders/create/', payload);
+        const res = await API.post('/orders/create/', payload, requestOptions);
         const { razorpay_order_id, amount, key, name, email } = res.data;
 
         // Same Razorpay order/verify flow — the chosen method only controls
@@ -310,10 +317,15 @@ function Cart() {
           key, amount, currency: 'INR', name: 'SoleMate',
           order_id: razorpay_order_id,
           handler: async (response) => {
-            await API.post('/orders/verify-payment/', response);
-            celebrate(orderTotal, 'razorpay');
-            fetchCart();
-            setStep('cart');
+            try {
+              await API.post('/orders/verify-payment/', response);
+              sessionStorage.removeItem('solemate-checkout');
+              celebrate((amount / 100).toFixed(2), 'razorpay');
+              fetchCart();
+              setStep('cart');
+            } catch (error) {
+              alert(error.response?.data?.error || 'Payment confirmation failed. Keep your payment reference and contact support.');
+            }
           },
           prefill: { name: addr.name || name || "", email: email || "", contact: addr.phone || "" },
           theme: { color: '#0a0a0e' },
@@ -557,7 +569,7 @@ function Cart() {
                     <div className="cin-panel" style={{ padding: '10px 13px', fontSize: '12px', color: 'var(--cin-muted)', textAlign: 'center' }}>
                       {coupon
                         ? <>Credit &amp; debit cards — <strong style={{ color: 'var(--cin-text)' }}>Visa · Mastercard · RuPay</strong></>
-                        : <><strong style={{ color: 'var(--cin-success)' }}>{CARD_OFFER.pct}% instant discount</strong> (up to ₹{CARD_OFFER.cap}) on Visa · Mastercard · RuPay</>}
+                        : <>Pay securely with Visa · Mastercard · RuPay</>}
                     </div>
                   )}
                   {paymentMethod === 'cod' && (
@@ -637,3 +649,4 @@ function Cart() {
 }
 
 export default Cart;
+

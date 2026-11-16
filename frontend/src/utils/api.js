@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://solemate.servecounterstrike.com";
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 const API = axios.create({
   baseURL: `${BASE_URL}/api`,

@@ -1,6 +1,17 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+
+def parse_quantity(value, allow_zero=False):
+    try:
+        quantity = int(value)
+    except (TypeError, ValueError):
+        raise ValidationError("Quantity must be a whole number.")
+    if str(quantity) != str(value) or quantity < (0 if allow_zero else 1) or quantity > 999:
+        raise ValidationError("Quantity is outside the allowed range.")
+    return quantity
+
 from .models import Cart, CartItem
 from apps.products.models import Product
 
@@ -27,7 +38,7 @@ def get_cart(request):
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
     product_id = request.data.get('product_id')
-    quantity = int(request.data.get('quantity', 1))
+    quantity = parse_quantity(request.data.get('quantity', 1))
     try:
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
@@ -45,7 +56,7 @@ def add_to_cart(request):
 @api_view(['PUT','PATCH'])
 @permission_classes([IsAuthenticated])
 def update_cart_item(request, item_id):
-    quantity = int(request.data.get('quantity', 1))
+    quantity = parse_quantity(request.data.get('quantity', 1), allow_zero=True)
     try:
         cart = Cart.objects.get(user=request.user)
         item = CartItem.objects.get(id=item_id, cart=cart)
